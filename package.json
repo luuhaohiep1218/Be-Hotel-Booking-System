@@ -1,0 +1,39 @@
+{
+  "name": "be-hotel-booking-system",
+  "version": "1.0.0",
+  "description": "back-end hotel booking ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luuhaohiep1218/Be-Hotel-Booking-System.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luuhaohiep1218/Be-Hotel-Booking-System/issues"
+  },
+  "homepage": "https://github.com/luuhaohiep1218/Be-Hotel-Booking-System#readme",
+  "dependencies": {
+    "api-query-params": "^5.4.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
+    "express-handlebars": "^8.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
