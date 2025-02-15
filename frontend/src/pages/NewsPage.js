@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import newsData from "../data.json";
 import PopularPost from "../components/PopularNews";
 
-const Page = () => {
+const NewsPage = () => {
   const [internalNews, setInternalNews] = useState([]);
   const [travelGuide, setTravelGuide] = useState([]);
 
@@ -43,4 +43,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default NewsPage;

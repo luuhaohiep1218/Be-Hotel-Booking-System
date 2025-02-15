@@ -1,8 +1,8 @@
 import React from "react";
-import Page from "./pages/Page";
+import NewsPage from "./pages/NewsPage";
 
 const App = () => {
-  return <Page />;
+  return <NewsPage />;
 };
 
 export default App;
