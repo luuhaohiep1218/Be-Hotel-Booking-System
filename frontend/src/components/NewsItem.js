@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, Col, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const NewsItem = ({ item }) => {
   return (
@@ -35,8 +36,13 @@ const NewsItem = ({ item }) => {
             </Col>
           </Row>
 
-          {/* Tiêu đề & Nội dung */}
-          <Card.Title style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#333" }}>{item.title}</Card.Title>
+          
+          <Card.Title style={{ fontSize: "1.1rem", fontWeight: "bold", color: "#333" }}><Link 
+              to={`/news/${item.id}`} 
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              {item.title}
+            </Link></Card.Title>
           <Card.Text style={{ fontSize: "0.95rem", color: "#555", flexGrow: 1 }}>
             {item.summary}
           </Card.Text>

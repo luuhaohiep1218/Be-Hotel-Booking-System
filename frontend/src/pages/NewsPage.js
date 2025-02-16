@@ -39,7 +39,7 @@ const NewsPage = () => {
               textAlign: "center",
               marginTop: 80,
               marginBottom: 20,
-              color: "darkred",
+              color: "#22ACC1",
             }}
           >
             TIN NỘI BỘ
@@ -48,7 +48,7 @@ const NewsPage = () => {
             style={{
               height: "3px",
               width: "8%",
-              backgroundColor: "darkred",
+              backgroundColor: "#22ACC1",
               margin: "0 auto",
             }}
           ></div>
@@ -56,7 +56,7 @@ const NewsPage = () => {
             style={{
               height: "3px",
               width: "25%",
-              backgroundColor: "darkred",
+              backgroundColor: "#22ACC1",
               margin: "0 auto",
               marginBottom: 4,
               marginTop: 4,
@@ -66,7 +66,7 @@ const NewsPage = () => {
             style={{
               height: "3px",
               width: "8%",
-              backgroundColor: "darkred",
+              backgroundColor: "#22ACC1",
               margin: "0 auto",
               marginBottom: 30,
             }}
@@ -79,7 +79,7 @@ const NewsPage = () => {
               textAlign: "center",
               marginTop: 100,
               marginBottom: 20,
-              color: "darkred",
+              color: "#22ACC1",
             }}
           >
             Sổ tay du lịch
@@ -88,7 +88,7 @@ const NewsPage = () => {
             style={{
               height: "3px",
               width: "8%",
-              backgroundColor: "darkred",
+              backgroundColor: "#22ACC1",
               margin: "0 auto",
             }}
           ></div>
@@ -96,7 +96,7 @@ const NewsPage = () => {
             style={{
               height: "3px",
               width: "25%",
-              backgroundColor: "darkred",
+              backgroundColor: "#22ACC1",
               margin: "0 auto",
               marginBottom: 4,
               marginTop: 4,
@@ -106,7 +106,7 @@ const NewsPage = () => {
             style={{
               height: "3px",
               width: "8%",
-              backgroundColor: "darkred",
+              backgroundColor: "#22ACC1",
               margin: "0 auto",
               marginBottom: 30,
             }}
