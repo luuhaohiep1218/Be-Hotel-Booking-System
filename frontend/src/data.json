@@ -1,0 +1,62 @@
+{
+  "internalNews": [
+  {
+    "title": "Mừng Xuân Ất Tỵ 2025",
+    "summary": "A25 Hotel kính chúc Quý khách hàng một năm mới an khang thịnh vượng, vạn sự như ý...",
+    "image": "https://via.placeholder.com/300",
+    "location": "Hà Nội",
+    "date": "28/01/2025"
+  },
+  {
+    "title": "A25 Hotel đồng hành cùng Ngày hội Việc làm sinh viên HUBT",
+    "summary": "Ngày 30/11/2024, A25 Hotel đã tham gia Ngày hội Việc làm tại Trường Đại học Kinh doanh và Công nghệ Hà Nội...",
+    "image": "https://via.placeholder.com/300",
+    "location": "Hà Nội",
+    "date": "02/12/2024"
+  },
+  {
+    "title": "A25 Hotel vinh danh những gương mặt xuất sắc nhất",
+    "summary": "Vòng chung kết cuộc thi Nghiệp vụ Buồng phòng A25 Hotel năm 2024 đã diễn ra thành công với nhiều gương mặt nổi bật...",
+    "image": "https://via.placeholder.com/300",
+    "location": "TP.HCM",
+    "date": "10/11/2024"
+  },
+  {
+    "title": "A25 Hotel khởi động Giải bóng đá nội bộ 2024",
+    "summary": "Giải bóng đá nội bộ A25 Hotel 2024 đã chính thức khai mạc, thu hút sự tham gia của nhiều đội bóng đến từ các chi nhánh...",
+    "image": "https://via.placeholder.com/300",
+    "location": "Đà Nẵng",
+    "date": "15/10/2024"
+  }
+],
+  "travelGuide": [
+  {
+    "title": "Khám phá phố cổ Hà Nội – Nét đẹp nghìn năm văn hiến",
+    "summary": "Phố cổ Hà Nội với 36 phố phường là điểm đến không thể bỏ qua khi du lịch thủ đô...",
+    "image": "https://via.placeholder.com/300",
+    "location": "Hà Nội",
+    "date": "20/02/2025"
+  },
+  {
+    "title": "Top 5 bãi biển đẹp nhất Việt Nam bạn nên ghé thăm",
+    "summary": "Việt Nam có nhiều bãi biển tuyệt đẹp như Phú Quốc, Nha Trang, Đà Nẵng...",
+    "image": "https://via.placeholder.com/300",
+    "location": "Việt Nam",
+    "date": "10/01/2025"
+  },
+  {
+    "title": "Trải nghiệm ẩm thực Sài Gòn về đêm",
+    "summary": "Sài Gòn không chỉ nổi tiếng với nhịp sống sôi động mà còn có nền ẩm thực phong phú...",
+    "image": "https://via.placeholder.com/300",
+    "location": "TP.HCM",
+    "date": "05/12/2024"
+  },
+  {
+    "title": "Chinh phục đỉnh Fansipan – Nóc nhà Đông Dương",
+    "summary": "Fansipan là điểm đến hấp dẫn dành cho những ai yêu thích du lịch khám phá và chinh phục thiên nhiên...",
+    "image": "https://via.placeholder.com/300",
+    "location": "Lào Cai",
+    "date": "22/11/2024"
+  }
+]
+}
