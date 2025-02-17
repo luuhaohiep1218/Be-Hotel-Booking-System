@@ -3,7 +3,6 @@ import React from "react";
 import { Col } from "react-bootstrap";
 
 const NewsItemDetail = ({ newsItem }) => {
-  
   if (!newsItem) {
     return (
       <Col md={9}>
@@ -13,52 +12,60 @@ const NewsItemDetail = ({ newsItem }) => {
   }
 
   return (
-    <Col >
-      <h2 style={{ color: "#22ACC1", marginBottom: "20px" }}>
+    <Col>
+      <h3
+        style={{ color: "#22ACC1", textAlign: "center", marginBottom: "20px" }}
+      >
         {newsItem.title}
-      </h2>
+      </h3>
 
       <div
-            style={{
-              height: "3px",
-              width: "8%",
-              backgroundColor: "#22ACC1",
-              margin: "0 auto",
-            }}
-          ></div>
-          <div
-            style={{
-              height: "3px",
-              width: "25%",
-              backgroundColor: "#22ACC1",
-              margin: "0 auto",
-              marginBottom: 4,
-              marginTop: 4,
-            }}
-          ></div>
-          <div
-            style={{
-              height: "3px",
-              width: "8%",
-              backgroundColor: "#22ACC1",
-              margin: "0 auto",
-              marginBottom: 30,
-            }}
-          ></div>
+        style={{
+          height: "3px",
+          width: "8%",
+          backgroundColor: "#22ACC1",
+          margin: "0 auto",
+        }}
+      ></div>
+      <div
+        style={{
+          height: "3px",
+          width: "25%",
+          backgroundColor: "#22ACC1",
+          margin: "0 auto",
+          marginBottom: 4,
+          marginTop: 4,
+        }}
+      ></div>
+      <div
+        style={{
+          height: "3px",
+          width: "8%",
+          backgroundColor: "#22ACC1",
+          margin: "0 auto",
+          marginBottom: 30,
+        }}
+      ></div>
 
-       <div style={{ marginBottom: "20px", lineHeight: "1.6", fontSize: "0.9rem", color: "#444" }}>
-             {newsItem.content ? newsItem.content : newsItem.summary}
-       </div>
+      <div
+        style={{
+          marginBottom: "20px",
+          lineHeight: "1.6",
+          fontSize: "0.9rem",
+          color: "#444",
+        }}
+      >
+        {newsItem.content ? newsItem.content : newsItem.summary}
+      </div>
 
-      
       {/* Kiểm tra mảng ảnh */}
       {newsItem.images && newsItem.images.length > 0 ? (
-        <div 
-          style={{ 
-            marginBottom: "20px", 
-            display: "flex", 
-            flexWrap: "wrap", 
-            gap: "10px" 
+        <div
+          style={{
+            marginBottom: "20px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "10px",
           }}
         >
           {newsItem.images.map((imgUrl, index) => (

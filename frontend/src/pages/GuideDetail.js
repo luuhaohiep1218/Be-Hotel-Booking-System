@@ -9,24 +9,24 @@ import Sidebar from "../components/Sidebar";
 const NewsDetail = () => {
   const { id } = useParams();
   const [newsItem, setNewsItem] = useState(null);
-  const [internalNews, setInternalNews] = useState([]);
+  const [travelGuide, setTravelGuide] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/internalNews")
+      .get("http://localhost:3001/travelGuide")
       .then((response) => {
-        setInternalNews(response.data);
+        setTravelGuide(response.data);
       })
       .catch((error) => {
-        console.error("Lỗi internalNews:", error);
+        console.error("Lỗi travelGuide:", error);
       });
     axios
-      .get(`http://localhost:3001/internalNews/${id}`)
+      .get(`http://localhost:3001/travelGuide/${id}`)
       .then((response) => {
         setNewsItem(response.data);
       })
       .catch((error) => {
-        console.error("Lỗi internalNews:", error);
+        console.error("Lỗi travelGuide:", error);
       });
   }, [id]);
 
@@ -37,7 +37,7 @@ const NewsDetail = () => {
           <NewsItemDetail newsItem={newsItem} />
         </Col>
         <Col md={3}>
-          <Sidebar news={internalNews} />
+          <Sidebar news={travelGuide} />
         </Col>
       </Row>
     </Container>

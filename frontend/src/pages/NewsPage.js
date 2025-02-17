@@ -3,24 +3,23 @@ import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import NewsList from "../components/NewsList";
 import Sidebar from "../components/Sidebar";
-import PopularPost from "../components/PopularNews";
 
 const NewsPage = () => {
   const [internalNews, setInternalNews] = useState([]);
   const [travelGuide, setTravelGuide] = useState([]);
 
   useEffect(() => {
-    
-    axios.get("http://localhost:3001/internalNews")
+    axios
+      .get("http://localhost:3001/internalNews")
       .then((response) => {
         setInternalNews(response.data);
       })
       .catch((error) => {
         console.error("Lỗi internalNews:", error);
       });
-  
-    
-    axios.get("http://localhost:3001/travelGuide")
+
+    axios
+      .get("http://localhost:3001/travelGuide")
       .then((response) => {
         setTravelGuide(response.data);
       })
@@ -28,13 +27,12 @@ const NewsPage = () => {
         console.error("Lỗi travelGuide:", error);
       });
   }, []);
-  
 
   return (
     <Container>
       <Row>
         <Col md={9}>
-          <h4
+          <h3
             style={{
               textAlign: "center",
               marginTop: 80,
@@ -43,7 +41,7 @@ const NewsPage = () => {
             }}
           >
             TIN NỘI BỘ
-          </h4>
+          </h3>
           <div
             style={{
               height: "3px",
@@ -74,7 +72,7 @@ const NewsPage = () => {
 
           <NewsList news={internalNews} />
 
-          <h4
+          <h3
             style={{
               textAlign: "center",
               marginTop: 100,
@@ -83,7 +81,7 @@ const NewsPage = () => {
             }}
           >
             Sổ tay du lịch
-          </h4>
+          </h3>
           <div
             style={{
               height: "3px",
@@ -114,8 +112,7 @@ const NewsPage = () => {
 
           <NewsList news={travelGuide} />
         </Col>
-        <Col md={3} style={{ marginTop: 10, marginBottom: 20 }}>
-          <PopularPost popu={internalNews} />
+        <Col md={3} style={{ marginTop: 50, marginBottom: 20 }}>
           <Sidebar news={internalNews} />
         </Col>
       </Row>
