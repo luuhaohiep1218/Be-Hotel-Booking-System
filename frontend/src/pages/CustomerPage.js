@@ -1,7 +1,13 @@
 import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import { Pagination } from "antd";
 
-const ServicePage = () => {
-  return <div>OffersPage</div>;
+const CustomerPage = () => {
+  return (
+    <Container>
+      <h1>CustomerPage</h1>
+    </Container>
+  );
 };
 
-export default ServicePage;
+export default CustomerPage;
