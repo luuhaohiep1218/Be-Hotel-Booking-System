@@ -2,6 +2,7 @@ import NewsPage from "../pages/NewsPage";
 import ServicePage from "../pages/ServicePage";
 import CustomerPage from "../pages/CustomerPage";
 import OfferPage from "../pages/OfferPage";
+import BlogDetailPage from "../pages/BlogDetailPage";
 
 export const routes = [
   {
@@ -22,6 +23,11 @@ export const routes = [
   {
     path: "/offer",
     page: OfferPage,
+    isShowHeader: true,
+  },
+  {
+    path: "/blog-detail",
+    page: BlogDetailPage,
     isShowHeader: true,
   },
 ];
