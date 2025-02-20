@@ -18,7 +18,6 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
       validate(value) {
         if (!/^\d{10}$/.test(value)) {
           throw new Error("Phone number must be exactly 10 digits");
