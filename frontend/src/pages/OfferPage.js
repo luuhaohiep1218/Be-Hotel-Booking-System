@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import styled from "styled-components";
 import CardComponent from "../components/CardComponent";
+import CarouselBlog from "../components/CarouselBlog";
 
 // Styled Components
 const Title = styled.h1`
@@ -29,6 +30,7 @@ const UnderlineLong = styled.div`
 const OfferPage = () => {
   return (
     <Container>
+      <CarouselBlog />
       <Title>ƯU ĐÃI</Title>
       <UnderlineShort />
       <UnderlineLong />

@@ -18,23 +18,87 @@ const NewsPage = () => {
     <Container>
       <Row>
         <Col md={9}>
-        <h4 style={{ textAlign: "center", marginTop: 80,marginBottom: 20, color: "darkred" }}>TIN NỘI BỘ</h4>
-        <div style={{ height: "3px", width: "8%", backgroundColor: "darkred", margin: "0 auto" }}></div>
-        <div style={{ height: "3px", width: "25%", backgroundColor: "darkred", margin: "0 auto", marginBottom: 4, marginTop: 4  }}></div>
-        <div style={{ height: "3px", width: "8%", backgroundColor: "darkred", margin: "0 auto",marginBottom: 30 }}></div>
-          
+          <h4
+            style={{
+              textAlign: "center",
+              marginTop: 80,
+              marginBottom: 20,
+              color: "darkred",
+            }}
+          >
+            TIN NỘI BỘ
+          </h4>
+          <div
+            style={{
+              height: "3px",
+              width: "8%",
+              backgroundColor: "darkred",
+              margin: "0 auto",
+            }}
+          ></div>
+          <div
+            style={{
+              height: "3px",
+              width: "25%",
+              backgroundColor: "darkred",
+              margin: "0 auto",
+              marginBottom: 4,
+              marginTop: 4,
+            }}
+          ></div>
+          <div
+            style={{
+              height: "3px",
+              width: "8%",
+              backgroundColor: "darkred",
+              margin: "0 auto",
+              marginBottom: 30,
+            }}
+          ></div>
+
           <NewsList news={internalNews} />
 
-        <h4 style={{textAlign: "center", marginTop: 100,marginBottom: 20, color: "darkred" }}>Sổ tay du lịch</h4>
-        <div style={{ height: "3px", width: "8%", backgroundColor: "darkred", margin: "0 auto" }}></div>
-        <div style={{ height: "3px", width: "25%", backgroundColor: "darkred", margin: "0 auto", marginBottom: 4, marginTop: 4  }}></div>
-        <div style={{ height: "3px", width: "8%", backgroundColor: "darkred", margin: "0 auto",marginBottom: 30 }}></div>
-          
+          <h4
+            style={{
+              textAlign: "center",
+              marginTop: 100,
+              marginBottom: 20,
+              color: "darkred",
+            }}
+          >
+            Sổ tay du lịch
+          </h4>
+          <div
+            style={{
+              height: "3px",
+              width: "8%",
+              backgroundColor: "darkred",
+              margin: "0 auto",
+            }}
+          ></div>
+          <div
+            style={{
+              height: "3px",
+              width: "25%",
+              backgroundColor: "darkred",
+              margin: "0 auto",
+              marginBottom: 4,
+              marginTop: 4,
+            }}
+          ></div>
+          <div
+            style={{
+              height: "3px",
+              width: "8%",
+              backgroundColor: "darkred",
+              margin: "0 auto",
+              marginBottom: 30,
+            }}
+          ></div>
+
           <NewsList news={travelGuide} />
-          
         </Col>
-        <Col md={3} style={{marginTop: 10,marginBottom: 20}} >
-          
+        <Col md={3} style={{ marginTop: 10, marginBottom: 20 }}>
           <PopularPost popu={internalNews} />
           <Sidebar news={internalNews} />
         </Col>

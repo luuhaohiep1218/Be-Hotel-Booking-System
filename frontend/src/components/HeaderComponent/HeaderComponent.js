@@ -1,7 +1,9 @@
 import { Container, Image, Nav, Navbar } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo/logo-golodge.png";
+import { UserOutlined, LoginOutlined } from "@ant-design/icons";
+import { Dropdown, Space, Avatar } from "antd";
 
 const StyledNavbar = styled(Navbar)`
   position: sticky;
@@ -11,12 +13,16 @@ const StyledNavbar = styled(Navbar)`
   background-color: white;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   padding: 0;
+  display: flex;
+  align-items: center;
 `;
 
 const StyledNav = styled(Nav)`
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  flex-grow: 1;
+  justify-content: center;
 `;
 
 const StyledNavLink = styled(NavLink)`
@@ -52,20 +58,118 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+const CustomButton = styled.button`
+  height: 40px;
+  width: 170px;
+  position: relative;
+  background-color: transparent;
+  cursor: pointer;
+  border: 2px solid #22acc1;
+  overflow: hidden;
+  border-radius: 30px;
+  color: #333;
+  transition: all 0.5s ease-in-out;
+  margin-left: auto;
+
+  .btn-txt {
+    z-index: 1;
+    font-weight: 500;
+  }
+
+  &.type1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.5s ease-in-out;
+    background-color: #22acc1;
+    border-radius: 30px;
+    visibility: hidden;
+    height: 10px;
+    width: 10px;
+    z-index: -1;
+  }
+
+  &:hover {
+    box-shadow: 1px 1px 200px #252525;
+    color: #fff;
+    border: none;
+  }
+
+  &.type1:hover::after {
+    visibility: visible;
+    transform: scale(100) translateX(2px);
+  }
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none; /* Bỏ gạch chân */
+  color: inherit; /* Giữ nguyên màu chữ theo bố cục */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Khoảng cách giữa icon và text */
+
+  &:hover {
+    color: #1890ff; /* Màu khi hover */
+  }
+`;
+
 const HeaderComponent = () => {
+  const items = [
+    {
+      label: (
+        <StyledLink to={"/profile"}>
+          <i className="bi bi-person-exclamation"></i>
+          Profile
+        </StyledLink>
+      ),
+      key: "0",
+    },
+    {
+      label: (
+        <StyledLink to={"/logout"}>
+          <LoginOutlined />
+          Logout
+        </StyledLink>
+      ),
+      key: "1",
+    },
+  ];
   return (
-    <StyledNavbar data-bs-theme="light">
-      <Container className="d-flex align-items-center justify-content-start">
-        <Navbar.Brand as={NavLink} to="/" className="me-5">
-          <Image src={logo} alt="Logo" width="80" height="80" rounded />
-        </Navbar.Brand>
-        <StyledNav>
-          <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
-          <StyledNavLink to="/customer">KHÁCH HÀNG</StyledNavLink>
-          <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
-        </StyledNav>
-      </Container>
-    </StyledNavbar>
+    <>
+      <StyledNavbar data-bs-theme="light">
+        <Container className="d-flex align-items-center">
+          <Navbar.Brand as={NavLink} to="/" className="me-5">
+            <Image src={logo} alt="Logo" width="80" height="80" rounded />
+          </Navbar.Brand>
+          <StyledNav>
+            <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
+            <StyledNavLink to="/customer">KHÁCH HÀNG</StyledNavLink>
+            <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
+          </StyledNav>
+          {localStorage.getItem("accessToken") ? (
+            <>
+              <Dropdown
+                menu={{
+                  items,
+                }}
+              >
+                <a onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <Avatar size={40} icon={<UserOutlined />} />
+                  </Space>
+                </a>
+              </Dropdown>
+            </>
+          ) : (
+            <NavLink to="/login">
+              <CustomButton className="button type1">
+                <span className="btn-txt">Đăng nhập</span>
+              </CustomButton>
+            </NavLink>
+          )}
+        </Container>
+      </StyledNavbar>
+    </>
   );
 };
 

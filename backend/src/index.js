@@ -7,6 +7,7 @@ const db = require("./config/db");
 const { errorHandle } = require("./middlewares/errorMiddleware");
 
 const authRouter = require("./routes/authRouter");
+const uploadRouter = require("./routes/uploadRouter");
 
 dotenv.config({
   path: __dirname + "/.env",
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/upload", uploadRouter);
 
 app.use(errorHandle);
 

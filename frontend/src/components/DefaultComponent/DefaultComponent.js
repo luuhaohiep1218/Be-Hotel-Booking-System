@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 
 const MainContent = styled.main`
   flex: 1; /* This will make the content expand to take up available space */
-  margin-bottom: 30px;
+  // margin-bottom: 30px;
 `;
 
 const DefaultComponent = ({ children }) => {
