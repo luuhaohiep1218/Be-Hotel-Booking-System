@@ -1,14 +1,16 @@
-import NewsPage from "../pages/NewsPage";
+import AllNewsPage from "../pages/AllNewsPage";
 import ServicePage from "../pages/ServicePage";
 import NewsDetail from "../pages/NewsDetail";
 import OnlyNew from "../pages/OnlyNew";
-import OnlyGuide from "../pages/OnlyGuide";
-import GuideDetail from "../pages/GuideDetail";
+import OnlyDiscount from "../pages/OnlyDiscount";
+import DiscountDetail from "../pages/DiscountDetail";
+import OnlyFeedbacks from "../pages/OnlyFeedback";
+import FeedbackDetail from "../pages/FeedBackDetail";
 
 export const routes = [
   {
-    path: "/",
-    page: NewsPage,
+    path: "/Blog",
+    page: AllNewsPage,
     isShowHeader: true,
   },
   {
@@ -17,8 +19,13 @@ export const routes = [
     isShowHeader: true,
   },
   {
-    path: "/onlyGuide",
-    page: OnlyGuide,
+    path: "/onlyDiscount",
+    page: OnlyDiscount,
+    isShowHeader: true,
+  },
+  {
+    path: "/onlyFeedbacks",
+    page: OnlyFeedbacks,
     isShowHeader: true,
   },
   {
@@ -27,8 +34,13 @@ export const routes = [
     isShowHeader: true,
   },
   {
-    path: "/guide/:id",
-    page: GuideDetail,
+    path: "/discount/:id",
+    page: DiscountDetail,
+    isShowHeader: true,
+  },
+  {
+    path: "/feedback/:id",
+    page: FeedbackDetail,
     isShowHeader: true,
   },
   {
@@ -37,4 +49,3 @@ export const routes = [
     isShowHeader: true,
   },
 ];
-

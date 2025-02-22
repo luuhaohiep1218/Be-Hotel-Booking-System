@@ -1,30 +1,40 @@
-import React from "react";
-import { Card } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import axios from "axios";
 
-const PopularPost = ({ popu }) => {
+const FeaturedNews = () => {
+  const [internalNews, setInternalNews] = useState([]);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/internalNews");
+        setInternalNews(response.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy internalNews:", error);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  if (internalNews.length === 0) return <p>Không có dữ liệu</p>;
+
+  const featuredPost = internalNews[0]; // Lấy bài viết đầu tiên
+
   return (
-    <div>
-      {popu.slice(0, 1).map((item, index) => (
-        <Card key={index} className="mb-3">
-          <Card.Img 
-            variant="top" 
-            src={item.image} 
-            alt={item.title} 
-            style={{ height: "500px", objectFit: "cover", borderRadius: "8px" }} 
-          />
-          <Card.Body>
-          <Card.Title style={{ fontSize: "1.6rem", fontWeight: "bold", color: "#333" }}><Link 
-              to={`/news/${item.id}`} 
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              {item.title}
-            </Link></Card.Title>
-          </Card.Body>
-        </Card>
-      ))}
-    </div>
+    <Container className="mt-5">
+      <h1 className="fw-bold text-dark">
+        {featuredPost.title}
+      </h1>
+      <p className="text-secondary mt-3" style={{ fontSize: "1.1rem", maxWidth: "700px" }}>
+        {featuredPost.summary}
+      </p>
+      <div className="mt-3" style={{ color: "#52c4c6", fontSize: "1.5rem", marginBottom: 100 }}>
+        ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤
+      </div>
+    </Container>
   );
 };
 
-export default PopularPost;
+export default FeaturedNews;

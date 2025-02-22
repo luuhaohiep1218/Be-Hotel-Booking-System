@@ -1,3 +1,4 @@
+// src/pages/NewsDetail.jsx
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -9,27 +10,19 @@ const NewsDetail = () => {
   const [newsItem, setNewsItem] = useState(null);
 
   useEffect(() => {
-    if (!id) {
-      console.error("ID không hợp lệ:", id);
-      return;
-    }
-
-    console.log("Fetching news detail with ID:", id);
-    
     axios
-      .get(`http://localhost:3001/internalNews/${id}`)
+      .get(`http://localhost:3001/feedbacks/${id}`)
       .then((response) => {
-        console.log("API Response:", response.data);
         setNewsItem(response.data);
       })
       .catch((error) => {
-        console.error("Lỗi khi lấy internalNews:", error);
+        console.error("Lỗi feedbacks:", error);
       });
   }, [id]);
 
   return (
     <Container style={{ marginTop: "50px" }}>
-      <Row>
+      <Row md={9}>
         <Col>
           <NewsItemDetail newsItem={newsItem} />
         </Col>

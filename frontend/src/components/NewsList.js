@@ -3,11 +3,11 @@ import { Row } from "react-bootstrap";
 import NewsItem from "./NewsItem";
 
 const NewsList = ({ news }) => {
+  
   return (
     <Row>
-      {news.map((item, index) => (
-        <NewsItem key={index} item={item} />
-        
+      {news.map((item) => (
+        <NewsItem key={item.id} item={item} />
       ))}
     </Row>
   );

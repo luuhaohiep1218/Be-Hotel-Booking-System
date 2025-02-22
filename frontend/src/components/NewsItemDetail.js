@@ -1,6 +1,7 @@
-// src/components/NewsItemDetail.jsx
 import React from "react";
 import { Col } from "react-bootstrap";
+import styled from "styled-components";
+import BreadcrumbNav from "../components/BreadcrumbNav";
 
 const NewsItemDetail = ({ newsItem }) => {
   if (!newsItem) {
@@ -11,86 +12,97 @@ const NewsItemDetail = ({ newsItem }) => {
     );
   }
 
+  const contentParagraphs = newsItem.content ? newsItem.content.split("\n") : [];
+  const image = newsItem.image || null;
+
   return (
-    <Col>
-      <h3
-        style={{ color: "#22ACC1", textAlign: "center", marginBottom: "20px" }}
-      >
-        {newsItem.title}
-      </h3>
+    <>
+      <BreadcrumbWrapper>
+        <BreadcrumbNav title={newsItem.title} />
+      </BreadcrumbWrapper>
 
-      <div
-        style={{
-          height: "3px",
-          width: "8%",
-          backgroundColor: "#22ACC1",
-          margin: "0 auto",
-        }}
-      ></div>
-      <div
-        style={{
-          height: "3px",
-          width: "25%",
-          backgroundColor: "#22ACC1",
-          margin: "0 auto",
-          marginBottom: 4,
-          marginTop: 4,
-        }}
-      ></div>
-      <div
-        style={{
-          height: "3px",
-          width: "8%",
-          backgroundColor: "#22ACC1",
-          margin: "0 auto",
-          marginBottom: 30,
-        }}
-      ></div>
+      <Container>
+        <Title>{newsItem.title}</Title>
+        <Date>22/02/2025</Date>
+        <Separator />
 
-      <div
-        style={{
-          marginBottom: "20px",
-          lineHeight: "1.6",
-          fontSize: "0.9rem",
-          color: "#444",
-        }}
-      >
-        {newsItem.content ? newsItem.content : newsItem.summary}
-      </div>
-
-      {/* Kiểm tra mảng ảnh */}
-      {newsItem.images && newsItem.images.length > 0 ? (
-        <div
-          style={{
-            marginBottom: "20px",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "10px",
-          }}
-        >
-          {newsItem.images.map((imgUrl, index) => (
-            <img
-              key={index}
-              src={imgUrl}
-              alt={`${newsItem.title} - ${index + 1}`}
-              style={{ width: "calc(50% - 5px)", borderRadius: "5px" }}
-            />
+        <ContentContainer>
+          {contentParagraphs.map((paragraph, index) => (
+            <React.Fragment key={index}>
+              <Text>{paragraph}</Text>
+              {index === Math.floor(contentParagraphs.length / 2) && image && (
+                <ImageWrapper>
+                  <Image src={image} alt={`news-image`} />
+                </ImageWrapper>
+              )}
+            </React.Fragment>
           ))}
-        </div>
-      ) : (
-        // Hiển thị ảnh đơn nếu có
-        newsItem.image && (
-          <div style={{ marginBottom: "20px" }}>
-            <img
-              src={newsItem.image}
-              alt={newsItem.title}
-              style={{ maxWidth: "100%", borderRadius: "5px" }}
-            />
-          </div>
-        )
-      )}
-    </Col>
+        </ContentContainer>
+      </Container>
+    </>
   );
 };
 
 export default NewsItemDetail;
+
+// Styled Components
+const BreadcrumbWrapper = styled.div`
+  padding: 15px 20px; 
+  background: #f9f9f9; 
+`;
+
+const Container = styled(Col)`
+  max-width: 1200px; 
+  margin: 0 auto;
+  padding: 40px 20px; 
+`;
+
+const Title = styled.h1`
+  font-size: 32px;
+  font-weight: bold;
+  color: #0d1321;
+  text-align: left;
+  margin-bottom: 10px;
+`;
+
+const Date = styled.span`
+  display: inline-block;
+  background: #eef1f6;
+  color: #333;
+  font-size: 14px;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+  margin-bottom: 10px;
+`;
+
+const Separator = styled.div`
+  width: 100px;
+  height: 4px;
+  background: #22ACC1;
+  margin: 10px 0 20px;
+`;
+
+const ContentContainer = styled.div`
+  font-size: 18px;
+  color: #4a4a4a;
+  line-height: 1.8;
+  font-style: italic;
+`;
+
+const Text = styled.p`
+  margin-bottom: 20px;
+`;
+
+const ImageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+`;
+
+const Image = styled.img`
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+`;
