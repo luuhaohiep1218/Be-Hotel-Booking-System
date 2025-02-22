@@ -107,9 +107,74 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json({ message: "Invalid or expired refresh token" });
   }
 });
+const logout = asyncHandler(async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      console.log("❌ Không tìm thấy refreshToken trong cookie");
+      return res.status(401).json({ message: "No refresh token found" });
+    }
+
+    const user = await User.findOne({ refreshToken });
+
+    if (!user) {
+      console.log("❌ RefreshToken không hợp lệ hoặc user không tồn tại");
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    user.refreshToken = null;
+    await user.save();
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
+    return res.json({ message: "Logout successful" });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error during logout" });
+  }
+});
+const googleAuth = asyncHandler(async (req, res) => {
+  try {
+    const { email, full_name } = req.user;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        full_name,
+        email,
+        authProvider: "google",
+      });
+    }
+
+    const accessToken = generateToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
+    return res.redirect(
+      `http://localhost:3000/login-success?token=${accessToken}`
+    );
+  } catch (error) {
+    return res.redirect("http://localhost:3000/login?error=google_auth_failed");
+  }
+});
 
 module.exports = {
   register,
   login,
   refreshAccessToken,
+  logout,
+  googleAuth,
 };

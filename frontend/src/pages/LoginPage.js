@@ -81,6 +81,10 @@ const LoginPage = () => {
     }
   };
 
+  const handleLoginWithGoogle = () => {
+    window.location.href = "http://localhost:8000/api/auth/google";
+  };
+
   return (
     <Container>
       <StyledCard>
@@ -117,12 +121,12 @@ const LoginPage = () => {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
+              justifyContent: "end",
               alignItems: "center",
               marginBottom: "16px",
             }}
           >
-            <Checkbox>Remember me</Checkbox>
+            {/* <Checkbox>Remember me</Checkbox> */}
             <StyledLink to="#">Quên mật khẩu?</StyledLink>
           </div>
 
@@ -140,9 +144,10 @@ const LoginPage = () => {
         <div style={{ textAlign: "center", margin: "16px 0" }}>Or With</div>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <SocialButton>
+          <SocialButton onClick={handleLoginWithGoogle}>
             <Image
               width={23}
+              preview={false}
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
             />
             Đăng nhập với Google

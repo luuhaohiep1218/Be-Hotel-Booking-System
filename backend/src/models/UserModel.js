@@ -26,7 +26,6 @@ const UserSchema = new mongoose.Schema(
     },
     password_hash: {
       type: String,
-      require: true,
       trim: true,
       minlength: 8,
       validate(value) {
@@ -41,6 +40,11 @@ const UserSchema = new mongoose.Schema(
     role: { type: String, default: "USER" },
     isActive: { type: Boolean, default: true },
     refreshToken: { type: String },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
   },
   { timestamps: true }
 );

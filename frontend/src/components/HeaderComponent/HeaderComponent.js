@@ -1,5 +1,7 @@
 import { Container, Image, Nav, Navbar } from "react-bootstrap";
-import { NavLink, Link } from "react-router-dom";
+import axios from "axios";
+
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo/logo-golodge.png";
 import { UserOutlined, LoginOutlined } from "@ant-design/icons";
@@ -112,8 +114,51 @@ const StyledLink = styled(Link)`
     color: #1890ff; /* Màu khi hover */
   }
 `;
+const StyledDiv = styled.div`
+  text-decoration: none; /* Bỏ gạch chân */
+  color: inherit; /* Giữ nguyên màu chữ theo bố cục */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Khoảng cách giữa icon và text */
+  cursor: pointer; /* Đổi con trỏ thành dạng clickable */
+
+  &:hover {
+    color: #1890ff; /* Màu khi hover */
+  }
+`;
 
 const HeaderComponent = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/auth/logout",
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log("✅ API logout response:", response.data);
+
+      if (response.status !== 200) {
+        console.error("❌ Logout failed: Unexpected response", response);
+        return;
+      }
+
+      localStorage.removeItem("accessToken");
+
+      navigate("/");
+    } catch (error) {
+      console.error("🔥 Lỗi logout:", error.response?.data || error.message);
+    }
+  };
+
+  const logoutHand = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
   const items = [
     {
       label: (
@@ -126,10 +171,10 @@ const HeaderComponent = () => {
     },
     {
       label: (
-        <StyledLink to={"/logout"}>
+        <StyledDiv onClick={handleLogout}>
           <LoginOutlined />
           Logout
-        </StyledLink>
+        </StyledDiv>
       ),
       key: "1",
     },
@@ -153,11 +198,11 @@ const HeaderComponent = () => {
                   items,
                 }}
               >
-                <a onClick={(e) => e.preventDefault()}>
+                <Link onClick={(e) => e.preventDefault()}>
                   <Space>
                     <Avatar size={40} icon={<UserOutlined />} />
                   </Space>
-                </a>
+                </Link>
               </Dropdown>
             </>
           ) : (
