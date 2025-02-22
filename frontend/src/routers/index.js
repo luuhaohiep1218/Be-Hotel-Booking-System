@@ -6,6 +6,7 @@ import BlogDetailPage from "../pages/BlogDetailPage";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import FeedbackPage from "../pages/FeedbackPage";
+import LoginSuccess from "../pages/LoginSuccess";
 
 export const routes = [
   {
@@ -53,6 +54,12 @@ export const routes = [
     path: "/feedback",
     page: FeedbackPage,
     isShowHeader: true,
-    isPrivate: true,
+    isPrivate: false,
+  },
+  {
+    path: "/login-success",
+    page: LoginSuccess,
+    isShowHeader: false,
+    isPrivate: false,
   },
 ];
