@@ -4,6 +4,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import "./index.css";
 import { routes } from "./routers/index";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -12,7 +13,22 @@ const App = () => {
         <Routes>
           {routes.map((route) => {
             const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-            return (
+
+            return route.isPrivate ? (
+              // Nếu là trang cần bảo vệ thì bọc trong ProtectedRoute
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <route.page />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+            ) : (
+              // Nếu không cần bảo vệ, render bình thường
               <Route
                 key={route.path}
                 path={route.path}
