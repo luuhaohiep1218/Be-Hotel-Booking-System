@@ -37,6 +37,7 @@ export const routes = [
     path: "/blog-detail",
     page: BlogDetailPage,
     isShowHeader: true,
+    isPrivate: false,
   },
   {
     path: "/login",
@@ -54,7 +55,7 @@ export const routes = [
     path: "/feedback",
     page: FeedbackPage,
     isShowHeader: true,
-    isPrivate: false,
+    isPrivate: true,
   },
   {
     path: "/login-success",
