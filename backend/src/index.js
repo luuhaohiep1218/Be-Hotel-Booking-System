@@ -1,20 +1,20 @@
 const express = require("express");
 const morgan = require("morgan");
-
 const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const session = require("express-session");
 
 const db = require("./config/db");
 const { errorHandle } = require("./middlewares/errorMiddleware");
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+
 const authRouter = require("./routes/authRouter");
 const uploadRouter = require("./routes/uploadRouter");
+const feedbackRouter = require("./routes/feedbackRouter");
 
 const User = require("./models/UserModel");
-
-const session = require("express-session");
 
 dotenv.config({
   path: __dirname + "/.env",
@@ -85,6 +85,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRouter);
 app.use("/api/upload", uploadRouter);
+app.use("/api/feedback", feedbackRouter);
 
 app.use(errorHandle);
 

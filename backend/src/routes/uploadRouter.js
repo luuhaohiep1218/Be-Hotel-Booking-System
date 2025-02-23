@@ -12,6 +12,7 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Cấu hình multer để lưu ảnh
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
@@ -23,9 +24,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// API hỗ trợ cả single & multiple file upload
-router.post("/", protect, (req, res, next) => {
-  const uploadHandler = upload.array("files", 3); // Cho phép tối đa 5 file
+// API Upload
+router.post("/", (req, res) => {
+  const uploadHandler = upload.array("files", 5); // Tối đa 5 ảnh
 
   uploadHandler(req, res, function (err) {
     if (err instanceof multer.MulterError) {
@@ -42,9 +43,24 @@ router.post("/", protect, (req, res, next) => {
       return res.status(400).json({ message: "Không có file nào được upload" });
     }
 
-    const filePaths = req.files.map((file) => `/uploads/${file.filename}`);
-    res.json({ message: "Upload thành công!", files: filePaths });
+    // ✅ Trả về URL đầy đủ của ảnh
+    const fileUrls = req.files.map(
+      (file) => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
+    );
+
+    res.json({ message: "Upload thành công!", imageUrls: fileUrls });
   });
+});
+router.get("/:filename", (req, res) => {
+  const { filename } = req.params;
+  const filePath = path.join(uploadDir, filename);
+
+  // Kiểm tra xem file có tồn tại không
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).json({ message: "Ảnh không tồn tại" });
+  }
 });
 
 module.exports = router;
