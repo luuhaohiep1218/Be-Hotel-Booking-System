@@ -2,6 +2,8 @@ import NewsPage from "../pages/NewsPage";
 import ServicePage from "../pages/ServicePage";
 import CustomerPage from "../pages/CustomerPage";
 import OfferPage from "../pages/OfferPage";
+import HomePage from "../pages/HomePage";
+import AboutUs from "../pages/AboutUsPage";
 import BlogDetailPage from "../pages/BlogDetailPage";
 import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
@@ -61,5 +63,15 @@ export const routes = [
     page: LoginSuccess,
     isShowHeader: false,
     isPrivate: false,
+  },
+  {
+    path: "/home",
+    page: HomePage,
+    isShowHeader: true,
+  },
+  {
+    path: "/us",
+    page: AboutUs,
+    isShowHeader: true,
   },
 ];
