@@ -1,9 +1,9 @@
-import NewsPage from "../pages/NewsPage";
-import ServicePage from "../pages/ServicePage";
-import CustomerPage from "../pages/CustomerPage";
-import OfferPage from "../pages/OfferPage";
 import BlogDetailPage from "../pages/BlogDetailPage";
-
+import BookingHotelPage from "../pages/BookingHotelPage";
+import CustomerPage from "../pages/CustomerPage";
+import NewsPage from "../pages/NewsPage";
+import OfferPage from "../pages/OfferPage";
+import ServicePage from "../pages/ServicePage";
 export const routes = [
   {
     path: "/",
@@ -30,4 +30,9 @@ export const routes = [
     page: BlogDetailPage,
     isShowHeader: true,
   },
+  {
+    path: "/booking-hotel",
+    page: BookingHotelPage,
+    isShowHeader: true,
+  }
 ];

@@ -63,6 +63,7 @@ const HeaderComponent = () => {
           <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
           <StyledNavLink to="/customer">KHÁCH HÀNG</StyledNavLink>
           <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
+          <StyledNavLink to="/booking-hotel">ĐẶT KHÁCH SẠN</StyledNavLink>
         </StyledNav>
       </Container>
     </StyledNavbar>

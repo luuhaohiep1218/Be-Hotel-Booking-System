@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import NewsList from "../components/NewsList";
+import PopularPost from "../components/PopularNews";
 import Sidebar from "../components/Sidebar";
 import newsData from "../data.json";
-import PopularPost from "../components/PopularNews";
 
 const NewsPage = () => {
   const [internalNews, setInternalNews] = useState([]);
