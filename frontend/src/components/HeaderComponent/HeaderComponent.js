@@ -1,11 +1,11 @@
 import { Container, Image, Nav, Navbar } from "react-bootstrap";
-import axios from "axios";
 
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo/logo-golodge.png";
 import { UserOutlined, LoginOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Avatar } from "antd";
+import API from "../../utils/axiosInstance";
 
 const StyledNavbar = styled(Navbar)`
   position: sticky;
@@ -130,14 +130,11 @@ const StyledDiv = styled.div`
 const HeaderComponent = () => {
   const navigate = useNavigate();
 
+  const accessToken = localStorage.getItem("accessToken");
+
   const handleLogout = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/auth/logout",
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await API.get("/auth/logout");
 
       console.log("✅ API logout response:", response.data);
 
@@ -147,8 +144,7 @@ const HeaderComponent = () => {
       }
 
       localStorage.removeItem("accessToken");
-
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("🔥 Lỗi logout:", error.response?.data || error.message);
     }
@@ -190,8 +186,11 @@ const HeaderComponent = () => {
             <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
             <StyledNavLink to="/customer">KHÁCH HÀNG</StyledNavLink>
             <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
+            {accessToken && (
+              <StyledNavLink to="/feedback">ĐÁNH GIÁ</StyledNavLink>
+            )}
           </StyledNav>
-          {localStorage.getItem("accessToken") ? (
+          {accessToken ? (
             <>
               <Dropdown
                 menu={{

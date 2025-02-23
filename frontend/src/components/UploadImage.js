@@ -1,20 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload, message } from "antd";
 
-const UploadImage = () => {
-  const [fileList, setFileList] = useState([]);
-
+const UploadImage = ({ fileList, setFileList }) => {
   const accessToken = localStorage.getItem("accessToken");
 
-  const handleChange = ({ file, fileList }) => {
+  const handleChange = ({ fileList }) => {
     setFileList(fileList);
-
-    if (file.status === "done") {
-      message.success(`${file.name} uploaded successfully`);
-    } else if (file.status === "error") {
-      message.error(`${file.name} upload failed.`);
-    }
   };
 
   return (
