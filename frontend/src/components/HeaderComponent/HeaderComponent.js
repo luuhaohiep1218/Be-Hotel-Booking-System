@@ -1,29 +1,44 @@
-import { Container, Nav, Navbar } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { Container, Image, Nav, Navbar } from "react-bootstrap";
+import axios from "axios";
+
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import logo from "../../assets/logo/logo-golodge.png";
+import { UserOutlined, LoginOutlined } from "@ant-design/icons";
+import { Dropdown, Space, Avatar } from "antd";
 
 const StyledNavbar = styled(Navbar)`
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 1000; /* Đảm bảo luôn hiển thị trên các phần tử khác */
+  z-index: 1000;
   background-color: white;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng đổ bóng */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   padding: 0;
+  display: flex;
+  align-items: center;
+`;
+
+const StyledNav = styled(Nav)`
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  justify-content: center;
 `;
 
 const StyledNavLink = styled(NavLink)`
-  display: flex; /* Giúp thẻ NavLink mở rộng theo padding */
-  align-items: center; /* Căn giữa nội dung theo chiều dọc */
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 30px 15px; /* Tăng vùng nhấp chuột */
+  padding: 33px 10px;
   color: black;
   font-size: 16px;
   font-weight: 500;
   position: relative;
   text-decoration: none;
   transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
-  border-radius: 5px; /* Giúp có cảm giác nút bấm mềm mại hơn */
+  border-radius: 5px;
 
   &:hover {
     color: #22acc1;
@@ -37,26 +52,166 @@ const StyledNavLink = styled(NavLink)`
     content: "";
     position: absolute;
     left: 0;
-    bottom: 0px; /* Điều chỉnh để gạch dưới nằm dưới cùng */
+    bottom: 0;
     width: 100%;
     height: 2px;
     background-color: #22acc1;
+    border-radius: 4px;
+  }
+`;
+
+const CustomButton = styled.button`
+  height: 40px;
+  width: 170px;
+  position: relative;
+  background-color: transparent;
+  cursor: pointer;
+  border: 2px solid #22acc1;
+  overflow: hidden;
+  border-radius: 30px;
+  color: #333;
+  transition: all 0.5s ease-in-out;
+  margin-left: auto;
+
+  .btn-txt {
+    z-index: 1;
+    font-weight: 500;
+  }
+
+  &.type1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: all 0.5s ease-in-out;
+    background-color: #22acc1;
+    border-radius: 30px;
+    visibility: hidden;
+    height: 10px;
+    width: 10px;
+    z-index: -1;
+  }
+
+  &:hover {
+    box-shadow: 1px 1px 200px #252525;
+    color: #fff;
+    border: none;
+  }
+
+  &.type1:hover::after {
+    visibility: visible;
+    transform: scale(100) translateX(2px);
+  }
+`;
+const StyledLink = styled(Link)`
+  text-decoration: none; /* Bỏ gạch chân */
+  color: inherit; /* Giữ nguyên màu chữ theo bố cục */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Khoảng cách giữa icon và text */
+
+  &:hover {
+    color: #1890ff; /* Màu khi hover */
+  }
+`;
+const StyledDiv = styled.div`
+  text-decoration: none; /* Bỏ gạch chân */
+  color: inherit; /* Giữ nguyên màu chữ theo bố cục */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Khoảng cách giữa icon và text */
+  cursor: pointer; /* Đổi con trỏ thành dạng clickable */
+
+  &:hover {
+    color: #1890ff; /* Màu khi hover */
   }
 `;
 
 const HeaderComponent = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/auth/logout",
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log("✅ API logout response:", response.data);
+
+      if (response.status !== 200) {
+        console.error("❌ Logout failed: Unexpected response", response);
+        return;
+      }
+
+      localStorage.removeItem("accessToken");
+
+      navigate("/");
+    } catch (error) {
+      console.error("🔥 Lỗi logout:", error.response?.data || error.message);
+    }
+  };
+
+  const logoutHand = () => {
+    localStorage.removeItem("accessToken");
+    navigate("/login");
+  };
+
+  const items = [
+    {
+      label: (
+        <StyledLink to={"/profile"}>
+          <i className="bi bi-person-exclamation"></i>
+          Profile
+        </StyledLink>
+      ),
+      key: "0",
+    },
+    {
+      label: (
+        <StyledDiv onClick={handleLogout}>
+          <LoginOutlined />
+          Logout
+        </StyledDiv>
+      ),
+      key: "1",
+    },
+  ];
   return (
     <>
       <StyledNavbar data-bs-theme="light">
-        <Container>
-          <Navbar.Brand as={NavLink} to="/" end>
-            Navbar
+        <Container className="d-flex align-items-center">
+          <Navbar.Brand as={NavLink} to="/" className="me-5">
+            <Image src={logo} alt="Logo" width="80" height="80" rounded />
           </Navbar.Brand>
-          <Nav className="me-auto">
+          <StyledNav>
             <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
             <StyledNavLink to="/customer">KHÁCH HÀNG</StyledNavLink>
             <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
-          </Nav>
+          </StyledNav>
+          {localStorage.getItem("accessToken") ? (
+            <>
+              <Dropdown
+                menu={{
+                  items,
+                }}
+              >
+                <Link onClick={(e) => e.preventDefault()}>
+                  <Space>
+                    <Avatar size={40} icon={<UserOutlined />} />
+                  </Space>
+                </Link>
+              </Dropdown>
+            </>
+          ) : (
+            <NavLink to="/login">
+              <CustomButton className="button type1">
+                <span className="btn-txt">Đăng nhập</span>
+              </CustomButton>
+            </NavLink>
+          )}
         </Container>
       </StyledNavbar>
     </>

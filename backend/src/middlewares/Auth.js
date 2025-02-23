@@ -10,40 +10,37 @@ const generateRefreshToken = (id) => {
 };
 
 const protect = asyncHandler(async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select("-password").lean();
-
-      if (!req.user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      next();
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        return res
-          .status(401)
-          .json({ message: "Token expired, please log in again" });
-      }
-      if (error.name === "JsonWebTokenError") {
-        return res
-          .status(401)
-          .json({ message: "Invalid token, authentication failed" });
-      }
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-  }
+  let token = req.headers.authorization?.split(" ")[1]; // ✅ Lấy token gọn hơn
 
   if (!token) {
-    return res.status(401).json({ message: "Not Authorized, no token" });
+    return res.status(401).json({ message: "Bạn chưa đăng nhập!" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    console.log("🔍 Decoded Token:", decoded); // Debug xem `decoded` có `_id` hay `id`
+
+    req.user = await User.findById(decoded.id || decoded._id)
+      .select("-password")
+      .lean();
+
+    if (!req.user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    next(); // ✅ Chỉ chạy nếu user hợp lệ
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ message: "Token đã hết hạn, vui lòng đăng nhập lại" });
+    }
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Token không hợp lệ" });
+    }
+    console.error("🔥 Lỗi bảo vệ route:", error);
+    return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 });
 

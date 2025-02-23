@@ -18,7 +18,6 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
       validate(value) {
         if (!/^\d{10}$/.test(value)) {
           throw new Error("Phone number must be exactly 10 digits");
@@ -27,7 +26,6 @@ const UserSchema = new mongoose.Schema(
     },
     password_hash: {
       type: String,
-      require: true,
       trim: true,
       minlength: 8,
       validate(value) {
@@ -42,6 +40,11 @@ const UserSchema = new mongoose.Schema(
     role: { type: String, default: "USER" },
     isActive: { type: Boolean, default: true },
     refreshToken: { type: String },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
   },
   { timestamps: true }
 );
