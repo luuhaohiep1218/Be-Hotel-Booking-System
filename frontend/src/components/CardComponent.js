@@ -1,5 +1,5 @@
+import { Card, Col, Pagination, Row } from "antd";
 import React, { useState } from "react";
-import { Card, Col, Row, Pagination } from "antd";
 import styled from "styled-components";
 
 const { Meta } = Card;
@@ -67,7 +67,7 @@ const CardComponent = () => {
         </Row>
 
         {/* Đường kẻ ngang */}
-        <Divider />
+        
       </Content>
 
       {/* Div chứa Pagination được canh phải */}

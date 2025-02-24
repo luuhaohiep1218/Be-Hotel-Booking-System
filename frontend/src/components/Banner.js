@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import HotelSearch from './HotelSearch';
-
+import RoomSearchBox from './RoomSearchBox';
 function Banner() {
   const videoRef = useRef(null);
 
@@ -25,7 +24,7 @@ function Banner() {
     </video>
    
     </div>  
-    <HotelSearch />
+    <RoomSearchBox />
   </div>
   )
 }
