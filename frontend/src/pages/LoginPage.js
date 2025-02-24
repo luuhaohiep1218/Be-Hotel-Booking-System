@@ -1,19 +1,9 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 import API from "../utils/axiosInstance";
 
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Checkbox,
-  Form,
-  Input,
-  Typography,
-  Card,
-  Image,
-  message,
-} from "antd";
+import { Button, Form, Input, Typography, Card, Image, message } from "antd";
 
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 
@@ -62,23 +52,32 @@ const SocialButton = styled(Button)`
 `;
 
 const LoginPage = () => {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     try {
-      setLoading(true);
-      const response = await API.post("/auth/login", values);
+      const { data } = await API.post("/auth/login", values);
 
-      localStorage.setItem("accessToken", response.data.accessToken);
-
+      // 🟢 Lưu token và chuyển hướng nếu thành công
+      localStorage.setItem("accessToken", data.accessToken);
       message.success("Đăng nhập thành công!");
       navigate("/");
     } catch (error) {
-      message.error("Đăng nhập thất bại!");
-    } finally {
-      setLoading(false);
+      // 🛑 Kiểm tra lỗi trả về từ API
+      const errorMessage =
+        error.response?.data?.message || "Lỗi không xác định!";
+
+      // 🟡 Nếu là lỗi 401 (Sai tài khoản/mật khẩu), hiển thị thông báo cụ thể
+      if (error.response?.status === 401) {
+        message.error("Sai email hoặc mật khẩu! Vui lòng kiểm tra lại.");
+      } else {
+        message.error(`Lỗi đăng nhập: ${errorMessage}`);
+      }
     }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
   };
 
   const handleLoginWithGoogle = () => {
@@ -91,7 +90,12 @@ const LoginPage = () => {
         <Title level={3} style={{ textAlign: "center", marginBottom: 30 }}>
           Đăng nhập
         </Title>
-        <Form name="login" layout="vertical" onFinish={onFinish}>
+        <Form
+          name="login"
+          layout="vertical"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+        >
           <Form.Item
             name="email"
             rules={[
@@ -132,7 +136,7 @@ const LoginPage = () => {
 
           <Form.Item>
             <StyledButton type="primary" htmlType="submit">
-              Sign In
+              Đăng nhập
             </StyledButton>
           </Form.Item>
         </Form>
