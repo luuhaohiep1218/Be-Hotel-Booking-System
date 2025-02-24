@@ -5,27 +5,41 @@ const API = axios.create({
   withCredentials: true, // ✅ Gửi cookie (refreshToken) với request
 });
 
-// 🔥 Axios Interceptor để tự động refresh token khi bị 401 Unauthorized
+const refreshAccessToken = async () => {
+  try {
+    const { data } = await API.post("/refresh-token");
+    localStorage.setItem("accessToken", data.accessToken);
+    return data.accessToken;
+  } catch (error) {
+    // console.error("❌ Lỗi khi refresh token:", error.response?.data?.message);
+    return null;
+  }
+};
+
+// Interceptor xử lý lỗi
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
+    // 🛑 Nếu lỗi từ trang login, không gọi refresh-token
+    if (
+      originalRequest.url.includes("/login") || // Không gọi khi login lỗi
+      error.response?.status === 400 || // Bad Request (sai email, pass)
+      error.response?.status === 404 // API không tồn tại
+    ) {
+      return Promise.reject(error);
+    }
+
+    // ✅ Chỉ gọi refresh nếu lỗi là 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+      originalRequest._retry = true; // Đánh dấu để tránh loop vô hạn
+      const newAccessToken = await refreshAccessToken();
 
-      try {
-        // 🔥 Gửi request lấy accessToken mới
-        const { data } = await API.post("/auth/refresh-token");
-        localStorage.setItem("accessToken", data.accessToken);
-
-        // ✅ Cập nhật header Authorization rồi gửi lại request ban đầu
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
-        return API(originalRequest);
-      } catch (refreshError) {
-        console.error("Refresh token hết hạn, yêu cầu đăng nhập lại!");
-        localStorage.removeItem("accessToken");
-        window.location.href = "/login"; // 🛑 Chuyển hướng đến trang login
+      if (newAccessToken) {
+        API.defaults.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        return API.request(originalRequest);
       }
     }
 
