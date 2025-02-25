@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
-const User = require("../models/User");
+const User = require("../models/UserModel");
 const { generateToken } = require("../middlewares/Auth");
 
 const updateUserProfile = asyncHandler(async (req, res) => {
@@ -63,56 +63,6 @@ const changePassword = asyncHandler(async (req, res) => {
   }
 });
 
-const getFollowMovies = asyncHandler(async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).populate("followMovies");
-    if (user) {
-      res.json(user.followMovies);
-    } else {
-      res.status(404);
-      throw new Error("User not found");
-    }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-const followMovies = asyncHandler(async (req, res) => {
-  const { movieId } = req.body;
-
-  try {
-    const user = await User.findById(req.user._id);
-
-    if (user) {
-      const isMovieFollow = user.followMovies.some(
-        (movie) => movie.toString() === movieId
-      );
-
-      if (isMovieFollow) {
-        // Remove movieId from followMovies array
-        user.followMovies = user.followMovies.filter(
-          (movie) => movie.toString() !== movieId
-        );
-      } else {
-        // Add movieId to followMovies array
-        user.followMovies.push(movieId);
-      }
-
-      await user.save();
-
-      res.status(200).json({
-        message: isMovieFollow ? "Movie unfollowed" : "Movie followed",
-        followMovies: user.followMovies,
-      });
-    } else {
-      res.status(404);
-      throw new Error("User not found");
-    }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 const getUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.find({});
@@ -126,7 +76,5 @@ module.exports = {
   updateUserProfile,
   deleteUser,
   changePassword,
-  getFollowMovies,
-  followMovies,
   getUsers,
 };

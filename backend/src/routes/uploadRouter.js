@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // API Upload
-router.post("/", (req, res) => {
+router.post("/", protect, (req, res) => {
   const uploadHandler = upload.array("files", 5); // Tối đa 5 ảnh
 
   uploadHandler(req, res, function (err) {

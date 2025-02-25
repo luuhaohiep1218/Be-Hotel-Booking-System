@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import API from "../utils/axiosInstance";
 
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, Form, Input, Typography, Card, Image, message } from "antd";
+import { Button, Form, Input, Typography, Card, message } from "antd";
 import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -42,14 +41,6 @@ const StyledLink = styled(Link)`
   }
 `;
 
-const SocialButton = styled(Button)`
-  width: 100%;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const SignupPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -77,10 +68,6 @@ const SignupPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSignupWithGoogle = () => {
-    window.location.href = "http://localhost:8000/api/auth/google";
   };
 
   return (

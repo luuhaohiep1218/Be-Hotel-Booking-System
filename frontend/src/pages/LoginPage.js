@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import API from "../utils/axiosInstance";
 
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Form, Input, Typography, Card, Image, message } from "antd";
 
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import ModalForgotPassword from "../components/ModalForgotPassword";
 
 const { Title } = Typography;
 
@@ -54,6 +55,8 @@ const SocialButton = styled(Button)`
 const LoginPage = () => {
   const navigate = useNavigate();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const onFinish = async (values) => {
     try {
       const { data } = await API.post("/auth/login", values);
@@ -82,6 +85,10 @@ const LoginPage = () => {
 
   const handleLoginWithGoogle = () => {
     window.location.href = "http://localhost:8000/api/auth/google";
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
   };
 
   return (
@@ -131,7 +138,9 @@ const LoginPage = () => {
             }}
           >
             {/* <Checkbox>Remember me</Checkbox> */}
-            <StyledLink to="#">Quên mật khẩu?</StyledLink>
+            <StyledLink to="#" onClick={showModal}>
+              Quên mật khẩu?
+            </StyledLink>
           </div>
 
           <Form.Item>
@@ -158,6 +167,10 @@ const LoginPage = () => {
           </SocialButton>
         </div>
       </StyledCard>
+      <ModalForgotPassword
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
     </Container>
   );
 };
