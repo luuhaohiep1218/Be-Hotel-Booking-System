@@ -13,6 +13,7 @@ const { errorHandle } = require("./middlewares/errorMiddleware");
 const authRouter = require("./routes/authRouter");
 const uploadRouter = require("./routes/uploadRouter");
 const feedbackRouter = require("./routes/feedbackRouter");
+const userRouter = require("./routes/userRouter");
 
 const User = require("./models/UserModel");
 
@@ -28,8 +29,8 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000", // 👈 Chỉ định domain cụ thể
-    credentials: true, // 👈 Cho phép gửi cookies (refreshToken)
+    origin: "http://localhost:3000",
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -86,6 +87,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/feedback", feedbackRouter);
+app.use("/api/user", userRouter);
 
 app.use(errorHandle);
 

@@ -27,6 +27,7 @@ const UserSchema = new mongoose.Schema(
     password_hash: {
       type: String,
       trim: true,
+      require: true,
       minlength: 8,
       validate(value) {
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {

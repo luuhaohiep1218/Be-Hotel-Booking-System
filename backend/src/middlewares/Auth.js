@@ -45,7 +45,7 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 const adminMiddleware = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
+  if (req.user && req.user.role === "ADMIN") {
     next(); // User is admin, proceed to the next middleware
   } else {
     res.status(403).json({ message: "Access denied: Admins only" });

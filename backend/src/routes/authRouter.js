@@ -8,6 +8,7 @@ const {
   refreshAccessToken,
   logout,
   googleAuth,
+  forgotPassword,
 } = require("../controllers/AuthController");
 const passport = require("passport");
 
@@ -15,11 +16,9 @@ const router = express.Router();
 
 router.post("/login", login);
 router.post("/register", register);
-router.get("/refresh-token", refreshAccessToken);
-router.get("/logout", logout);
-router.get("/test", protect, (req, res) => {
-  res.send("test accessToken nhe");
-});
+router.get("/refresh-token", protect, refreshAccessToken);
+router.get("/logout", protect, logout);
+router.post("/forgot-password", forgotPassword);
 
 router.get(
   "/google",
