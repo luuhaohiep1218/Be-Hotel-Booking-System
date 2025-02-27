@@ -10,7 +10,7 @@ const generateRefreshToken = (id) => {
 };
 
 const protect = asyncHandler(async (req, res, next) => {
-  let token = req.headers.authorization?.split(" ")[1]; // ✅ Lấy token gọn hơn
+  let token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ message: "Bạn chưa đăng nhập!" });
@@ -19,7 +19,7 @@ const protect = asyncHandler(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("🔍 Decoded Token:", decoded); // Debug xem `decoded` có `_id` hay `id`
+    console.log("🔍 Decoded Token:", decoded);
 
     if (!decoded || (!decoded.id && !decoded._id)) {
       return res.status(401).json({ message: "Token không hợp lệ" });
@@ -33,7 +33,7 @@ const protect = asyncHandler(async (req, res, next) => {
       return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
-    next(); // ✅ Chỉ chạy nếu user hợp lệ
+    next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       return res

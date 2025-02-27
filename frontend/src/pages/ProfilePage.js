@@ -5,6 +5,7 @@ import { LuUserPen } from "react-icons/lu";
 import styled from "styled-components";
 import { useHotelBooking } from "../context/HotelBookingContext";
 import ModalUpdateProfile from "../components/ModalComponent/ModalUpdateProfile";
+import ModalChangePassword from "../components/ModalComponent/ModalChangePassword";
 
 const ProfileSection = styled.section`
   height: 60vh;
@@ -52,12 +53,16 @@ const Divider = styled.hr`
 
 const ProfilePage = () => {
   const { user, setUser, accessToken, setAccessToken } = useHotelBooking();
-  console.log(user);
 
   const [isModalUpdateProfile, setIsModalUpdateProfile] = useState(false);
+  const [isModalChangePassword, setIsModalChangePassword] = useState(false);
 
-  const showModal = () => {
+  const showModalUpdateProfile = () => {
     setIsModalUpdateProfile(true);
+  };
+
+  const showModalChangePassword = () => {
+    setIsModalChangePassword(true);
   };
 
   return (
@@ -75,9 +80,15 @@ const ProfilePage = () => {
             {user?.full_name}
           </h5>
           <IconContainer>
-            <LuUserPen style={{ fontSize: "1.25rem" }} onClick={showModal} />
+            <LuUserPen
+              style={{ fontSize: "1.25rem" }}
+              onClick={showModalUpdateProfile}
+            />
             {user?.authProvider === "local" && (
-              <AiOutlineUserSwitch style={{ fontSize: "1.25rem" }} />
+              <AiOutlineUserSwitch
+                style={{ fontSize: "1.25rem" }}
+                onClick={showModalChangePassword}
+              />
             )}
           </IconContainer>
         </GradientBox>
@@ -128,6 +139,10 @@ const ProfilePage = () => {
         setUser={setUser}
         accessToken={accessToken}
         setAccessToken={setAccessToken}
+      />
+      <ModalChangePassword
+        isModalChangePassword={isModalChangePassword}
+        setIsModalChangePassword={setIsModalChangePassword}
       />
     </ProfileSection>
   );

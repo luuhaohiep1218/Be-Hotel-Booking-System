@@ -67,20 +67,36 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
+
+  // 🔍 Kiểm tra dữ liệu đầu vào
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin" });
+  }
+
   try {
     const user = await User.findById(req.user._id);
-
-    if (bcrypt.compare(oldPassword, user.password) && user) {
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
-      await user.save();
-      res.json({ message: "Change password successful" });
-    } else {
-      res.status(401);
-      throw new Error("Invalid old password");
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
     }
+
+    if (!user.password_hash) {
+      return res
+        .status(500)
+        .json({ message: "Lỗi hệ thống: Không tìm thấy mật khẩu" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password_hash);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Mật khẩu cũ không đúng" });
+    }
+
+    user.password_hash = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: "Thay đổi mật khẩu thành công" });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("❌ Lỗi khi đổi mật khẩu:", error);
+    res.status(500).json({ message: "Lỗi server, thử lại sau" });
   }
 });
 
