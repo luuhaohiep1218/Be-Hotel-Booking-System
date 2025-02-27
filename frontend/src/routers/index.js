@@ -10,6 +10,7 @@ import NewsPage from "../pages/NewsPage";
 import OfferPage from "../pages/OfferPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
+import ProfilePage from "../pages/ProfilePage";
 
 export const routes = [
   {
@@ -70,15 +71,25 @@ export const routes = [
     path: "/home",
     page: HomePage,
     isShowHeader: true,
+    isPrivate: false,
   },
   {
     path: "/us",
     page: AboutUs,
     isShowHeader: true,
+    isPrivate: false,
   },
   {
     path: "/booking-hotel",
     page: BookingHotelPage,
     isShowHeader: true,
-  }
+    isPrivate: false,
+  },
+  ,
+  {
+    path: "/profile",
+    page: ProfilePage,
+    isShowHeader: true,
+    isPrivate: true,
+  },
 ];

@@ -109,20 +109,19 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       .json({ message: "Invalid or expired refresh token" });
   }
 });
+
 const logout = asyncHandler(async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      console.log("❌ Không tìm thấy refreshToken trong cookie");
-      return res.status(401).json({ message: "No refresh token found" });
+      return res.status(200).json({ message: "Bạn đã đăng xuất" });
     }
 
     const user = await User.findOne({ refreshToken });
 
     if (!user) {
-      console.log("❌ RefreshToken không hợp lệ hoặc user không tồn tại");
-      return res.status(403).json({ message: "Invalid refresh token" });
+      return res.status(200).json({ message: "Bạn đã đăng xuất" });
     }
 
     user.refreshToken = null;
@@ -134,11 +133,12 @@ const logout = asyncHandler(async (req, res) => {
       sameSite: "Strict",
     });
 
-    return res.json({ message: "Logout successful" });
+    return res.json({ message: "Logout thành công" });
   } catch (error) {
-    return res.status(500).json({ message: "Server error during logout" });
+    return res.status(500).json({ message: "Lỗi server khi logout" });
   }
 });
+
 const googleAuth = asyncHandler(async (req, res) => {
   try {
     const { email, full_name } = req.user;

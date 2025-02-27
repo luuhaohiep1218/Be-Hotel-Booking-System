@@ -59,16 +59,18 @@ const FeedbackPage = () => {
           formData.append("files", file.originFileObj);
         });
 
+        // ✅ Chỉ upload ảnh khi nhấn "Gửi đánh giá"
         const uploadResponse = await API.post("/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`, // ✅ Gửi token khi upload ảnh
+            Authorization: `Bearer ${accessToken}`,
           },
         });
 
         imageUrls = uploadResponse.data.imageUrls || [];
       }
 
+      // ✅ Sau khi upload ảnh thành công, gửi dữ liệu đánh giá
       const response = await API.post(
         "/feedback",
         {
@@ -77,19 +79,19 @@ const FeedbackPage = () => {
           images: imageUrls,
         },
         {
-          headers: { Authorization: `Bearer ${accessToken}` }, // ✅ Gửi token khi gửi feedback
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
 
       message.success("Cảm ơn bạn đã gửi đánh giá!");
       setFeedback("");
       setValue(5);
-      setFileList([]);
+      setFileList([]); // ✅ Xóa file sau khi gửi thành công
     } catch (error) {
       if (error.response?.status === 401) {
         message.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
         localStorage.removeItem("accessToken");
-        window.location.href = "/login"; // ✅ Chuyển về trang đăng nhập nếu bị logout
+        window.location.href = "/login";
       } else {
         message.error("Gửi đánh giá thất bại, vui lòng thử lại!");
       }

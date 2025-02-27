@@ -4,26 +4,47 @@ const User = require("../models/UserModel");
 const { generateToken } = require("../middlewares/Auth");
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const { name, phone } = req.body;
+  const { full_name, phone } = req.body;
+
   try {
     const user = await User.findById(req.user._id);
-    if (user) {
-      user.name = name || user.name;
-      user.phone = phone || user.phone;
-      const updateUser = await user.save();
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        isAdmin: user.isAdmin,
-      });
-    } else {
-      res.status(401);
-      throw new Error("Invalid user data");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // Cập nhật chỉ những trường hợp lệ
+    const updatedFields = {};
+    if (full_name) updatedFields.full_name = full_name;
+    if (phone) {
+      if (!/^\d{10}$/.test(phone)) {
+        return res
+          .status(400)
+          .json({ message: "Phone number must be exactly 10 digits" });
+      }
+      updatedFields.phone = phone;
+    }
+
+    // Chỉ update những trường hợp lệ, tránh ảnh hưởng password_hash
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      updatedFields,
+      {
+        new: true, // Trả về user sau khi cập nhật
+        runValidators: true, // Kiểm tra validate trong model
+      }
+    );
+
+    res.json({
+      _id: updatedUser._id,
+      full_name: updatedUser.full_name,
+      phone: updatedUser.phone,
+      email: updatedUser.email,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 
@@ -72,9 +93,34 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
+const getProfileUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select(
+      "-password_hash -refreshToken"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      full_name: user.full_name,
+      email: user.email,
+      phone: user.phone,
+      authProvider: user.authProvider,
+      createdAt: user.createdAt,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
 module.exports = {
   updateUserProfile,
   deleteUser,
   changePassword,
   getUsers,
+  getProfileUser,
 };

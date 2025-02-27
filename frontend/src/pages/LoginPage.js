@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Form, Input, Typography, Card, Image, message } from "antd";
 
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
-import ModalForgotPassword from "../components/ModalForgotPassword";
+import ModalForgotPassword from "../components/ModalComponent/ModalForgotPassword";
 
 const { Title } = Typography;
 
