@@ -5,7 +5,8 @@ import { Avatar, Dropdown, Space } from "antd";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo/logo-golodge.png";
-import API from "../../utils/axiosInstance";
+import API, { refreshAccessToken } from "../../utils/axiosInstance";
+import { useHotelBooking } from "../../context/HotelBookingContext";
 
 const StyledNavbar = styled(Navbar)`
   position: sticky;
@@ -130,23 +131,46 @@ const StyledDiv = styled.div`
 const HeaderComponent = () => {
   const navigate = useNavigate();
 
-  const accessToken = localStorage.getItem("accessToken");
+  const { accessToken, setAccessToken, setUser } = useHotelBooking();
 
   const handleLogout = async () => {
     try {
-      const response = await API.get("/auth/logout");
-
-      console.log("✅ API logout response:", response.data);
-
-      if (response.status !== 200) {
-        console.error("❌ Logout failed: Unexpected response", response);
+      if (!accessToken) {
+        console.warn("❌ Không có accessToken, thực hiện logout local.");
+        setAccessToken(null);
+        localStorage.removeItem("accessToken");
+        setUser(null);
+        navigate("/login", { replace: true });
         return;
       }
 
-      localStorage.removeItem("accessToken");
-      navigate("/login");
+      await API.post("/auth/logout", null, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      console.log("✅ API logout thành công.");
     } catch (error) {
       console.error("🔥 Lỗi logout:", error.response?.data || error.message);
+
+      if (error.response?.status === 401) {
+        console.log("🔄 Token hết hạn, thử refresh...");
+        const newToken = await refreshAccessToken();
+
+        if (newToken) {
+          console.log("✅ Refresh thành công, tiếp tục logout...");
+          await API.post("/auth/logout", null, {
+            headers: { Authorization: `Bearer ${newToken}` },
+          });
+        } else {
+          console.error("❌ Refresh token thất bại, bỏ qua API logout.");
+        }
+      }
+    } finally {
+      // 🛑 Xóa accessToken & chuyển về trang login
+      setAccessToken(null);
+      localStorage.removeItem("accessToken");
+      setUser(null);
+      navigate("/login", { replace: true });
     }
   };
 

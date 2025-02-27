@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spin, Typography } from "antd";
+import { useHotelBooking } from "../context/HotelBookingContext";
 
 const { Title } = Typography;
 
 const LoginSuccess = () => {
   const navigate = useNavigate();
+  const { setAccessToken } = useHotelBooking(); // ✅ Lấy hàm cập nhật token
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,6 +18,7 @@ const LoginSuccess = () => {
 
     if (token && token.trim() !== "") {
       localStorage.setItem("accessToken", token);
+      setAccessToken(token); // ✅ Cập nhật vào state của app
 
       setTimeout(() => {
         setLoading(false);
@@ -25,7 +28,7 @@ const LoginSuccess = () => {
       setLoading(false);
       navigate("/login?error=google_auth_failed");
     }
-  }, [navigate]);
+  }, [navigate, setAccessToken]);
 
   return (
     <div

@@ -21,9 +21,13 @@ const protect = asyncHandler(async (req, res, next) => {
 
     console.log("🔍 Decoded Token:", decoded); // Debug xem `decoded` có `_id` hay `id`
 
+    if (!decoded || (!decoded.id && !decoded._id)) {
+      return res.status(401).json({ message: "Token không hợp lệ" });
+    }
+
     req.user = await User.findById(decoded.id || decoded._id)
       .select("-password")
-      .lean();
+      .exec();
 
     if (!req.user) {
       return res.status(404).json({ message: "Người dùng không tồn tại" });

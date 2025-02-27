@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, notification, Spin } from "antd";
 import styled from "styled-components";
-import API from "../utils/axiosInstance";
+import API from "../../utils/axiosInstance";
 
 const SubscribeContainer = styled.div`
   display: flex;
