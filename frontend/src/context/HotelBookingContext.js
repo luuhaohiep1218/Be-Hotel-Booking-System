@@ -5,7 +5,7 @@ const HotelBookingContext = createContext();
 
 export const HotelBookingProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(() =>
+  const [accessToken, setAccessToken] = useState(
     localStorage.getItem("accessToken")
   );
 

@@ -7,6 +7,7 @@ import { Button, Form, Input, Typography, Card, Image, message } from "antd";
 
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 import ModalForgotPassword from "../components/ModalComponent/ModalForgotPassword";
+import { useHotelBooking } from "../context/HotelBookingContext";
 
 const { Title } = Typography;
 
@@ -55,22 +56,26 @@ const SocialButton = styled(Button)`
 const LoginPage = () => {
   const navigate = useNavigate();
 
+  const { setAccessToken, setUser } = useHotelBooking(); // 🔥 Lấy từ Context
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onFinish = async (values) => {
     try {
       const { data } = await API.post("/auth/login", values);
 
-      // 🟢 Lưu token và chuyển hướng nếu thành công
+      // 🟢 Cập nhật trạng thái đăng nhập
       localStorage.setItem("accessToken", data.accessToken);
+      setAccessToken(data.accessToken);
+      setUser(data.user); // 🔥 Lưu thông tin user vào context
+
       message.success("Đăng nhập thành công!");
       navigate("/");
     } catch (error) {
-      // 🛑 Kiểm tra lỗi trả về từ API
       const errorMessage =
         error.response?.data?.message || "Lỗi không xác định!";
 
-      // 🟡 Nếu là lỗi 401 (Sai tài khoản/mật khẩu), hiển thị thông báo cụ thể
+      // 🟡 Nếu lỗi 401 (Sai email/mật khẩu), hiển thị thông báo cụ thể
       if (error.response?.status === 401) {
         message.error("Sai email hoặc mật khẩu! Vui lòng kiểm tra lại.");
       } else {

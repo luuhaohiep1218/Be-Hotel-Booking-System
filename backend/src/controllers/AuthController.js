@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/UserModel");
 const { generateToken, generateRefreshToken } = require("../middlewares/Auth");
@@ -86,27 +87,37 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-
-  if (!refreshToken) {
-    return res.status(401).json({ message: "No refresh token provided" });
-  }
-
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const user = await User.findById(decoded.id);
-
-    if (!user || user.refreshToken !== refreshToken) {
-      return res.status(403).json({ message: "Invalid refresh token" });
+    const refreshToken = req.cookies.refreshToken;
+    console.log("🔍 Refresh Token từ cookie:", refreshToken);
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Không tìm thấy refresh token" });
     }
 
-    // Tạo mới Access Token
-    const newAccessToken = generateToken(user._id);
-    res.json({ accessToken: newAccessToken });
+    const user = await User.findOne({ refreshToken });
+    console.log("🔍 User tìm thấy:", user);
+    if (!user) {
+      return res.status(403).json({ message: "Refresh token không hợp lệ" });
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
+      if (err) {
+        console.error("❌ JWT Verify lỗi:", err);
+        return res.status(403).json({ message: "Refresh token không hợp lệ" });
+      }
+
+      console.log("✅ Token decoded:", decoded);
+      if (user._id.toString() !== decoded.id) {
+        return res.status(403).json({ message: "Refresh token không hợp lệ" });
+      }
+
+      const newAccessToken = generateToken(user._id);
+      console.log("✅ Access Token mới:", newAccessToken);
+      res.json({ accessToken: newAccessToken });
+    });
   } catch (error) {
-    return res
-      .status(403)
-      .json({ message: "Invalid or expired refresh token" });
+    console.error("❌ Lỗi trong refreshAccessToken:", error);
+    res.status(500).json({ message: "Lỗi server", error: error.message });
   }
 });
 

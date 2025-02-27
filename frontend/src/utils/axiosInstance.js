@@ -7,14 +7,14 @@ const API = axios.create({
 
 export const refreshAccessToken = async () => {
   try {
-    console.log("🔄 Đang gọi API refresh-token...");
-    const { data } = await API.post("/auth/refresh-token");
+    console.log("🔄 Gọi API refresh-token...");
 
-    console.log("✅ Access Token mới:", data.accessToken);
+    const { data } = await API.get("/auth/refresh-token", {
+      withCredentials: true,
+    });
+
+    console.log("✅ Token mới:", data.accessToken);
     localStorage.setItem("accessToken", data.accessToken);
-
-    // ✅ Cập nhật token trong Axios
-    API.defaults.headers["Authorization"] = `Bearer ${data.accessToken}`;
 
     return data.accessToken;
   } catch (error) {
