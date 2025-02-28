@@ -1,23 +1,57 @@
 import AboutUs from "../pages/AboutUsPage";
-import BlogDetailPage from "../pages/BlogDetailPage";
 import BookingHotelPage from "../pages/BookingHotelPage";
 import CustomerPage from "../pages/CustomerPage";
 import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
-import NewsPage from "../pages/NewsPage";
 import OfferPage from "../pages/OfferPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
+import AllNewsPage from "../pages/AllNewsPage";
+import NewsDetail from "../pages/NewsDetail";
+import OnlyNew from "../pages/OnlyNew";
+import OnlyDiscount from "../pages/OnlyDiscount";
+import DiscountDetail from "../pages/DiscountDetail";
+import OnlyFeedbacks from "../pages/OnlyFeedback";
+import FeedbackDetail from "../pages/FeedBackDetail";
 
 export const routes = [
   {
-    path: "/",
-    page: NewsPage,
+    path: "/Blog",
+    page: AllNewsPage,
     isShowHeader: true,
-    isPrivate: false,
+  },
+  {
+    path: "/onlyNew",
+    page: OnlyNew,
+    isShowHeader: true,
+  },
+  {
+    path: "/onlyDiscount",
+    page: OnlyDiscount,
+    isShowHeader: true,
+  },
+  {
+    path: "/onlyFeedbacks",
+    page: OnlyFeedbacks,
+    isShowHeader: true,
+  },
+  {
+    path: "/news/:id",
+    page: NewsDetail,
+    isShowHeader: true,
+  },
+  {
+    path: "/discount/:id",
+    page: DiscountDetail,
+    isShowHeader: true,
+  },
+  {
+    path: "/feedback/:id",
+    page: FeedbackDetail,
+    isShowHeader: true,
   },
   {
     path: "/service",
@@ -37,12 +71,7 @@ export const routes = [
     isShowHeader: true,
     isPrivate: false,
   },
-  {
-    path: "/blog-detail",
-    page: BlogDetailPage,
-    isShowHeader: true,
-    isPrivate: false,
-  },
+
   {
     path: "/login",
     page: LoginPage,

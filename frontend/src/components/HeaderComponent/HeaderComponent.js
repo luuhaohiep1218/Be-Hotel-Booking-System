@@ -214,6 +214,7 @@ const HeaderComponent = () => {
             {accessToken && (
               <StyledNavLink to="/feedback">ĐÁNH GIÁ</StyledNavLink>
             )}
+             <StyledNavLink to="/Blog">BLOG</StyledNavLink>
           </StyledNav>
           {accessToken ? (
             <>

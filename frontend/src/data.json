@@ -2,77 +2,139 @@
   "internalNews": [
     {
       "id": 1,
-      "title": "A25 Hotel đồng hành cùng Ngày hội Việc làm sinh viên HUBT",
-      "summary": "Ngày 30/11/2024, A25 Hotel đã tham gia Ngày hội Việc làm tại Đại học Kinh doanh và Công nghệ Hà Nội...",
-      "content": "Tại sự kiện, A25 Hotel đã giới thiệu nhiều cơ hội việc làm hấp dẫn cho các bạn sinh viên. Đồng thời, đội ngũ nhân sự của A25 Hotel cũng đã trao đổi, tư vấn trực tiếp cho các ứng viên về định hướng nghề nghiệp và văn hóa doanh nghiệp.",
-      "image": "https://via.placeholder.com/600x300",
-      "location": "Hà Nội",
-      "date": "02/12/2024"
-    },
-    {
-      "id": 2,
+      "category": "internalNews",
       "title": "Mừng Xuân Ất Tỵ 2025",
       "summary": "A25 Hotel kính chúc Quý khách hàng một năm mới an khang, thịnh vượng...",
       "content": "Để đón mừng Xuân Ất Tỵ 2025, A25 Hotel sẽ triển khai nhiều chương trình khuyến mãi hấp dẫn, đồng thời nâng cao chất lượng dịch vụ để đáp ứng tốt nhất nhu cầu của khách hàng trong dịp Tết.",
-      "image": "https://via.placeholder.com/600x300",
+      "image": "https://a25hotel.com/files/images/z6260086268379_6cd040f23e7522c964eacd81319ea79b.jpg",
       "location": "Hà Nội",
       "date": "28/01/2025"
     },
     {
+      "id": 2,
+      "category": "internalNews",
+      "title": "A25 Hotel đồng hành cùng Ngày hội Việc làm sinh viên HUBT",
+      "summary": "Ngày 30/11/2024, A25 Hotel đã tham gia Ngày hội Việc làm tại Đại học Kinh doanh và Công nghệ Hà Nội...",
+      "content": "Tại sự kiện, A25 Hotel đã giới thiệu nhiều cơ hội việc làm hấp dẫn cho các bạn sinh viên. Đồng thời, đội ngũ nhân sự của A25 Hotel cũng đã trao đổi, tư vấn trực tiếp cho các ứng viên về định hướng nghề nghiệp và văn hóa doanh nghiệp.",
+      "image": "https://a25hotel.com/files/images/z6260086268379_6cd040f23e7522c964eacd81319ea79b.jpg",
+      "location": "Hà Nội",
+      "date": "02/12/2024"
+    },
+    {
       "id": 3,
+      "category": "internalNews",
       "title": "A25 Hotel vinh danh những gương mặt xuất sắc năm 2024",
       "summary": "Cuộc thi Nghiệp vụ Buồng phòng A25 Hotel 2024 đã kết thúc với nhiều gương mặt nổi bật...",
       "content": "Vòng chung kết cuộc thi đã diễn ra đầy kịch tính, với sự góp mặt của các thí sinh đến từ nhiều chi nhánh A25 Hotel trên cả nước. Các thí sinh đã trải qua các phần thi thực hành và lý thuyết để chứng tỏ khả năng chuyên môn, tính sáng tạo và kỹ năng giao tiếp.",
-      "image": "https://via.placeholder.com/600x300",
+      "image": "https://a25hotel.com/files/images/z6260086268379_6cd040f23e7522c964eacd81319ea79b.jpg",
       "location": "TP.HCM",
       "date": "15/11/2024"
     },
     {
       "id": 4,
+      "category": "internalNews",
       "title": "A25 Hotel khởi động Giải bóng đá nội bộ 2024",
       "summary": "Giải bóng đá nội bộ A25 Hotel 2024 chính thức khai mạc, thu hút sự tham gia của nhiều đội bóng...",
       "content": "Đây là hoạt động thường niên, nhằm gắn kết tinh thần đồng đội và rèn luyện sức khỏe cho nhân viên. Giải đấu dự kiến kéo dài trong 2 tuần, với sự tranh tài của 8 đội bóng đến từ các bộ phận khác nhau.",
-      "image": "https://via.placeholder.com/600x300",
+      "image": "https://a25hotel.com/files/images/z6260086268379_6cd040f23e7522c964eacd81319ea79b.jpg",
       "location": "Đà Nẵng",
       "date": "01/10/2024"
     }
   ],
-  "travelGuide": [
+  "discounts": [
     {
       "id": 1,
-      "title": "Khám phá phố cổ Hà Nội – Nét đẹp nghìn năm văn hiến",
-      "summary": "Phố cổ Hà Nội với 36 phố phường là điểm đến không thể bỏ qua...",
-      "content": "Phố cổ Hà Nội mang đậm nét truyền thống, với những con phố nhỏ hẹp, các gánh hàng rong và kiến trúc xưa cũ. Du khách có thể thưởng thức ẩm thực đường phố đặc trưng, tham quan những ngôi nhà cổ hàng trăm năm tuổi.",
-      "image": "https://via.placeholder.com/600x300",
-      "location": "Hà Nội",
-      "date": "20/02/2025"
+      "category": "discounts",
+      "title": "Giảm 20% cho khách đặt phòng Tết Ất Tỵ 2025",
+      "summary": "Đặt phòng trước ngày 15/02/2025 sẽ được giảm giá 20%. Áp dụng cho tất cả chi nhánh A25 Hotel.",
+      "content": "Nhằm tri ân khách hàng trong dịp năm mới, A25 Hotel triển khai chương trình ưu đãi đặc biệt: giảm ngay 20% cho khách đặt phòng trước ngày 15/02/2025. Chương trình áp dụng tại tất cả các khách sạn thuộc hệ thống A25 trên toàn quốc.",
+      "image": "https://a25hotel.com/files/images/discount_newyear.jpg",
+      "location": "Toàn quốc",
+      "date": "01/02/2025",
+      "validUntil": "15/02/2025"
     },
     {
       "id": 2,
-      "title": "Top 5 bãi biển đẹp nhất Việt Nam bạn nên ghé thăm",
-      "summary": "Việt Nam sở hữu nhiều bãi biển tuyệt đẹp từ Bắc vào Nam...",
-      "content": "Phú Quốc với bãi cát trắng mịn, Nha Trang với hoạt động lặn biển phong phú, Đà Nẵng với bãi biển Mỹ Khê thơ mộng, Hội An với biển Cửa Đại hiền hòa và Quy Nhơn với Eo Gió hoang sơ... là những điểm đến lý tưởng cho mùa hè.",
-      "image": "https://via.placeholder.com/600x300",
-      "location": "Việt Nam",
-      "date": "10/01/2025"
+      "category": "discounts",
+      "title": "Ưu đãi 30% cho hội viên A25 Club",
+      "summary": "Thành viên A25 Club được giảm ngay 30% khi đặt phòng từ 2 đêm trở lên.",
+      "content": "Khách hàng là hội viên A25 Club sẽ nhận ưu đãi giảm giá 30% khi đặt phòng từ 2 đêm trở lên trong khoảng thời gian từ 01/03/2025 - 30/04/2025. Chương trình không áp dụng đồng thời với các khuyến mãi khác.",
+      "image": "https://a25hotel.com/files/images/discount_club.jpg",
+      "location": "Toàn quốc",
+      "date": "28/02/2025",
+      "validUntil": "30/04/2025"
     },
     {
       "id": 3,
-      "title": "Trải nghiệm ẩm thực Sài Gòn về đêm",
-      "summary": "Sài Gòn không chỉ nổi tiếng với nhịp sống sôi động mà còn có nền ẩm thực phong phú...",
-      "content": "Dạo quanh các con phố ẩm thực như Vĩnh Khánh, Nguyễn Thượng Hiền... để thưởng thức các món hải sản tươi ngon, ốc, bánh tráng nướng, phá lấu... Đặc biệt, đừng quên thử các món chè Sài Gòn đa dạng hương vị.",
-      "image": "https://via.placeholder.com/600x300",
-      "location": "TP.HCM",
-      "date": "05/12/2024"
+      "category": "discounts",
+      "title": "Combo nghỉ dưỡng 3 ngày 2 đêm chỉ từ 1.500.000 VNĐ",
+      "summary": "Chương trình dành riêng cho khách đặt phòng từ thứ Hai đến thứ Năm.",
+      "content": "Trải nghiệm kỳ nghỉ tuyệt vời với combo nghỉ dưỡng 3 ngày 2 đêm tại A25 Hotel chỉ từ 1.500.000 VNĐ. Gói ưu đãi này bao gồm ăn sáng miễn phí và dịch vụ đưa đón sân bay (áp dụng từ 01/05/2025 - 31/05/2025).",
+      "image": "https://a25hotel.com/files/images/discount_combo.jpg",
+      "location": "Hà Nội, TP.HCM, Đà Nẵng",
+      "date": "25/04/2025",
+      "validUntil": "31/05/2025"
     },
     {
       "id": 4,
-      "title": "Chinh phục đỉnh Fansipan – Nóc nhà Đông Dương",
-      "summary": "Fansipan là điểm đến hấp dẫn dành cho những ai yêu thích du lịch khám phá...",
-      "content": "Với độ cao 3.143m, Fansipan được mệnh danh là 'Nóc nhà Đông Dương'. Du khách có thể chọn leo núi hoặc đi cáp treo để ngắm nhìn khung cảnh núi rừng hùng vĩ. Thời điểm lý tưởng để chinh phục Fansipan là từ tháng 9 đến tháng 11.",
-      "image": "https://via.placeholder.com/600x300",
-      "location": "Lào Cai",
-      "date": "22/11/2024"
+      "category": "discounts",
+      "title": "Tặng voucher 500.000 VNĐ cho khách hàng thân thiết",
+      "summary": "A25 Hotel dành tặng voucher giảm giá 500.000 VNĐ cho khách hàng thân thiết.",
+      "content": "Như một lời tri ân đến khách hàng thân thiết, A25 Hotel gửi tặng voucher 500.000 VNĐ áp dụng cho lần đặt phòng tiếp theo. Chương trình dành riêng cho khách hàng đã lưu trú từ 5 lần trở lên tại hệ thống khách sạn của chúng tôi.",
+      "image": "https://a25hotel.com/files/images/discount_voucher.jpg",
+      "location": "Toàn quốc",
+      "date": "10/06/2025",
+      "validUntil": "30/06/2025"
+    }
+  ],
+  "feedbacks": [
+    {
+      "id": 1,
+      "category": "feedbacks",
+      "title": "Dịch vụ tuyệt vời, nhân viên nhiệt tình",
+      "summary": "Tôi đã có trải nghiệm rất tốt tại A25 Hotel, chắc chắn sẽ quay lại.",
+      "content": "Nhân viên phục vụ rất tận tình, phòng sạch sẽ, tiện nghi đầy đủ. Vị trí khách sạn cũng rất thuận tiện để di chuyển. Tôi hoàn toàn hài lòng với dịch vụ tại đây và sẽ tiếp tục ủng hộ trong những chuyến đi tới.",
+      "image": "https://a25hotel.com/files/images/feedback_1.jpg",
+      "location": "Hà Nội",
+      "date": "05/01/2025",
+      "customerName": "Nguyễn Văn A",
+      "rating": 5
+    },
+    {
+      "id": 2,
+      "category": "feedbacks",
+      "title": "Khách sạn đẹp, nhưng bữa sáng cần cải thiện",
+      "summary": "Phòng ốc sạch sẽ, nhân viên thân thiện, nhưng đồ ăn sáng chưa phong phú.",
+      "content": "Tôi rất hài lòng với thái độ phục vụ của nhân viên cũng như chất lượng phòng nghỉ. Tuy nhiên, bữa sáng chưa đa dạng lắm, nếu có thêm một số món đặc sản vùng miền thì sẽ tuyệt vời hơn.",
+      "image": "https://a25hotel.com/files/images/feedback_2.jpg",
+      "location": "TP.HCM",
+      "date": "18/12/2024",
+      "customerName": "Trần Thị B",
+      "rating": 4
+    },
+    {
+      "id": 3,
+      "category": "feedbacks",
+      "title": "Dịch vụ xứng đáng với giá tiền",
+      "summary": "Giá cả hợp lý, phòng đẹp, phù hợp với khách đi công tác.",
+      "content": "Tôi thường xuyên đi công tác và ở tại A25 Hotel. Điều tôi thích nhất là phòng sạch sẽ, dịch vụ nhanh chóng và nhân viên chuyên nghiệp. Tôi sẽ tiếp tục lựa chọn A25 cho những chuyến công tác sau này.",
+      "image": "https://a25hotel.com/files/images/feedback_3.jpg",
+      "location": "Đà Nẵng",
+      "date": "10/11/2024",
+      "customerName": "Lê Minh C",
+      "rating": 5
+    },
+    {
+      "id": 4,
+      "category": "feedbacks",
+      "title": "Trải nghiệm nghỉ dưỡng thư giãn",
+      "summary": "Không gian yên tĩnh, thích hợp để nghỉ ngơi cuối tuần.",
+      "content": "Tôi đã có một kỳ nghỉ dưỡng tuyệt vời tại A25 Hotel. Phòng ốc thoáng mát, có view đẹp. Khu vực xung quanh khá yên tĩnh, rất thích hợp để thư giãn sau những ngày làm việc căng thẳng.",
+      "image": "https://a25hotel.com/files/images/feedback_4.jpg",
+      "location": "Phú Quốc",
+      "date": "22/09/2024",
+      "customerName": "Hoàng Thùy D",
+      "rating": 5
     }
   ],
   "hotels": [
@@ -83,8 +145,25 @@
       "rating": 5.0,
       "price": 1550000,
       "rooms": [
-        { "type": "Deluxe", "price": 1550000, "amenities": ["WiFi", "Breakfast", "Pool"] },
-        { "type": "Suite", "price": 2000000, "amenities": ["WiFi", "Breakfast", "Pool", "Sea View"] }
+        {
+          "type": "Deluxe",
+          "price": 1550000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        },
+        {
+          "type": "Suite",
+          "price": 2000000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool",
+            "Sea View"
+          ]
+        }
       ]
     },
     {
@@ -94,8 +173,23 @@
       "rating": 5.0,
       "price": 1600000,
       "rooms": [
-        { "type": "Standard", "price": 1600000, "amenities": ["WiFi", "Breakfast"] },
-        { "type": "Deluxe", "price": 1900000, "amenities": ["WiFi", "Breakfast", "Pool"] }
+        {
+          "type": "Standard",
+          "price": 1600000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 1900000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        }
       ]
     },
     {
@@ -105,8 +199,25 @@
       "rating": 5.0,
       "price": 2300000,
       "rooms": [
-        { "type": "Deluxe", "price": 2300000, "amenities": ["WiFi", "Breakfast", "Pool"] },
-        { "type": "Suite", "price": 2700000, "amenities": ["WiFi", "Breakfast", "Pool", "Gym"] }
+        {
+          "type": "Deluxe",
+          "price": 2300000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        },
+        {
+          "type": "Suite",
+          "price": 2700000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool",
+            "Gym"
+          ]
+        }
       ]
     },
     {
@@ -116,8 +227,23 @@
       "rating": 5.0,
       "price": 1700000,
       "rooms": [
-        { "type": "Standard", "price": 1700000, "amenities": ["WiFi", "Breakfast"] },
-        { "type": "Deluxe", "price": 2000000, "amenities": ["WiFi", "Breakfast", "Sea View"] }
+        {
+          "type": "Standard",
+          "price": 1700000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 2000000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Sea View"
+          ]
+        }
       ]
     },
     {
@@ -127,8 +253,23 @@
       "rating": 4.2,
       "price": 1000000,
       "rooms": [
-        { "type": "Standard", "price": 1000000, "amenities": ["WiFi", "Breakfast"] },
-        { "type": "Deluxe", "price": 1300000, "amenities": ["WiFi", "Breakfast", "Pool"] }
+        {
+          "type": "Standard",
+          "price": 1000000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 1300000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        }
       ]
     },
     {
@@ -138,10 +279,24 @@
       "rating": 4.0,
       "price": 950000,
       "rooms": [
-        { "type": "Standard", "price": 950000, "amenities": ["WiFi", "Breakfast"] },
-        { "type": "Deluxe", "price": 1200000, "amenities": ["WiFi", "Breakfast", "Sea View"] }
+        {
+          "type": "Standard",
+          "price": 950000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 1200000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Sea View"
+          ]
+        }
       ]
     }
   ]
 }
-
