@@ -136,5 +136,167 @@
       "customerName": "Hoàng Thùy D",
       "rating": 5
     }
+  ],
+  "hotels": [
+    {
+      "id": 1,
+      "name": "DeLaSea Phat Linh Hạ Long",
+      "location": "Hạ Long",
+      "rating": 5.0,
+      "price": 1550000,
+      "rooms": [
+        {
+          "type": "Deluxe",
+          "price": 1550000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        },
+        {
+          "type": "Suite",
+          "price": 2000000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool",
+            "Sea View"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Citadines Marina Hạ Long",
+      "location": "Hạ Long",
+      "rating": 5.0,
+      "price": 1600000,
+      "rooms": [
+        {
+          "type": "Standard",
+          "price": 1600000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 1900000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Sea Stars Hotel Hạ Long",
+      "location": "Hạ Long",
+      "rating": 5.0,
+      "price": 2300000,
+      "rooms": [
+        {
+          "type": "Deluxe",
+          "price": 2300000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        },
+        {
+          "type": "Suite",
+          "price": 2700000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool",
+            "Gym"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Wyndham Legend Hạ Long",
+      "location": "Hạ Long",
+      "rating": 5.0,
+      "price": 1700000,
+      "rooms": [
+        {
+          "type": "Standard",
+          "price": 1700000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 2000000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Sea View"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Hạ Long Dream Hotel",
+      "location": "Hạ Long",
+      "rating": 4.2,
+      "price": 1000000,
+      "rooms": [
+        {
+          "type": "Standard",
+          "price": 1000000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 1300000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Pool"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "D'Lecla Hạ Long",
+      "location": "Hạ Long",
+      "rating": 4.0,
+      "price": 950000,
+      "rooms": [
+        {
+          "type": "Standard",
+          "price": 950000,
+          "amenities": [
+            "WiFi",
+            "Breakfast"
+          ]
+        },
+        {
+          "type": "Deluxe",
+          "price": 1200000,
+          "amenities": [
+            "WiFi",
+            "Breakfast",
+            "Sea View"
+          ]
+        }
+      ]
+    }
   ]
 }
