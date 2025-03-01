@@ -12,9 +12,6 @@ const NewsItemDetail = ({ newsItem }) => {
     );
   }
 
-  const contentParagraphs = newsItem.content ? newsItem.content.split("\n") : [];
-  const image = newsItem.image || null;
-
   return (
     <>
       <BreadcrumbWrapper>
@@ -23,16 +20,15 @@ const NewsItemDetail = ({ newsItem }) => {
 
       <Container>
         <Title>{newsItem.title}</Title>
-        <Date>22/02/2025</Date>
         <Separator />
 
         <ContentContainer>
-          {contentParagraphs.map((paragraph, index) => (
+          {newsItem.sections?.map((section, index) => (
             <React.Fragment key={index}>
-              <Text>{paragraph}</Text>
-              {index === Math.floor(contentParagraphs.length / 2) && image && (
+              <Text>{section.text}</Text>
+              {section.image && (
                 <ImageWrapper>
-                  <Image src={image} alt={`news-image`} />
+                  <Image src={section.image} alt={`news-image-${index}`} />
                 </ImageWrapper>
               )}
             </React.Fragment>
@@ -47,14 +43,14 @@ export default NewsItemDetail;
 
 // Styled Components
 const BreadcrumbWrapper = styled.div`
-  padding: 15px 20px; 
-  background: #f9f9f9; 
+  padding: 15px 20px;
+  background: #f9f9f9;
 `;
 
 const Container = styled(Col)`
-  max-width: 1200px; 
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px; 
+  padding: 40px 20px;
 `;
 
 const Title = styled.h1`
@@ -65,21 +61,10 @@ const Title = styled.h1`
   margin-bottom: 10px;
 `;
 
-const Date = styled.span`
-  display: inline-block;
-  background: #eef1f6;
-  color: #333;
-  font-size: 14px;
-  padding: 5px 12px;
-  border-radius: 12px;
-  font-weight: 500;
-  margin-bottom: 10px;
-`;
-
 const Separator = styled.div`
   width: 100px;
   height: 4px;
-  background: #22ACC1;
+  background: #22acc1;
   margin: 10px 0 20px;
 `;
 

@@ -6,38 +6,44 @@ import BlogHeader from "../components/HeaderComponent/BlogHeader";
 import PopularNews from "../components/PopularNews";
 
 const OnlyDiscount = () => {
-   const [internalNews, setInternalNews] = useState([]);
+  const [internalNews, setInternalNews] = useState([]);
   const [discount, setDiscount] = useState([]);
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/discounts")
-      .then((response) => {
-        setDiscount(response.data);
-      })
-      .catch((error) => {
-        console.error("Lỗi discounts:", error);
-      });
-        axios
-          .get("http://localhost:3001/internalNews")
-          .then((response) => {
-            setInternalNews(response.data);
-            
-          })
-          .catch((error) => {
-            console.error("Lỗi khi lấy internalNews:", error);
-          });
+    const fetchNews = async () => {
+      try {
+        const [internalResponse, discountResponse] = await Promise.all([
+          axios.get("http://localhost:3001/internalNews"),
+          axios.get("http://localhost:3001/discounts"),
+        ]);
+
+        setInternalNews(
+          internalResponse.data.map((item) => ({
+            ...item,
+            id: `internal-${item.id}`,
+          }))
+        );
+
+        setDiscount(
+          discountResponse.data.map((item) => ({
+            ...item,
+            id: `discount-${item.id}`,
+          }))
+        );
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+      }
+    };
+
+    fetchNews();
   }, []);
 
   return (
-    <Container style={{ padding:"40px"}}>
-      <PopularNews  news={internalNews}/>
-    <BlogHeader/>
+    <Container style={{ padding: "40px" }}>
+      <PopularNews news={internalNews} />
+      <BlogHeader />
       <Row>
-        <Col style={{ padding:"43px"}}>
-          
+        <Col style={{ padding: "43px" }}>
           <NewsList news={discount} />
-
-          
         </Col>
       </Row>
     </Container>
