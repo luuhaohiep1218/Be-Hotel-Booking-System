@@ -12,11 +12,19 @@ const OnlyNew = () => {
     const fetchNews = async () => {
       try {
         const response = await axios.get("http://localhost:3001/internalNews");
-        setInternalNews(response.data);
+    
+        // Gán ID có prefix "internal-"
+        const formattedNews = response.data.map((item) => ({
+          ...item,
+          id: `internal-${item.id}`,
+        }));
+    
+        setInternalNews(formattedNews);
       } catch (error) {
         console.error("Lỗi khi lấy internalNews:", error);
       }
     };
+    
 
     fetchNews();
   }, []);
