@@ -11,10 +11,11 @@ import OfferPage from "../pages/OfferPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
+import ContactPage from "../pages/ContactPage";
 
 export const routes = [
   {
-    path: "/",
+    path: "/news",
     page: NewsPage,
     isShowHeader: true,
     isPrivate: false,
@@ -68,7 +69,7 @@ export const routes = [
     isPrivate: false,
   },
   {
-    path: "/home",
+    path: "/",
     page: HomePage,
     isShowHeader: true,
     isPrivate: false,
@@ -91,5 +92,11 @@ export const routes = [
     page: ProfilePage,
     isShowHeader: true,
     isPrivate: true,
+  },
+  {
+    path: "/contact",
+    page: ContactPage,
+    isShowHeader: true,
+    isPrivate: false,
   },
 ];
