@@ -16,7 +16,6 @@ import ProfilePage from "../pages/ProfilePage";
 import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
-import ProfilePage from "../pages/ProfilePage";
 import ContactPage from "../pages/ContactPage";
 
 export const routes = [

@@ -1,19 +1,28 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import API, { refreshAccessToken } from "../utils/axiosInstance";
 
 const HotelBookingContext = createContext();
 
 export const HotelBookingProvider = ({ children }) => {
+  const prevAccessToken = useRef(null);
+
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(
     localStorage.getItem("accessToken")
   );
 
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && accessToken !== prevAccessToken.current) {
       localStorage.setItem("accessToken", accessToken);
       fetchUserProfile();
-    } else {
+      prevAccessToken.current = accessToken; // Cập nhật token trước đó
+    } else if (!accessToken) {
       localStorage.removeItem("accessToken");
       setUser(null);
     }
