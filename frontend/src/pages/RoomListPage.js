@@ -2,10 +2,19 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import images from "../assets/images/pages.jpg";
 import background from "../assets/images/section-background.jpg";
 import Banner from "../components/Banner";
 import CardComponent from "../components/CardComponent";
+
+const room = {
+  id: 1,
+  name: "Standard Room",
+  description: "Description of the room",
+  image: "https://via.placeholder.com/150",
+  price: 100,
+};
 
 const styles = {
   sectionBackground: {
@@ -46,10 +55,13 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#22ACBF",
+    color: "#fff"
   },
 };
 
-function BookingHotelPage() {
+function RoomListPage() {
+  const navigate = useNavigate();
   return (
     <Container fluid className="p-0 m-2">
       <Row className="p-2 m-2">
@@ -78,7 +90,22 @@ function BookingHotelPage() {
                 </p>
               </Col>
             </Row>
-            <CardComponent />
+            <CardComponent onClick={(e) =>{  e.stopPropagation(); navigate(`/room-detail/${room.id}`)}}>
+              <div className="d-flex pt-3" style={{}}>
+                <Button type="default" shape="round" size="middle" icon={<ArrowRightOutlined />} style={styles.button}
+                  onClick={(e) => { e.stopPropagation(); navigate(`/booking-room/${room.id}`) }}>
+                  Đặt Phòng Ngay
+                </Button>
+                <Link
+                  to={`/room-detail/${room.id}`}
+                  style={{ marginLeft: "10px", padding: "10px" }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Xem chi tiết
+                </Link>
+              </div>
+            </CardComponent>
+
             <div style={styles.sectionBackground}>
               <Row className="p-0 m-0">
                 <Col lg={6} className="mt-5 md-5">
@@ -115,7 +142,7 @@ function BookingHotelPage() {
             </Col>
             <div style={styles.buttonContainer}>
               <Button type="default" shape="round" size="middle" icon={<ArrowRightOutlined />} style={styles.button}
-              onClick={() => window.location.href = '/'}>
+                onClick={() => window.location.href = '/blog'}>
                 Xem tất cả
               </Button>
             </div>
@@ -126,4 +153,4 @@ function BookingHotelPage() {
   );
 }
 
-export default BookingHotelPage;
+export default RoomListPage;

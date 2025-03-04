@@ -62,7 +62,7 @@ const RoomSearchBox = ({ onSearch }) => {
             <Form.Control
               style={styleInput}
               type="text"
-              placeholder="Nhập tên khách sạn"
+              placeholder="Nhập tên phòng"
             />
           </Col>
 

@@ -5,8 +5,8 @@ import { Avatar, Dropdown, Space } from "antd";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo/logo-golodge.png";
-import API, { refreshAccessToken } from "../../utils/axiosInstance";
 import { useHotelBooking } from "../../context/HotelBookingContext";
+import API, { refreshAccessToken } from "../../utils/axiosInstance";
 
 const StyledNavbar = styled(Navbar)`
   position: sticky;
@@ -208,12 +208,12 @@ const HeaderComponent = () => {
           </Navbar.Brand>
           <StyledNav>
             <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
-            <StyledNavLink to="/customer">KHÁCH HÀNG</StyledNavLink>
-            <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
-            <StyledNavLink to="/booking-hotel">ĐẶT KHÁCH SẠN</StyledNavLink>
+            <StyledNavLink to="/us">VỀ CHÚNG TÔI</StyledNavLink>
+            <StyledNavLink to="/room-list">ĐẶT PHÒNG</StyledNavLink>
             {accessToken && (
               <StyledNavLink to="/feedback">ĐÁNH GIÁ</StyledNavLink>
             )}
+             <StyledNavLink to="/Blog">BLOG</StyledNavLink>
           </StyledNav>
           {accessToken ? (
             <>

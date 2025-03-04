@@ -1,6 +1,8 @@
+
 import { React, useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Carousel } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Descriptions } from 'antd';
 
 
 const cruises = [
@@ -94,19 +96,12 @@ const reviews = [
     },
 ];
 
-const destinations = [
-    {
-        title: "Vịnh Hạ Long",
-        image: "https://minio.fares.vn/mixivivu-dev/home-page/547b7d230cacd9f280bd3.jpg",
-    },
-    {
-        title: "Vịnh Lan Hạ",
-        image: "https://minio.fares.vn/mixivivu-dev/home-page/6063b331c2be17e04eaf1.jpg",
-    },
-    {
-        title: "Đảo Cát Bà",
-        image: "https://minio.fares.vn/mixivivu-dev/home-page/ded9108b6104b45aed152.jpg",
-    },
+const hotels = [
+    { room: "Phòng 1", Descriptions: "Phòng 1", count: 40, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
+    { room: "Phòng 1", Descriptions: "Phòng 1", count: 1, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
+    { room: "Phòng 1", Descriptions: "Phòng 1", count: 22, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
+    { room: "Phòng 1", Descriptions: "Phòng 1", count: 1, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
+    { room: "Phòng 1", Descriptions: "Phòng 1", count: 1, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
 ];
 
 const styles = {
@@ -382,13 +377,103 @@ const styles = {
         borderRadius: "20px",
         padding: "5px 15px",
         border: "1px solid #ddd",
-    }
+    },
+    bannerImage: {
+        width: "100vw",
+        height: "auto",
+        display: "block",
+    },
+
+    roomContainer: {
+        textAlign: "center",
+        background: "url('https://a25hotel.com/files/images/2.jpg') no-repeat center center/cover",
+        padding: "50px 0",
+        height: "1000px",
+    },
+
+    tiroomContainer: {
+        width: "50%",
+    },
+    roomTitle: {
+        fontWeight: "bold",
+        color: "#8B0000",
+    },
+    roomSubtitle: {
+        marginBottom: "20px",
+        color: "#333",
+    },
+    roomCard: {
+        border: "none",
+        overflow: "hidden",
+        position: "relative",
+        cursor: "pointer",
+        height: "240px"
+    },
+    roomImage: {
+        height: "240px",
+        objectFit: "cover",
+        transition: "transform 0.3s ease-in-out",
+    },
+    roomOverlay: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "end",
+        background: "rgba(0, 0, 0, 0.5)",
+        padding: "15px",
+        opacity: 0,
+        transition: "opacity 0.3s ease-in-out",
+    },
+    roomOverlayHover: {
+        opacity: 1,
+    },
+    roomImageHover: {
+        transform: "scale(1.05)",
+    },
+    roomName: {
+        height: "20px",
+        fontSize: "18px",
+        fontWeight: "bold",
+        display: "flex",
+        marginTop: "-100px",
+    },
+    tiroomName: {
+        fontSize: "18px",
+        fontWeight: "bold",
+        color: "white",
+        position: "absolute",
+        margin: "10px",
+    },
+    roomCount: {
+        height: "40px",
+        fontSize: "14px",
+        display: "flex",
+    },
+    roomDes: {
+        fontSize: "14px",
+        display: "flex",
+        height: "120px",
+    },
+    roomButton: {
+        marginTop: "20px",
+        backgroundColor: "transparent",
+        border: "1px solid #8B0000",
+        color: "#8B0000",
+        padding: "10px 20px",
+        fontSize: "12px",
+        transition: "background-color 0.3s, color 0.3s",
+        borderRadius: "100px",
+    },
+    roomButtonHover: {
+        color: "white",
+        backgroundColor: "#a52a2a",
+    },
 };
 
 const HomePage = () => {
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isManualSelect, setIsManualSelect] = useState(false);
+    const [hoverIndex, setHoverIndex] = useState(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -409,27 +494,63 @@ const HomePage = () => {
 
     return (
         <div>
+            <img
+                src="https://a25hotel.com/files/images/Banner/BNNER%20FIX.png"
+                alt="Home Banner"
+                style={styles.bannerImage}
+            />
+            <div className="text-center py-5" style={styles.roomContainer}>
+                <Container style={styles.tiroomContainer}>
+                    <h2 style={styles.roomTitle}>HỆ THỐNG PHÒNG CỦA KHÁCH SẠN A25</h2>
+                    <p style={styles.roomSubtitle}>
+                        Chúng tôi luôn sẵn sàng phục vụ quý khách tại những điểm đến phù hợp với nhu cầu của quý khách!
+                    </p>
+                    <Row className="g-3">
+                        {hotels.map((hotel, index) => (
+                            <Col key={index} md={6} sm={6} xs={12}>
+                                <Card
+                                    style={styles.roomCard}
+                                    className="text-white"
+                                    onMouseEnter={() => setHoverIndex(index)}
+                                    onMouseLeave={() => setHoverIndex(null)}
+                                >
+                                    <Card.Title style={styles.tiroomName}>{`${hotel.room.toUpperCase()}`}</Card.Title>
+                                    <Card.Img
+                                        src={hotel.image}
+                                        alt={hotel.room}
+                                        style={{
+                                            ...styles.roomImage,
+                                            ...(hoverIndex === index ? styles.roomImageHover : {}),
+                                        }}
+                                    >
+                                    </Card.Img>
+                                    <Card.ImgOverlay
+                                        style={{
+                                            ...styles.roomOverlay,
+                                            ...(hoverIndex === index ? styles.roomOverlayHover : {}),
+                                        }}
+                                    >
+                                        <Card.Title style={styles.roomName}>{`${hotel.room.toUpperCase()}`}</Card.Title>
+                                        <Card.Text style={styles.roomCount}>{`${hotel.count} Phòng`}</Card.Text>
+                                        <Card.Text style={styles.roomDes}>{`Mô tả : ${hotel.Descriptions}`}</Card.Text>
+                                    </Card.ImgOverlay>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
+                    <Button
+                        style={styles.roomButton}
+                        onMouseOver={(e) => (e.target.style.backgroundColor = styles.roomButtonHover.backgroundColor, e.target.style.color = styles.roomButtonHover.color)}
+                        onMouseOut={(e) => (e.target.style.backgroundColor = styles.roomButton.backgroundColor, e.target.style.color = styles.roomButton.color)}
+                    >
+                        XEM TẤT CẢ
+                    </Button>
+                </Container>
+            </div>
             <Container style={styles.bigcontainer} className="py-5">
-                <div style={styles.heroSection}>
-                    <div style={styles.backgroundImage}></div>
-                    <Container style={styles.searchBox}>
-                        <h2 style={styles.Sheading}>Bạn lựa chọn du thuyền Hạ Long nào?</h2>
-                        <p style={styles.subText}>Hơn 100 tour du thuyền hạng sang giá tốt đang chờ bạn</p>
-                        <Form style={styles.formGroup}>
-                            <Form.Control type="text" placeholder="Nhập tên du thuyền" style={styles.searchInput} />
-                            <Form.Select style={styles.searchInput1}>
-                                <option>Tất cả địa điểm</option>
-                            </Form.Select>
-                            <Form.Select style={styles.searchInput1}>
-                                <option>Tất cả mức giá</option>
-                            </Form.Select>
-                            <Button style={styles.Searchbutton}>Tìm kiếm</Button>
-                        </Form>
-                    </Container>
-                </div>
                 <div style={styles.titlecontainer}>
                     <div>
-                        <h1 style={styles.titleheading}>Hệ thống khách sạn</h1>
+                        <h1 style={styles.titleheading}>Khách sạn nổi bật</h1>
                         <h1 style={styles.titleheading}>Của chúng tôi</h1>
                         <div style={styles.underline}></div>
                     </div>
@@ -508,25 +629,6 @@ const HomePage = () => {
                     ))}
                 </div>
             </div>
-            <Container style={styles.bigcontainer} className="py-5">
-                <Container style={styles.desContainer}>
-                    <h1 className="fw-bold">Các điểm đến của Mixivivu</h1>
-                    <p style={{ marginBottom: '80px' }}>Khám phá vẻ đẹp tuyệt vời của Du thuyền Hạ Long: Hành <br /> trình đến thiên đường thiên nhiên</p>
-                    <Row className="mt-4" >
-                        {destinations.map((dest, index) => (
-                            <Col key={index} md={4} className="d-flex justify-content-center">
-                                <Card style={styles.desCard}>
-                                    <Card.Img variant="top" src={dest.image} style={styles.desCardImg} />
-                                    <Card.Body className="text-center">
-                                        <Card.Title style={styles.desCardTitle}>{dest.title}</Card.Title>
-                                        <Button variant="light" style={styles.desButton}>Xem ngay</Button>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </Container>
         </div>
     );
 };
