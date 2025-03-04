@@ -16,6 +16,9 @@ import ProfilePage from "../pages/ProfilePage";
 import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
+import ProfilePage from "../pages/ProfilePage";
+import ContactPage from "../pages/ContactPage";
+
 export const routes = [
   {
     path: "/Blog",
@@ -70,7 +73,6 @@ export const routes = [
     isShowHeader: true,
     isPrivate: false,
   },
-
   {
     path: "/login",
     page: LoginPage,
@@ -113,11 +115,16 @@ export const routes = [
     isShowHeader: true,
     isPrivate: false,
   },
-  ,
   {
     path: "/profile",
     page: ProfilePage,
     isShowHeader: true,
     isPrivate: true,
+  },
+  {
+    path: "/contact",
+    page: ContactPage,
+    isShowHeader: true,
+    isPrivate: false,
   },
 ];

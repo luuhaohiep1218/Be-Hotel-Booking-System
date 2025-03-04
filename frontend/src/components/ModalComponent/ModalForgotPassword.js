@@ -84,7 +84,7 @@ const ModalForgotPassword = ({ isModalOpen, setIsModalOpen }) => {
     } catch (error) {
       notification.error({
         message: "Lỗi",
-        description: "Có lỗi xảy ra, vui lòng thử lại",
+        description: "Email của bạn không tồn tại trong hệ thống",
       });
     }
     setLoading(false);

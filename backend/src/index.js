@@ -14,6 +14,7 @@ const authRouter = require("./routes/authRouter");
 const uploadRouter = require("./routes/uploadRouter");
 const feedbackRouter = require("./routes/feedbackRouter");
 const userRouter = require("./routes/userRouter");
+const blogRouter = require("./routes/blogRouter");
 
 const User = require("./models/UserModel");
 
@@ -40,7 +41,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
   })
-)
+);
 
 passport.use(
   new GoogleStrategy(
@@ -88,6 +89,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/user", userRouter);
+app.use("/api/blog", blogRouter);
 
 app.use(errorHandle);
 
