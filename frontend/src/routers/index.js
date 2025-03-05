@@ -1,33 +1,130 @@
-import NewsPage from "../pages/NewsPage";
-import ServicePage from "../pages/ServicePage";
+import AboutUs from "../pages/AboutUsPage";
+import BookingHotelPage from "../pages/BookingHotelPage";
 import CustomerPage from "../pages/CustomerPage";
+import FeedbackPage from "../pages/FeedbackPage";
+import HomePage from "../pages/HomePage";
+import LoginPage from "../pages/LoginPage";
+import LoginSuccess from "../pages/LoginSuccess";
 import OfferPage from "../pages/OfferPage";
-import BlogDetailPage from "../pages/BlogDetailPage";
+import ServicePage from "../pages/ServicePage";
+import SignupPage from "../pages/SignupPage";
+import ProfilePage from "../pages/ProfilePage";
+import AllNewsPage from "../pages/AllNewsPage";
+import NewsDetail from "../pages/NewsDetail";
+import OnlyNew from "../pages/OnlyNew";
+import OnlyDiscount from "../pages/OnlyDiscount";
+import DiscountDetail from "../pages/DiscountDetail";
+import OnlyFeedbacks from "../pages/OnlyFeedback";
+import FeedbackDetail from "../pages/FeedBackDetail";
 
 export const routes = [
   {
-    path: "/",
-    page: NewsPage,
+    path: "/Blog",
+    page: AllNewsPage,
+    isShowHeader: true,
+  },
+  {
+    path: "/onlyNew",
+    page: OnlyNew,
+    isShowHeader: true,
+  },
+  {
+    path: "/onlyDiscount",
+    page: OnlyDiscount,
+    isShowHeader: true,
+  },
+  {
+    path: "/onlyFeedbacks",
+    page: OnlyFeedbacks,
+    isShowHeader: true,
+  },
+  {
+    path: "/news/:id",
+    page: NewsDetail,
+    isShowHeader: true,
+  },
+  {
+    path: "/discount/:id",
+    page: DiscountDetail,
+    isShowHeader: true,
+  },
+  {
+    path: "/feedback/:id",
+    page: FeedbackDetail,
     isShowHeader: true,
   },
   {
     path: "/service",
     page: ServicePage,
     isShowHeader: true,
+    isPrivate: false,
   },
   {
     path: "/customer",
     page: CustomerPage,
     isShowHeader: true,
+    isPrivate: false,
   },
   {
     path: "/offer",
     page: OfferPage,
     isShowHeader: true,
+    isPrivate: false,
+  },
+
+  {
+    path: "/login",
+    page: LoginPage,
+    isShowHeader: true,
+    isPrivate: false,
   },
   {
-    path: "/blog-detail",
-    page: BlogDetailPage,
+    path: "/signup",
+    page: SignupPage,
     isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/feedback",
+    page: FeedbackPage,
+    isShowHeader: true,
+    isPrivate: true,
+  },
+  {
+    path: "/login-success",
+    page: LoginSuccess,
+    isShowHeader: false,
+    isPrivate: false,
+  },
+  {
+    path: "/home",
+    page: HomePage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/",
+    page: HomePage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/us",
+    page: AboutUs,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/booking-hotel",
+    page: BookingHotelPage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  ,
+  {
+    path: "/profile",
+    page: ProfilePage,
+    isShowHeader: true,
+    isPrivate: true,
   },
 ];

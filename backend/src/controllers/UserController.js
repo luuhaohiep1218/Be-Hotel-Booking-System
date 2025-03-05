@@ -1,29 +1,50 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
-const User = require("../models/User");
+const User = require("../models/UserModel");
 const { generateToken } = require("../middlewares/Auth");
 
 const updateUserProfile = asyncHandler(async (req, res) => {
-  const { name, phone } = req.body;
+  const { full_name, phone } = req.body;
+
   try {
     const user = await User.findById(req.user._id);
-    if (user) {
-      user.name = name || user.name;
-      user.phone = phone || user.phone;
-      const updateUser = await user.save();
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        isAdmin: user.isAdmin,
-      });
-    } else {
-      res.status(401);
-      throw new Error("Invalid user data");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // Cập nhật chỉ những trường hợp lệ
+    const updatedFields = {};
+    if (full_name) updatedFields.full_name = full_name;
+    if (phone) {
+      if (!/^\d{10}$/.test(phone)) {
+        return res
+          .status(400)
+          .json({ message: "Phone number must be exactly 10 digits" });
+      }
+      updatedFields.phone = phone;
+    }
+
+    // Chỉ update những trường hợp lệ, tránh ảnh hưởng password_hash
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      updatedFields,
+      {
+        new: true, // Trả về user sau khi cập nhật
+        runValidators: true, // Kiểm tra validate trong model
+      }
+    );
+
+    res.json({
+      _id: updatedUser._id,
+      full_name: updatedUser.full_name,
+      phone: updatedUser.phone,
+      email: updatedUser.email,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 
@@ -46,70 +67,36 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-  try {
-    const user = await User.findById(req.user._id);
 
-    if (bcrypt.compare(oldPassword, user.password) && user) {
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
-      await user.save();
-      res.json({ message: "Change password successful" });
-    } else {
-      res.status(401);
-      throw new Error("Invalid old password");
-    }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  // 🔍 Kiểm tra dữ liệu đầu vào
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin" });
   }
-});
-
-const getFollowMovies = asyncHandler(async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).populate("followMovies");
-    if (user) {
-      res.json(user.followMovies);
-    } else {
-      res.status(404);
-      throw new Error("User not found");
-    }
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-const followMovies = asyncHandler(async (req, res) => {
-  const { movieId } = req.body;
 
   try {
     const user = await User.findById(req.user._id);
-
-    if (user) {
-      const isMovieFollow = user.followMovies.some(
-        (movie) => movie.toString() === movieId
-      );
-
-      if (isMovieFollow) {
-        // Remove movieId from followMovies array
-        user.followMovies = user.followMovies.filter(
-          (movie) => movie.toString() !== movieId
-        );
-      } else {
-        // Add movieId to followMovies array
-        user.followMovies.push(movieId);
-      }
-
-      await user.save();
-
-      res.status(200).json({
-        message: isMovieFollow ? "Movie unfollowed" : "Movie followed",
-        followMovies: user.followMovies,
-      });
-    } else {
-      res.status(404);
-      throw new Error("User not found");
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
     }
+
+    if (!user.password_hash) {
+      return res
+        .status(500)
+        .json({ message: "Lỗi hệ thống: Không tìm thấy mật khẩu" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password_hash);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Mật khẩu cũ không đúng" });
+    }
+
+    user.password_hash = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: "Thay đổi mật khẩu thành công" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("❌ Lỗi khi đổi mật khẩu:", error);
+    res.status(500).json({ message: "Lỗi server, thử lại sau" });
   }
 });
 
@@ -122,11 +109,34 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
+const getProfileUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select(
+      "-password_hash -refreshToken"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      full_name: user.full_name,
+      email: user.email,
+      phone: user.phone,
+      authProvider: user.authProvider,
+      createdAt: user.createdAt,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
 module.exports = {
   updateUserProfile,
   deleteUser,
   changePassword,
-  getFollowMovies,
-  followMovies,
   getUsers,
+  getProfileUser,
 };
