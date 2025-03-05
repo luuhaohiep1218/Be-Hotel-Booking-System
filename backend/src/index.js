@@ -41,7 +41,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
   })
-);
+)
 
 passport.use(
   new GoogleStrategy(

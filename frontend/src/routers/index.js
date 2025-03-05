@@ -1,4 +1,6 @@
 import AboutUs from "../pages/AboutUsPage";
+import BookingHotelPage from "../pages/BookingHotelPage";
+import CustomerPage from "../pages/CustomerPage";
 import AllNewsPage from "../pages/AllNewsPage";
 import CustomerPage from "../pages/CustomerPage";
 import DiscountDetail from "../pages/DiscountDetail";
@@ -7,6 +9,17 @@ import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
+import OfferPage from "../pages/OfferPage";
+import ServicePage from "../pages/ServicePage";
+import SignupPage from "../pages/SignupPage";
+import ProfilePage from "../pages/ProfilePage";
+import AllNewsPage from "../pages/AllNewsPage";
+import NewsDetail from "../pages/NewsDetail";
+import OnlyNew from "../pages/OnlyNew";
+import OnlyDiscount from "../pages/OnlyDiscount";
+import DiscountDetail from "../pages/DiscountDetail";
+import OnlyFeedbacks from "../pages/OnlyFeedback";
+import FeedbackDetail from "../pages/FeedBackDetail";
 import NewsDetail from "../pages/NewsDetail";
 import OfferPage from "../pages/OfferPage";
 import OnlyDiscount from "../pages/OnlyDiscount";
@@ -104,12 +117,24 @@ export const routes = [
     isPrivate: false,
   },
   {
+    path: "/",
+    page: HomePage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
     path: "/us",
     page: AboutUs,
     isShowHeader: true,
     isPrivate: false,
   },
   {
+    path: "/booking-hotel",
+    page: BookingHotelPage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  ,
     path: "/room-list",
     page: RoomListPage,
     isShowHeader: true,
