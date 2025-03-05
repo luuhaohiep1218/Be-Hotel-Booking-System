@@ -1,6 +1,10 @@
 import AboutUs from "../pages/AboutUsPage";
 import BookingHotelPage from "../pages/BookingHotelPage";
 import CustomerPage from "../pages/CustomerPage";
+import AllNewsPage from "../pages/AllNewsPage";
+import CustomerPage from "../pages/CustomerPage";
+import DiscountDetail from "../pages/DiscountDetail";
+import FeedbackDetail from "../pages/FeedBackDetail";
 import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
@@ -16,6 +20,17 @@ import OnlyDiscount from "../pages/OnlyDiscount";
 import DiscountDetail from "../pages/DiscountDetail";
 import OnlyFeedbacks from "../pages/OnlyFeedback";
 import FeedbackDetail from "../pages/FeedBackDetail";
+import NewsDetail from "../pages/NewsDetail";
+import OfferPage from "../pages/OfferPage";
+import OnlyDiscount from "../pages/OnlyDiscount";
+import OnlyFeedbacks from "../pages/OnlyFeedback";
+import OnlyNew from "../pages/OnlyNew";
+import ProfilePage from "../pages/ProfilePage";
+import RoomListPage from "../pages/RoomListPage";
+import ServicePage from "../pages/ServicePage";
+import SignupPage from "../pages/SignupPage";
+import ProfilePage from "../pages/ProfilePage";
+import ContactPage from "../pages/ContactPage";
 
 export const routes = [
   {
@@ -71,7 +86,6 @@ export const routes = [
     isShowHeader: true,
     isPrivate: false,
   },
-
   {
     path: "/login",
     page: LoginPage,
@@ -97,7 +111,7 @@ export const routes = [
     isPrivate: false,
   },
   {
-    path: "/home",
+    path: "/",
     page: HomePage,
     isShowHeader: true,
     isPrivate: false,
@@ -121,10 +135,21 @@ export const routes = [
     isPrivate: false,
   },
   ,
+    path: "/room-list",
+    page: RoomListPage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
   {
     path: "/profile",
     page: ProfilePage,
     isShowHeader: true,
     isPrivate: true,
+  },
+  {
+    path: "/contact",
+    page: ContactPage,
+    isShowHeader: true,
+    isPrivate: false,
   },
 ];

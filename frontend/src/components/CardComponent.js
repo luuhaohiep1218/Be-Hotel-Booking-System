@@ -41,7 +41,7 @@ const PaginationWrapper = styled.div`
   padding-bottom: 20px;
 `;
 
-const CardComponent = () => {
+const CardComponent = ({children, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6; // Số card hiển thị mỗi trang
 
@@ -61,6 +61,7 @@ const CardComponent = () => {
             <Col key={item.id} span={8}>
               <Card hoverable cover={<img alt="example" src={item.image} />}>
                 <Meta title={item.title} description={item.description} />
+                {children}
               </Card>
             </Col>
           ))}
