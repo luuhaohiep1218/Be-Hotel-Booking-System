@@ -1,11 +1,41 @@
 const asyncHandler = require("express-async-handler");
+
 const Blog = require("../models/BlogModel");
 
 const getAllBlog = asyncHandler(async (req, res) => {
   try {
-    const blogs = await Blog.find({});
-    res.json(blogs);
-  } catch (error) {}
+    const { category } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    const filter = category
+      ? { category: { $regex: new RegExp(category, "i") } }
+      : {};
+
+    // ✅ Đếm số blog phù hợp với bộ lọc
+    const totalBlogs = await Blog.countDocuments(filter);
+    const totalPages = Math.ceil(totalBlogs / limit);
+
+    // ✅ Lấy danh sách blog theo filter
+    const blogs = await Blog.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.json({
+      page,
+      limit,
+      totalBlogs,
+      totalPages,
+      blogs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách blog",
+      error: error.message,
+    });
+  }
 });
 
 const createBlog = asyncHandler(async (req, res) => {
@@ -67,7 +97,7 @@ const getBlogByCategory = asyncHandler(async (req, res) => {
       limit,
       totalBlogs,
       totalPages,
-      data: blogs,
+      blogs: blogs,
     });
   } catch (error) {
     res.status(500).json({
@@ -77,4 +107,56 @@ const getBlogByCategory = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { getAllBlog, createBlog, importBlogs, getBlogByCategory };
+const getBlogById = asyncHandler(async (req, res) => {
+  try {
+    const { blogId } = req.params; // Lấy blogId từ params
+
+    if (!blogId) {
+      return res.status(400).json({ message: "Blog ID is required" });
+    }
+
+    // Tìm và cập nhật số lượt xem
+    const blog = await Blog.findByIdAndUpdate(
+      blogId,
+      { $inc: { views: 1 } }, // Tăng `views` lên 1
+      { new: true, runValidators: true } // Trả về document đã cập nhật
+    );
+
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    res.status(200).json(blog);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+const getBlogProminent = asyncHandler(async (req, res) => {
+  try {
+    const blog = await Blog.findOne({ views: { $exists: true } }).sort({
+      views: -1,
+    });
+
+    if (!blog) {
+      return res.status(404).json({ message: "No blogs with views found" });
+    }
+
+    res.status(200).json(blog);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+module.exports = {
+  getAllBlog,
+  createBlog,
+  importBlogs,
+  getBlogByCategory,
+  getBlogById,
+  getBlogProminent,
+};

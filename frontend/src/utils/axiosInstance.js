@@ -9,7 +9,7 @@ export const refreshAccessToken = async () => {
   try {
     console.log("🔄 Gọi API refresh-token...");
 
-    const { data } = await API.get("/auth/refresh-token", {
+    const { data } = await API.post("/auth/refresh-token", {
       withCredentials: true,
     });
 
@@ -28,12 +28,10 @@ API.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // 🛑 Nếu request là logout, không gọi refresh token
     if (originalRequest.url.includes("/auth/logout")) {
       return Promise.reject(error);
     }
 
-    // 🛑 Nếu lỗi từ trang login, không gọi refresh-token
     if (
       originalRequest.url.includes("/login") ||
       error.response?.status === 400 || // Bad Request (sai email, pass)
@@ -42,7 +40,6 @@ API.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // ✅ Chỉ gọi refresh nếu lỗi là 401 Unauthorized
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // Đánh dấu để tránh loop vô hạn
       const newAccessToken = await refreshAccessToken();

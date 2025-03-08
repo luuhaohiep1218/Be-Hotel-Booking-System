@@ -6,7 +6,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/logo/logo-golodge.png";
 import { useHotelBooking } from "../../context/HotelBookingContext";
-import API, { refreshAccessToken } from "../../utils/axiosInstance";
 
 const StyledNavbar = styled(Navbar)`
   position: sticky;
@@ -135,48 +134,16 @@ const HeaderComponent = () => {
 
   const handleLogout = async () => {
     try {
-      if (!accessToken) {
-        console.warn("❌ Không có accessToken, thực hiện logout local.");
-        setAccessToken(null);
-        localStorage.removeItem("accessToken");
-        setUser(null);
-        navigate("/login", { replace: true });
-        return;
-      }
+      console.warn("🚪 Đang logout...");
 
-      await API.post("/auth/logout", null, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-
-      console.log("✅ API logout thành công.");
-    } catch (error) {
-      console.error("🔥 Lỗi logout:", error.response?.data || error.message);
-
-      if (error.response?.status === 401) {
-        console.log("🔄 Token hết hạn, thử refresh...");
-        const newToken = await refreshAccessToken();
-
-        if (newToken) {
-          console.log("✅ Refresh thành công, tiếp tục logout...");
-          await API.post("/auth/logout", null, {
-            headers: { Authorization: `Bearer ${newToken}` },
-          });
-        } else {
-          console.error("❌ Refresh token thất bại, bỏ qua API logout.");
-        }
-      }
-    } finally {
       // 🛑 Xóa accessToken & chuyển về trang login
       setAccessToken(null);
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken"); // 🔄 Dùng sessionStorage thay vì localStorage
       setUser(null);
       navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("🔥 Lỗi logout:", error.message);
     }
-  };
-
-  const logoutHand = () => {
-    localStorage.removeItem("accessToken");
-    navigate("/login");
   };
 
   const items = [
@@ -216,7 +183,7 @@ const HeaderComponent = () => {
             {accessToken && (
               <StyledNavLink to="/feedback">ĐÁNH GIÁ</StyledNavLink>
             )}
-             <StyledNavLink to="/Blog">BLOG</StyledNavLink>
+            <StyledNavLink to="/Blog">BLOG</StyledNavLink>
           </StyledNav>
           {accessToken ? (
             <>

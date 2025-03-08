@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import { Form, Input, Button, Typography, Card, Row, Col } from "antd";
 import styled from "styled-components";
 
@@ -33,16 +31,6 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const MapContainer = styled.div`
-  width: 100%;
-  height: 400px;
-`;
-
-const center = {
-  lat: 21.016573,
-  lng: 105.829216,
-};
-
 const ContactPage = () => {
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -50,21 +38,9 @@ const ContactPage = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  const [markerPosition] = useState(center);
 
   return (
     <>
-      <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
-        <MapContainer>
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "100%" }}
-            center={center}
-            zoom={15}
-          >
-            <Marker position={markerPosition} />
-          </GoogleMap>
-        </MapContainer>
-      </LoadScript>
       <Container>
         <StyledCard>
           <Title level={2}>Khám phá Hạ Long thông qua Du thuyền</Title>

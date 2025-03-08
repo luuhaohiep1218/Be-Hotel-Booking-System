@@ -17,7 +17,7 @@ const LoginSuccess = () => {
     console.log("🔹 Token từ URL:", token);
 
     if (token && token.trim() !== "") {
-      localStorage.setItem("accessToken", token);
+      sessionStorage.setItem("accessToken", token); // 🔄 Dùng sessionStorage thay vì localStorage
       setAccessToken(token); // ✅ Cập nhật vào state của app
 
       setTimeout(() => {
