@@ -1,8 +1,6 @@
 import AboutUs from "../pages/AboutUsPage";
 import BookingHotelPage from "../pages/BookingHotelPage";
-import CustomerPage from "../pages/CustomerPage";
 import AllNewsPage from "../pages/AllNewsPage";
-import CustomerPage from "../pages/CustomerPage";
 import DiscountDetail from "../pages/DiscountDetail";
 import FeedbackDetail from "../pages/FeedBackDetail";
 import FeedbackPage from "../pages/FeedbackPage";
@@ -13,19 +11,9 @@ import OfferPage from "../pages/OfferPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
-import AllNewsPage from "../pages/AllNewsPage";
 import NewsDetail from "../pages/NewsDetail";
-import OnlyNew from "../pages/OnlyNew";
-import OnlyDiscount from "../pages/OnlyDiscount";
-import DiscountDetail from "../pages/DiscountDetail";
-import OnlyFeedbacks from "../pages/OnlyFeedback";
-import FeedbackDetail from "../pages/FeedBackDetail";
-import NewsDetail from "../pages/NewsDetail";
-import OfferPage from "../pages/OfferPage";
-import ProfilePage from "../pages/ProfilePage";
+
 import RoomListPage from "../pages/RoomListPage";
-import ServicePage from "../pages/ServicePage";
-import SignupPage from "../pages/SignupPage";
 import ContactPage from "../pages/ContactPage";
 
 export const routes = [
@@ -52,12 +40,6 @@ export const routes = [
   {
     path: "/service",
     page: ServicePage,
-    isShowHeader: true,
-    isPrivate: false,
-  },
-  {
-    path: "/customer",
-    page: CustomerPage,
     isShowHeader: true,
     isPrivate: false,
   },
@@ -115,7 +97,7 @@ export const routes = [
     isShowHeader: true,
     isPrivate: false,
   },
-  ,
+  {
     path: "/room-list",
     page: RoomListPage,
     isShowHeader: true,
