@@ -19,8 +19,6 @@ const protect = asyncHandler(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("🔍 Decoded Token:", decoded);
-
     if (!decoded || (!decoded.id && !decoded._id)) {
       return res.status(401).json({ message: "Token không hợp lệ" });
     }

@@ -14,16 +14,16 @@ export const HotelBookingProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(
-    localStorage.getItem("accessToken")
+    sessionStorage.getItem("accessToken") || null
   );
 
   useEffect(() => {
     if (accessToken && accessToken !== prevAccessToken.current) {
-      localStorage.setItem("accessToken", accessToken);
+      sessionStorage.setItem("accessToken", accessToken);
       fetchUserProfile();
       prevAccessToken.current = accessToken; // Cập nhật token trước đó
     } else if (!accessToken) {
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
       setUser(null);
     }
   }, [accessToken]);
@@ -54,7 +54,7 @@ export const HotelBookingProvider = ({ children }) => {
 
   const handleLogout = () => {
     setAccessToken(null);
-    localStorage.removeItem("accessToken");
+    sessionStorage.removeItem("accessToken");
     setUser(null);
   };
 

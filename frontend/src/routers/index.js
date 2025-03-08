@@ -9,9 +9,6 @@ import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
 import NewsDetail from "../pages/NewsDetail";
 import OfferPage from "../pages/OfferPage";
-import OnlyDiscount from "../pages/OnlyDiscount";
-import OnlyFeedbacks from "../pages/OnlyFeedback";
-import OnlyNew from "../pages/OnlyNew";
 import ProfilePage from "../pages/ProfilePage";
 import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
@@ -25,22 +22,7 @@ export const routes = [
     isShowHeader: true,
   },
   {
-    path: "/onlyNew",
-    page: OnlyNew,
-    isShowHeader: true,
-  },
-  {
-    path: "/onlyDiscount",
-    page: OnlyDiscount,
-    isShowHeader: true,
-  },
-  {
-    path: "/onlyFeedbacks",
-    page: OnlyFeedbacks,
-    isShowHeader: true,
-  },
-  {
-    path: "/news/:id",
+    path: "/Blog/:blogId",
     page: NewsDetail,
     isShowHeader: true,
   },
