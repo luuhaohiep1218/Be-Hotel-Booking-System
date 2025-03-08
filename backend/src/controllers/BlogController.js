@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-
 const Blog = require("../models/BlogModel");
 
 const getAllBlog = asyncHandler(async (req, res) => {
@@ -13,28 +12,19 @@ const getAllBlog = asyncHandler(async (req, res) => {
       ? { category: { $regex: new RegExp(category, "i") } }
       : {};
 
-    // ✅ Đếm số blog phù hợp với bộ lọc
     const totalBlogs = await Blog.countDocuments(filter);
     const totalPages = Math.ceil(totalBlogs / limit);
 
-    // ✅ Lấy danh sách blog theo filter
     const blogs = await Blog.find(filter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    res.json({
-      page,
-      limit,
-      totalBlogs,
-      totalPages,
-      blogs,
-    });
+    res.json({ page, limit, totalBlogs, totalPages, blogs });
   } catch (error) {
-    res.status(500).json({
-      message: "Lỗi khi lấy danh sách blog",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({ message: "Lỗi khi lấy danh sách blog", error: error.message });
   }
 });
 
@@ -60,7 +50,7 @@ const createBlog = asyncHandler(async (req, res) => {
 
 const importBlogs = asyncHandler(async (req, res) => {
   try {
-    const blogs = req.body; // Dữ liệu từ request (mảng các blog)
+    const blogs = req.body;
     if (!Array.isArray(blogs) || blogs.length === 0) {
       return res.status(400).json({ message: "Dữ liệu không hợp lệ" });
     }
@@ -91,40 +81,31 @@ const getBlogByCategory = asyncHandler(async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    res.json({
-      category,
-      page,
-      limit,
-      totalBlogs,
-      totalPages,
-      blogs: blogs,
-    });
+    res.json({ category, page, limit, totalBlogs, totalPages, blogs });
   } catch (error) {
-    res.status(500).json({
-      message: "Lỗi khi lấy blog theo category",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({
+        message: "Lỗi khi lấy blog theo category",
+        error: error.message,
+      });
   }
 });
 
 const getBlogById = asyncHandler(async (req, res) => {
   try {
-    const { blogId } = req.params; // Lấy blogId từ params
+    const { blogId } = req.params;
 
-    if (!blogId) {
+    if (!blogId)
       return res.status(400).json({ message: "Blog ID is required" });
-    }
 
-    // Tìm và cập nhật số lượt xem
     const blog = await Blog.findByIdAndUpdate(
       blogId,
-      { $inc: { views: 1 } }, // Tăng `views` lên 1
-      { new: true, runValidators: true } // Trả về document đã cập nhật
+      { $inc: { views: 1 } },
+      { new: true, runValidators: true }
     );
 
-    if (!blog) {
-      return res.status(404).json({ message: "Blog not found" });
-    }
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
 
     res.status(200).json(blog);
   } catch (error) {
@@ -140,15 +121,52 @@ const getBlogProminent = asyncHandler(async (req, res) => {
       views: -1,
     });
 
-    if (!blog) {
+    if (!blog)
       return res.status(404).json({ message: "No blogs with views found" });
-    }
 
     res.status(200).json(blog);
   } catch (error) {
     res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+// ✅ Cập nhật Blog
+const updateBlog = asyncHandler(async (req, res) => {
+  try {
+    const { blogId } = req.params;
+    const updates = req.body;
+
+    const updatedBlog = await Blog.findByIdAndUpdate(blogId, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedBlog)
+      return res.status(404).json({ message: "Blog không tồn tại" });
+
+    res.json({ message: "Cập nhật blog thành công", blog: updatedBlog });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi cập nhật blog", error: error.message });
+  }
+});
+
+// ✅ Xóa Blog
+const deleteBlog = asyncHandler(async (req, res) => {
+  try {
+    const { blogId } = req.params;
+
+    const deletedBlog = await Blog.findByIdAndDelete(blogId);
+
+    if (!deletedBlog)
+      return res.status(404).json({ message: "Blog không tồn tại" });
+
+    res.json({ message: "Xóa blog thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi xóa blog", error: error.message });
   }
 });
 
@@ -159,4 +177,6 @@ module.exports = {
   getBlogByCategory,
   getBlogById,
   getBlogProminent,
+  updateBlog,
+  deleteBlog,
 };

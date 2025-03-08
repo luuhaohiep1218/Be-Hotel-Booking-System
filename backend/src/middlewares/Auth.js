@@ -54,9 +54,18 @@ const adminMiddleware = (req, res, next) => {
   }
 };
 
+const mktMiddleware = (req, res, next) => {
+  if (req.user && req.user.role === "MKT") {
+    next(); // User is MKT, proceed to the next middleware
+  } else {
+    res.status(403).json({ message: "Access denied: MKT only" });
+  }
+};
+
 module.exports = {
   generateToken,
   protect,
   adminMiddleware,
   generateRefreshToken,
+  mktMiddleware,
 };
