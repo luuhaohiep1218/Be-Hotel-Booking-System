@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
-const { generateToken } = require("../middlewares/Auth");
 
 const updateUserProfile = asyncHandler(async (req, res) => {
   const { full_name, phone } = req.body;

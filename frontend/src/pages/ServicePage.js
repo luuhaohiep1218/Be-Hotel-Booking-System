@@ -1,63 +1,70 @@
-import { React, useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Form, Carousel } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import images from '../assets/images/pages.jpg';
-
+import { React, useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Carousel,
+} from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import images from "../assets/images/pages.jpg";
 
 const services = [
   {
     id: 1,
-    image: 'https://storage.googleapis.com/a1aa/image/spa.jpg',
-    rating: '4.9 (15 đánh giá)',
-    location: 'Hà Nội',
-    title: 'Dịch vụ Spa & Massage cao cấp',
-    details: 'Liệu trình thư giãn toàn thân - 90 phút',
-    price: '750,000',
+    image: "https://storage.googleapis.com/a1aa/image/spa.jpg",
+    rating: "4.9 (15 đánh giá)",
+    location: "Hà Nội",
+    title: "Dịch vụ Spa & Massage cao cấp",
+    details: "Liệu trình thư giãn toàn thân - 90 phút",
+    price: "750,000",
   },
   {
     id: 2,
-    image: 'https://storage.googleapis.com/a1aa/image/hotel.jpg',
-    rating: '5.0 (10 đánh giá)',
-    location: 'Đà Nẵng',
-    title: 'Dịch vụ lưu trú khách sạn 5 sao',
-    details: 'Phòng Deluxe - View biển - Ăn sáng miễn phí',
-    price: '2,500,000',
+    image: "https://storage.googleapis.com/a1aa/image/hotel.jpg",
+    rating: "5.0 (10 đánh giá)",
+    location: "Đà Nẵng",
+    title: "Dịch vụ lưu trú khách sạn 5 sao",
+    details: "Phòng Deluxe - View biển - Ăn sáng miễn phí",
+    price: "2,500,000",
   },
   {
     id: 3,
-    image: 'https://storage.googleapis.com/a1aa/image/car-rental.jpg',
-    rating: '4.8 (7 đánh giá)',
-    location: 'TP. Hồ Chí Minh',
-    title: 'Dịch vụ cho thuê xe sang trọng',
-    details: 'Xe Mercedes S-Class - Tài xế riêng',
-    price: '3,200,000',
+    image: "https://storage.googleapis.com/a1aa/image/car-rental.jpg",
+    rating: "4.8 (7 đánh giá)",
+    location: "TP. Hồ Chí Minh",
+    title: "Dịch vụ cho thuê xe sang trọng",
+    details: "Xe Mercedes S-Class - Tài xế riêng",
+    price: "3,200,000",
   },
   {
     id: 4,
-    image: 'https://storage.googleapis.com/a1aa/image/event.jpg',
-    rating: '5.0 (5 đánh giá)',
-    location: 'Hà Nội',
-    title: 'Dịch vụ tổ chức sự kiện chuyên nghiệp',
-    details: 'Gói tiệc cưới, hội nghị, sự kiện doanh nghiệp',
-    price: '15,000,000',
+    image: "https://storage.googleapis.com/a1aa/image/event.jpg",
+    rating: "5.0 (5 đánh giá)",
+    location: "Hà Nội",
+    title: "Dịch vụ tổ chức sự kiện chuyên nghiệp",
+    details: "Gói tiệc cưới, hội nghị, sự kiện doanh nghiệp",
+    price: "15,000,000",
   },
   {
     id: 5,
-    image: 'https://storage.googleapis.com/a1aa/image/fitness.jpg',
-    rating: '4.9 (12 đánh giá)',
-    location: 'Đà Nẵng',
-    title: 'Gói tập Gym & Yoga cao cấp',
-    details: 'Thẻ thành viên 1 tháng - Hướng dẫn viên riêng',
-    price: '1,200,000',
+    image: "https://storage.googleapis.com/a1aa/image/fitness.jpg",
+    rating: "4.9 (12 đánh giá)",
+    location: "Đà Nẵng",
+    title: "Gói tập Gym & Yoga cao cấp",
+    details: "Thẻ thành viên 1 tháng - Hướng dẫn viên riêng",
+    price: "1,200,000",
   },
   {
     id: 6,
-    image: 'https://storage.googleapis.com/a1aa/image/tour.jpg',
-    rating: '5.0 (6 đánh giá)',
-    location: 'Sa Pa',
-    title: 'Dịch vụ tour du lịch trải nghiệm',
-    details: 'Chuyến đi 2 ngày 1 đêm - Khám phá thiên nhiên',
-    price: '2,750,000',
+    image: "https://storage.googleapis.com/a1aa/image/tour.jpg",
+    rating: "5.0 (6 đánh giá)",
+    location: "Sa Pa",
+    title: "Dịch vụ tour du lịch trải nghiệm",
+    details: "Chuyến đi 2 ngày 1 đêm - Khám phá thiên nhiên",
+    price: "2,750,000",
   },
 ];
 
@@ -97,15 +104,18 @@ const reviews = [
 const destinations = [
   {
     title: "Vịnh Hạ Long",
-    image: "https://minio.fares.vn/mixivivu-dev/home-page/547b7d230cacd9f280bd3.jpg",
+    image:
+      "https://minio.fares.vn/mixivivu-dev/home-page/547b7d230cacd9f280bd3.jpg",
   },
   {
     title: "Vịnh Lan Hạ",
-    image: "https://minio.fares.vn/mixivivu-dev/home-page/6063b331c2be17e04eaf1.jpg",
+    image:
+      "https://minio.fares.vn/mixivivu-dev/home-page/6063b331c2be17e04eaf1.jpg",
   },
   {
     title: "Đảo Cát Bà",
-    image: "https://minio.fares.vn/mixivivu-dev/home-page/ded9108b6104b45aed152.jpg",
+    image:
+      "https://minio.fares.vn/mixivivu-dev/home-page/ded9108b6104b45aed152.jpg",
   },
 ];
 
@@ -208,92 +218,93 @@ const styles = {
     marginTop: "5px",
   },
   buttonmore: {
-    marginTop: '30px',
+    marginTop: "30px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
   },
   heroSection: {
-    position: 'relative',
-    width: '100%',
-    height: '700px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+    position: "relative",
+    width: "100%",
+    height: "700px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   },
   backgroundImage: {
-    borderRadius: '24px',
-    position: 'absolute',
+    borderRadius: "24px",
+    position: "absolute",
     top: 0,
     left: 0,
-    width: '100%',
-    backgroundImage: "url('https://i.pinimg.com/736x/3f/8a/19/3f8a196757826c71dc7fa4abade9673a.jpg')",
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    width: "100%",
+    backgroundImage:
+      "url('https://i.pinimg.com/736x/3f/8a/19/3f8a196757826c71dc7fa4abade9673a.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     zIndex: -1,
-    height: '500px',
+    height: "500px",
   },
   searchBox: {
-    border: '1px solid #ccc',
-    marginBottom: '-26%',
-    position: 'relative',
-    background: 'white',
-    padding: '30px',
-    borderRadius: '20px',
-    textAlign: 'center',
-    width: '70%',
-    boxShadow: '10px 10px 10px rgba(0, 0, 0, 0.2)'
+    border: "1px solid #ccc",
+    marginBottom: "-26%",
+    position: "relative",
+    background: "white",
+    padding: "30px",
+    borderRadius: "20px",
+    textAlign: "center",
+    width: "70%",
+    boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2)",
   },
   heading: {
-    fontSize: '22px',
-    fontWeight: 'bold',
-    marginBottom: '10px'
+    fontSize: "22px",
+    fontWeight: "bold",
+    marginBottom: "10px",
   },
   Sheading: {
-    fontSize: '36px',
-    fontWeight: 'bold',
-    marginBottom: '16px',
-    paddingTop: '16px',
+    fontSize: "36px",
+    fontWeight: "bold",
+    marginBottom: "16px",
+    paddingTop: "16px",
   },
   subText: {
-    fontSize: '18px',
-    color: '#777',
-    marginBottom: '40px'
+    fontSize: "18px",
+    color: "#777",
+    marginBottom: "40px",
   },
   formGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '10px'
+    display: "flex",
+    flexDirection: "row",
+    gap: "10px",
   },
   searchInput: {
     flex: 1,
-    padding: '8px',
-    borderRadius: '100px',
-    border: '1px solid #ccc',
+    padding: "8px",
+    borderRadius: "100px",
+    border: "1px solid #ccc",
   },
   searchInput1: {
     flex: 1,
-    padding: '2px 8px ',
-    borderRadius: '100px',
-    border: '1px solid #ccc',
-    maxWidth: '200px',
+    padding: "2px 8px ",
+    borderRadius: "100px",
+    border: "1px solid #ccc",
+    maxWidth: "200px",
   },
   Searchbutton: {
-    backgroundColor: '#40bfc1',
-    border: 'none',
-    padding: '10px 15px',
-    borderRadius: '100px',
-    color: 'white',
+    backgroundColor: "#40bfc1",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "100px",
+    color: "white",
   },
   recontainer: {
-    marginTop: '60px',
+    marginTop: "60px",
     background: "#EAF7F7",
     padding: "50px 0",
     textAlign: "center",
-    width: '100%',
-    borderRadius: '16px',
+    width: "100%",
+    borderRadius: "16px",
   },
   retitle: {
     fontSize: "28px",
@@ -313,30 +324,30 @@ const styles = {
     borderRadius: "15px",
     boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
     textAlign: "left",
-    height: '260px',
+    height: "260px",
   },
   quoteIcon: {
     color: "#17a2b8",
     fontSize: "24px",
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   reviewTitle: {
     fontSize: "24px",
     fontWeight: "bold",
     marginBottom: "10px",
-    height: '40px',
+    height: "40px",
   },
   reviewText: {
     fontSize: "16px",
     color: "#333",
     lineHeight: "1.6",
-    height: '84px',
+    height: "84px",
   },
   reviewerName: {
     marginTop: "15px",
     fontWeight: "bold",
     fontSize: "16px",
-    height: '60px',
+    height: "60px",
   },
   reviewerList: {
     display: "flex",
@@ -359,32 +370,30 @@ const styles = {
     marginBottom: "5rem",
   },
   desCard: {
-    width: "384px",
     width: "392px",
     borderRadius: "40px",
     overflow: "hidden",
     border: "none",
     boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-    padding: '20px',
+    padding: "20px",
   },
   desCardImg: {
-    width: '352px',
+    width: "352px",
     height: "216px",
     objectFit: "cover",
   },
   desCardTitle: {
     fontWeight: "bold",
-    fontSize: '22px',
+    fontSize: "22px",
   },
   desButton: {
     borderRadius: "20px",
     padding: "5px 15px",
     border: "1px solid #ddd",
-  }
+  },
 };
 
 const ServicePage = () => {
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isManualSelect, setIsManualSelect] = useState(false);
 
@@ -398,7 +407,7 @@ const ServicePage = () => {
   }, [reviews.length]);
 
   const handleSelectReviewer = (name) => {
-    const foundIndex = reviews.findIndex(review => review.name === name);
+    const foundIndex = reviews.findIndex((review) => review.name === name);
     if (foundIndex !== -1) {
       setCurrentIndex(foundIndex);
       setIsManualSelect(true);
@@ -414,7 +423,11 @@ const ServicePage = () => {
             <h2 style={styles.Sheading}>Bạn muốn đặt dịch vụ nào hôm nay?</h2>
             <p style={styles.subText}>ok</p>
             <Form style={styles.formGroup}>
-              <Form.Control type="text" placeholder="Nhập tên dịch vụ" style={styles.searchInput} />
+              <Form.Control
+                type="text"
+                placeholder="Nhập tên dịch vụ"
+                style={styles.searchInput}
+              />
               <Form.Select style={styles.searchInput1}>
                 <option>Tất cả dịch vụ</option>
                 <option>Dịch vụ thuê xe</option>
@@ -441,12 +454,17 @@ const ServicePage = () => {
             tiện nghi và trải nghiệm không thể quên. */}
           </p>
         </div>
-        <Row >
+        <Row>
           {services.map((cruise) => (
             <Col key={cruise.id} xs={12} sm={6} lg={4} className="mb-4">
-              <Card style={styles.card} >
+              <Card style={styles.card}>
                 <div style={styles.imageContainer}>
-                  <Card.Img style={styles.image} variant="top" src={cruise.image} alt={cruise.title} />
+                  <Card.Img
+                    style={styles.image}
+                    variant="top"
+                    src={cruise.image}
+                    alt={cruise.title}
+                  />
                   <div style={styles.ratingBadge}>
                     {cruise.rating} {cruise.reviews}
                   </div>
@@ -465,7 +483,10 @@ const ServicePage = () => {
           ))}
         </Row>
         <div style={styles.buttonmore}>
-          <Button variant="light" className="d-flex align-items-center border rounded-pill shadow-sm px-4 py-2">
+          <Button
+            variant="light"
+            className="d-flex align-items-center border rounded-pill shadow-sm px-4 py-2"
+          >
             <span className="text-gray-800">Xem tất cả dịch vụ</span>
             <i className="fas fa-arrow-right ml-2"></i>
           </Button>
@@ -474,7 +495,7 @@ const ServicePage = () => {
 
       <div style={styles.recontainer}>
         <h2 style={styles.retitle}>Đánh giá từ những người đã trải nghiệm</h2>
-        <p style={styles.resubtitle} >
+        <p style={styles.resubtitle}>
           Khách hàng chia sẻ cảm nghĩ về những dịch vụ của chúng tôi.
         </p>
         {isManualSelect ? (
@@ -521,15 +542,26 @@ const ServicePage = () => {
       <Container style={styles.bigcontainer} className="py-5">
         <Container style={styles.desContainer}>
           <h1 className="fw-bold">Các điểm đến của Mixivivu</h1>
-          <p style={{ marginBottom: '80px' }}>Khám phá vẻ đẹp tuyệt vời của Du thuyền Hạ Long: Hành <br /> trình đến thiên đường thiên nhiên</p>
-          <Row className="mt-4" >
+          <p style={{ marginBottom: "80px" }}>
+            Khám phá vẻ đẹp tuyệt vời của Du thuyền Hạ Long: Hành <br /> trình
+            đến thiên đường thiên nhiên
+          </p>
+          <Row className="mt-4">
             {destinations.map((dest, index) => (
               <Col key={index} md={4} className="d-flex justify-content-center">
                 <Card style={styles.desCard}>
-                  <Card.Img variant="top" src={dest.image} style={styles.desCardImg} />
+                  <Card.Img
+                    variant="top"
+                    src={dest.image}
+                    style={styles.desCardImg}
+                  />
                   <Card.Body className="text-center">
-                    <Card.Title style={styles.desCardTitle}>{dest.title}</Card.Title>
-                    <Button variant="light" style={styles.desButton}>Xem ngay</Button>
+                    <Card.Title style={styles.desCardTitle}>
+                      {dest.title}
+                    </Card.Title>
+                    <Button variant="light" style={styles.desButton}>
+                      Xem ngay
+                    </Button>
                   </Card.Body>
                 </Card>
               </Col>
