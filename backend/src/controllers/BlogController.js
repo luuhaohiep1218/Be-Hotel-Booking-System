@@ -13,7 +13,6 @@ const getAllBlog = asyncHandler(async (req, res) => {
       ? { category: { $regex: new RegExp(category, "i") } }
       : {};
 
-    // ✅ Đếm số blog phù hợp với bộ lọc
     const totalBlogs = await Blog.countDocuments(filter);
     const totalPages = Math.ceil(totalBlogs / limit);
 

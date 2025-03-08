@@ -43,6 +43,7 @@ const register = asyncHandler(async (req, res) => {
         full_name: user.full_name,
         email: user.email,
         phone: user.phone,
+        role: user.role,
         accessToken,
       });
     } else {
@@ -72,7 +73,7 @@ const login = asyncHandler(async (req, res) => {
         maxAge: 1 * 24 * 60 * 60 * 1000,
       });
 
-      res.json({ accessToken });
+      res.json({ accessToken, role: user.role });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }

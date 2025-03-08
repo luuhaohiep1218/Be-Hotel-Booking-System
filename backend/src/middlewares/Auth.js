@@ -53,10 +53,18 @@ const adminMiddleware = (req, res, next) => {
     res.status(403).json({ message: "Access denied: Admins only" });
   }
 };
+const staffMiddleware = (req, res, next) => {
+  if (req.user && req.user.role === "STAFF") {
+    next(); // Cho phép nhân viên và admin tiếp tục
+  } else {
+    res.status(403).json({ message: "Access denied: Staff only" });
+  }
+};
 
 module.exports = {
   generateToken,
   protect,
   adminMiddleware,
   generateRefreshToken,
+  staffMiddleware,
 };

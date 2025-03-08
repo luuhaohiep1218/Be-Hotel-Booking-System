@@ -1,3 +1,4 @@
+
 import { React, useState } from "react";
 import { Container, Row, Col, Card, Button, Form, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -157,6 +158,7 @@ const styles = {
     background: "#63c5da",
     marginTop: "5px",
   },
+
   filterSection: {
     padding: "20px",
     backgroundColor: "white",
@@ -224,13 +226,13 @@ const ServicePage = () => {
       priceRange: [0, 20000000], // Nếu có lọc giá, đặt giá trị mặc định
     });
 
+
     // Kiểm tra xem có checkbox nào không trước khi đặt lại
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     if (checkboxes.length > 0) {
       checkboxes.forEach((checkbox) => {
         checkbox.checked = false;
-      });
-    }
+      });    }
   };
 
 
