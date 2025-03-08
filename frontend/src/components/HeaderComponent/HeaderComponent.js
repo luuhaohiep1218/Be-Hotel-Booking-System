@@ -175,6 +175,9 @@ const HeaderComponent = () => {
           </Navbar.Brand>
           <StyledNav>
             <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
+            <StyledNavLink to="/customer">KHÁCH HÀNG</StyledNavLink>
+            <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
+            <StyledNavLink to="/booking-hotel">ĐẶT KHÁCH SẠN</StyledNavLink>
             <StyledNavLink to="/us">VỀ CHÚNG TÔI</StyledNavLink>
             <StyledNavLink to="/room-list">ĐẶT PHÒNG</StyledNavLink>
             {accessToken && (

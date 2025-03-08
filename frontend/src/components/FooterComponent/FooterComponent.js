@@ -1,6 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import styled from "styled-components";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import logo from "../../assets/logo/logo-footer.png";
 
 // Styled Components
 const FooterWrapper = styled.footer`
@@ -48,7 +49,7 @@ const FooterComponent = () => {
         <Row>
           {/* Cột 1: Logo + Thông tin công ty */}
           <Col md={4}>
-            <FooterLogo src="/logo.png" alt="Logo" />
+            <FooterLogo src={logo} alt="Logo" />
             <FooterText>Công ty TNHH Du Lịch và Dịch Vụ Mixivivu</FooterText>
             <FooterText>
               Tầng 7, số nhà 25, ngõ 38 phố Yên Lãng, Láng Hạ, Đống Đa, Hà Nội
