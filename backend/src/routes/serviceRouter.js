@@ -14,11 +14,13 @@ const {
   deleteService,
   getListServices,
   getServiceDetail,
+  getUniqueCategories,
 } = require("../controllers/ServiceController");
 
 const router = express.Router();
 
 router.get("/", getListServices);
+router.get("/categories", getUniqueCategories);
 router.get("/:serviceId", getServiceDetail);
 
 router.post("/", protect, staffMiddleware, createService);

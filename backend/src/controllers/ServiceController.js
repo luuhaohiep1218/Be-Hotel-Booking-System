@@ -255,10 +255,6 @@ const getServiceDetail = asyncHandler(async (req, res) => {
 
 const getListServices = asyncHandler(async (req, res) => {
   try {
-    // Lấy page và limit trước để tránh bị đưa vào filter
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12;
-
     // Parse query bằng aqp, loại bỏ page và limit khỏi filter
     const { filter, sort, population } = aqp(req.query, {
       whitelist: ["price", "rating", "category", "title"],
@@ -267,7 +263,7 @@ const getListServices = asyncHandler(async (req, res) => {
     if (filter.price && typeof filter.price === "object") {
       const priceConditions = {};
       Object.keys(filter.price).forEach((key) => {
-        const newKey = `$${key}`; // Chuyển "gt" thành "$gt"
+        const newKey = `$${key}`;
         priceConditions[newKey] = Number(filter.price[key]);
       });
       filter.price = priceConditions;
@@ -278,7 +274,7 @@ const getListServices = asyncHandler(async (req, res) => {
     if (filter.rating && typeof filter.rating === "object") {
       const ratingConditions = {};
       Object.keys(filter.rating).forEach((key) => {
-        const newKey = `$${key}`; // Chuyển "gt" thành "$gt"
+        const newKey = `$${key}`;
         ratingConditions[newKey] = Number(filter.rating[key]);
       });
       filter.rating = ratingConditions;
@@ -286,24 +282,38 @@ const getListServices = asyncHandler(async (req, res) => {
       filter.rating = Number(filter.rating);
     }
 
-    const skip = (page - 1) * limit;
+    // 🔥 Xử lý nhiều category - Nếu không có, hiển thị tất cả 🔥
+    if (filter.category) {
+      if (typeof filter.category === "string") {
+        filter.category = { $in: filter.category.split(",") };
+      } else if (Array.isArray(filter.category)) {
+        filter.category = { $in: filter.category };
+      }
+    } else {
+      delete filter.category; // Nếu không có category, bỏ filter này để hiển thị tất cả
+    }
 
     // Truy vấn danh sách dịch vụ
-    const services = await Service.find(filter)
-      .limit(limit)
-      .skip(skip)
-      .sort(sort)
-      .populate(population);
-
-    // Đếm tổng số dịch vụ phù hợp
-    const totalServices = await Service.countDocuments(filter);
-    const totalPages = Math.ceil(totalServices / limit);
+    const services = await Service.find(filter).sort(sort).populate(population);
 
     res.status(200).json({
-      totalServices,
-      totalPages,
-      currentPage: page,
+      totalServices: services.length,
       services,
+    });
+  } catch (error) {
+    console.error("Lỗi hệ thống:", error);
+    res.status(500).json({ message: "Lỗi hệ thống", error: error.message });
+  }
+});
+
+const getUniqueCategories = asyncHandler(async (req, res) => {
+  try {
+    // Lấy danh sách category không trùng lặp
+    const categories = await Service.distinct("category");
+
+    res.status(200).json({
+      success: true,
+      categories,
     });
   } catch (error) {
     console.error("Lỗi hệ thống:", error);
@@ -320,4 +330,5 @@ module.exports = {
   deleteService,
   getServiceDetail,
   getListServices,
+  getUniqueCategories,
 };
