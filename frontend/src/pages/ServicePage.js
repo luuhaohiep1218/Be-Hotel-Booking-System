@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Button, Form, Dropdown } from "react-bootstr
 import "bootstrap/dist/css/bootstrap.min.css";
 import images from "../assets/images/pages.jpg";
 import { Slider } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 
 const services = [
   {
@@ -131,7 +132,7 @@ const styles = {
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    maxWidth: "90%",
+    maxWidth: "100%",
     textAlign: "left",
     padding: "50px 0",
   },
@@ -189,7 +190,6 @@ const styles = {
 
 const ServicePage = () => {
   const [filters, setFilters] = useState({
-    rating: [],
     starRating: [],
     amenities: [],
     priceRange: [0, 20000000],
@@ -200,12 +200,33 @@ const ServicePage = () => {
     setSelectedOption(eventKey);
   };
 
-  const filteredServices = services.filter(
-    (service) => {
+  const filteredServices = [...services]
+    .filter((service) => {
       const price = parseInt(service.price.replace(/,/g, ""));
       return price >= filters.priceRange[0] && price <= filters.priceRange[1];
-    }
-  );
+    })
+    .filter((service) => {
+      if (!filters.starRating) return true; 
+      return service.rating.startsWith(filters.starRating); 
+    })
+    .sort((a, b) => {
+      const priceA = parseInt(a.price.replace(/,/g, ""));
+      const priceB = parseInt(b.price.replace(/,/g, ""));
+
+      if (selectedOption === "Giá thấp đến cao") {
+        return priceA - priceB;
+      } else if (selectedOption === "Giá cao đến thấp") {
+        return priceB - priceA;
+      }
+      return 0;
+    });
+
+  const handleStarRatingChange = (value) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      starRating: value,
+    }));
+  };
 
   const handleFilterChange = (type, value) => {
     setFilters((prevFilters) => ({
@@ -218,13 +239,11 @@ const ServicePage = () => {
 
   const resetFilters = () => {
     setFilters({
-      rating: [],
-      starRating: [],
+      starRating: "",
       amenities: [],
-      priceRange: [0, 20000000], // Nếu có lọc giá, đặt giá trị mặc định
+      priceRange: [0, 20000000],
     });
 
-    // Kiểm tra xem có checkbox nào không trước khi đặt lại
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     if (checkboxes.length > 0) {
       checkboxes.forEach((checkbox) => {
@@ -232,7 +251,6 @@ const ServicePage = () => {
       });
     }
   };
-
 
   return (
     <Container className="py-5">
@@ -247,11 +265,11 @@ const ServicePage = () => {
           />
         </div>
         <Dropdown onSelect={handleSelect}>
-          <Dropdown.Toggle variant="light" id="dropdown-basic" style={styles.titletext}>
-            {selectedOption}
+          <Dropdown.Toggle variant="light" id="dropdown-basic" bsPrefix="custom-dropdown-toggle" style={styles.titletext}>
+            {selectedOption} <DownOutlined style={{ marginLeft: "10px" }}/>
           </Dropdown.Toggle>
 
-          <Dropdown.Menu>
+          <Dropdown.Menu style={styles.dropdownMenu}>
             <Dropdown.Item eventKey="Không sắp xếp">
               Không sắp xếp
             </Dropdown.Item>
@@ -279,28 +297,37 @@ const ServicePage = () => {
               step={50000}
               value={filters.priceRange}
               onChange={(value) => setFilters((prev) => ({ ...prev, priceRange: value }))}
+              trackStyle={[{ backgroundColor: "gray" }]}
+              handleStyle={[{ borderColor: "gray", backgroundColor: "#ff5733" }]}
+              tipFormatter={(value) => `${value.toLocaleString()}đ`}
             />
           </div>
           <div style={styles.filterGroup}>
             <Form.Label style={styles.filterLabel}>Xếp hạng sao</Form.Label>
             <Form.Check
-              type="checkbox"
+              type="radio"
               label="3 sao"
-              onChange={() => handleFilterChange('starRating', '3')}
+              name="starRating"
+              checked={filters.starRating === "3"}
+              onChange={() => handleStarRatingChange("3")}
             />
             <Form.Check
-              type="checkbox"
+              type="radio"
               label="4 sao"
-              onChange={() => handleFilterChange('starRating', '4')}
+              name="starRating"
+              checked={filters.starRating === "4"}
+              onChange={() => handleStarRatingChange("4")}
             />
             <Form.Check
-              type="checkbox"
+              type="radio"
               label="5 sao"
-              onChange={() => handleFilterChange('starRating', '5')}
+              name="starRating"
+              checked={filters.starRating === "5"}
+              onChange={() => handleStarRatingChange("5")}
             />
           </div>
           <div style={styles.filterGroup}>
-            <Form.Label style={styles.filterLabel}>Tiện ích</Form.Label>
+            <Form.Label style={styles.filterLabel}>Dịch vụ</Form.Label>
             <Form.Check
               type="checkbox"
               label="Phòng gia đình"
@@ -310,56 +337,6 @@ const ServicePage = () => {
               type="checkbox"
               label="Có bể sục"
               onChange={() => handleFilterChange('amenities', 'jacuzzi')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Bao gồm tất cả các bữa ăn"
-              onChange={() => handleFilterChange('amenities', 'allMeals')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Giáp biển"
-              onChange={() => handleFilterChange('amenities', 'seaView')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Quầy bar"
-              onChange={() => handleFilterChange('amenities', 'bar')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Lễ tân 24 giờ"
-              onChange={() => handleFilterChange('amenities', '24hReception')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Khu vực bãi tắm riêng"
-              onChange={() => handleFilterChange('amenities', 'privateBeach')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Nhà hàng"
-              onChange={() => handleFilterChange('amenities', 'restaurant')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Trung tâm thể dục"
-              onChange={() => handleFilterChange('amenities', 'gym')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Phòng có ban công"
-              onChange={() => handleFilterChange('amenities', 'balcony')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Wi-Fi miễn phí"
-              onChange={() => handleFilterChange('amenities', 'freeWifi')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Miễn phí kayaking"
-              onChange={() => handleFilterChange('amenities', 'freeKayaking')}
             />
           </div>
         </Col>
