@@ -11,6 +11,7 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import images from "../assets/images/pages.jpg";
 import { Slider } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 import API from "../utils/axiosInstance";
 import ModalBookingService from "../components/ModalComponent/ModalBookingService";
 
@@ -270,9 +271,10 @@ const ServicePage = () => {
           <Dropdown.Toggle
             variant="light"
             id="dropdown-basic"
-            style={styles.titletext}
+            bsPrefix="custom-dropdown-toggle"
+            style={styles.titletext} 
           >
-            {selectedOption}
+            {selectedOption} <DownOutlined style={{ marginLeft: "10px" }}/>
           </Dropdown.Toggle>
 
           <Dropdown.Menu>

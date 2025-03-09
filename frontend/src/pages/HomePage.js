@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Form, Carousel } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Carousel } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Descriptions } from 'antd';
 
@@ -100,7 +100,6 @@ const hotels = [
     { room: "Phòng 1", Descriptions: "Phòng 1", count: 1, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
     { room: "Phòng 1", Descriptions: "Phòng 1", count: 22, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
     { room: "Phòng 1", Descriptions: "Phòng 1", count: 1, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
-    { room: "Phòng 1", Descriptions: "Phòng 1", count: 1, image: "https://a25hotel.com/files/images/khach-san-tai-ha-noi/khach-san-tai-quan-hai-ba-trung/khach-san-tue-tinh/cao-cap/_Y5A2749-HDR.jpg" },
 ];
 
 const styles = {
@@ -137,10 +136,6 @@ const styles = {
         alignItems: "center",
         gap: "5px",
     },
-    starIcon: {
-        fill: "white",
-        stroke: "none",
-    },
     location: {
         fontSize: "14px",
         color: "#6c757d",
@@ -174,9 +169,6 @@ const styles = {
         fontSize: "14px",
         border: "none",
     },
-    buttonHover: {
-        backgroundColor: "#138496",
-    },
     titlecontainer: {
         display: "flex",
         alignItems: "flex-start",
@@ -189,9 +181,7 @@ const styles = {
     titleheading: {
         fontSize: "32px",
         fontWeight: "bold",
-        marginLeft: "",
     },
-
     titletext: {
         color: "#6c757d",
         maxWidth: "450px",
@@ -210,82 +200,10 @@ const styles = {
         alignItems: "center",
         width: "100%",
     },
-    heroSection: {
-        position: 'relative',
-        width: '100%',
-        height: '700px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-    },
-    backgroundImage: {
-        borderRadius: '24px',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        backgroundImage: "url('https://i.pinimg.com/736x/9f/65/d1/9f65d15521b34e4abe3810ac7da4f49d.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        zIndex: -1,
-        height: '500px',
-    },
-    searchBox: {
-        border: '1px solid #ccc',
-        marginBottom: '-26%',
-        position: 'relative',
-        background: 'white',
-        padding: '30px',
-        borderRadius: '20px',
-        textAlign: 'center',
-        width: '70%',
-        boxShadow: '10px 10px 10px rgba(0, 0, 0, 0.2)'
-    },
-    heading: {
-        fontSize: '22px',
-        fontWeight: 'bold',
-        marginBottom: '10px'
-    },
-    Sheading: {
-        fontSize: '36px',
-        fontWeight: 'bold',
-        marginBottom: '16px',
-        paddingTop: '16px',
-    },
-    subText: {
-        fontSize: '18px',
-        color: '#777',
-        marginBottom: '40px'
-    },
-    formGroup: {
-        display: 'flex',
-        flexDirection: 'row',
-        gap: '10px'
-    },
-    searchInput: {
-        flex: 1,
-        padding: '8px',
-        borderRadius: '100px',
-        border: '1px solid #ccc',
-    },
-    searchInput1: {
-        flex: 1,
-        padding: '2px 8px ',
-        borderRadius: '100px',
-        border: '1px solid #ccc',
-        maxWidth: '200px',
-    },
-    Searchbutton: {
-        backgroundColor: '#40bfc1',
-        border: 'none',
-        padding: '10px 15px',
-        borderRadius: '100px',
-        color: 'white',
-    },
     recontainer: {
         marginTop: '60px',
-        background: "#EAF7F7",
+        background: "url('https://mixivivu.com/section-background.png') no-repeat center center/cover",
+        backgroundColor: "#f3ffff",
         padding: "50px 0",
         textAlign: "center",
         width: '100%',
@@ -301,13 +219,17 @@ const styles = {
         color: "#6c757d",
         marginBottom: "30px",
     },
+    carouselItem: {
+        marginTop: "10px",
+        marginBottom: "20px",
+    },
     reviewBox: {
         maxWidth: "800px",
         margin: "auto",
         background: "white",
         padding: "20px",
         borderRadius: "15px",
-        boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
         textAlign: "left",
         height: '260px',
     },
@@ -349,53 +271,19 @@ const styles = {
         boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
         cursor: "pointer",
     },
-    desContainer: {
-        textAlign: "center",
-        marginTop: "5rem",
-        marginBottom: "5rem",
-    },
-    desCard: {
-        width: "384px",
-        width: "392px",
-        borderRadius: "40px",
-        overflow: "hidden",
-        border: "none",
-        boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-        padding: '20px',
-    },
-    desCardImg: {
-        width: '352px',
-        height: "216px",
-        objectFit: "cover",
-    },
-    desCardTitle: {
-        fontWeight: "bold",
-        fontSize: '22px',
-    },
-    desButton: {
-        borderRadius: "20px",
-        padding: "5px 15px",
-        border: "1px solid #ddd",
-    },
-    bannerImage: {
-        width: "100vw",
-        height: "auto",
-        display: "block",
-    },
-
     roomContainer: {
         textAlign: "center",
-        background: "url('https://a25hotel.com/files/images/2.jpg') no-repeat center center/cover",
+        background: "url('https://mixivivu.com/section-background.png') no-repeat center center/cover",
         padding: "50px 0",
-        height: "1000px",
+        height: "800px",
+        backgroundColor: "#f3ffff",
     },
-
     tiroomContainer: {
         width: "50%",
     },
     roomTitle: {
         fontWeight: "bold",
-        color: "#8B0000",
+        color: "#17a2b8",
     },
     roomSubtitle: {
         marginBottom: "20px",
@@ -406,7 +294,8 @@ const styles = {
         overflow: "hidden",
         position: "relative",
         cursor: "pointer",
-        height: "240px"
+        height: "240px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     },
     roomImage: {
         height: "240px",
@@ -428,13 +317,6 @@ const styles = {
     roomImageHover: {
         transform: "scale(1.05)",
     },
-    roomName: {
-        height: "20px",
-        fontSize: "18px",
-        fontWeight: "bold",
-        display: "flex",
-        marginTop: "-100px",
-    },
     tiroomName: {
         fontSize: "18px",
         fontWeight: "bold",
@@ -442,21 +324,11 @@ const styles = {
         position: "absolute",
         margin: "10px",
     },
-    roomCount: {
-        height: "40px",
-        fontSize: "14px",
-        display: "flex",
-    },
-    roomDes: {
-        fontSize: "14px",
-        display: "flex",
-        height: "120px",
-    },
     roomButton: {
         marginTop: "20px",
         backgroundColor: "transparent",
-        border: "1px solid #8B0000",
-        color: "#8B0000",
+        border: "1px solid #17a2b8",
+        color: "#17a2b8",
         padding: "10px 20px",
         fontSize: "12px",
         transition: "background-color 0.3s, color 0.3s",
@@ -464,7 +336,7 @@ const styles = {
     },
     roomButtonHover: {
         color: "white",
-        backgroundColor: "#a52a2a",
+        backgroundColor: "#17a2b8",
     },
 };
 
@@ -493,14 +365,10 @@ const HomePage = () => {
 
     return (
         <div>
-            <img
-                src="https://a25hotel.com/files/images/Banner/BNNER%20FIX.png"
-                alt="Home Banner"
-                style={styles.bannerImage}
-            />
+            
             <div className="text-center py-5" style={styles.roomContainer}>
                 <Container style={styles.tiroomContainer}>
-                    <h2 style={styles.roomTitle}>HỆ THỐNG PHÒNG CỦA KHÁCH SẠN A25</h2>
+                    <h2 style={styles.roomTitle}>HỆ THỐNG PHÒNG CỦA GOLODGE</h2>
                     <p style={styles.roomSubtitle}>
                         Chúng tôi luôn sẵn sàng phục vụ quý khách tại những điểm đến phù hợp với nhu cầu của quý khách!
                     </p>
@@ -546,11 +414,11 @@ const HomePage = () => {
                     </Button>
                 </Container>
             </div>
-            <Container style={styles.bigcontainer} className="py-5">
+            <Container style={styles.bigcontainer}>
                 <div style={styles.titlecontainer}>
                     <div>
-                        <h1 style={styles.titleheading}>Khách sạn nổi bật</h1>
-                        <h1 style={styles.titleheading}>Của chúng tôi</h1>
+                        <h1 style={styles.titleheading}>Dịch vụ nổi bật</h1>
+                        <h1 style={styles.titleheading}>của chúng tôi</h1>
                         <div style={styles.underline}></div>
                     </div>
                     <p style={styles.titletext}>
@@ -583,8 +451,8 @@ const HomePage = () => {
                     ))}
                 </Row>
                 <div style={styles.buttonmore}>
-                    <Button variant="light" className="d-flex align-items-center border rounded-pill shadow-sm px-4 py-2">
-                        <span className="text-gray-800">Xem tất cả Du thuyền</span>
+                    <Button variant="light" style={styles.button}>
+                        <span className="text-gray-800">Xem tất cả Dịch vụ</span>
                         <i className="fas fa-arrow-right ml-2"></i>
                     </Button>
                 </div>
@@ -605,7 +473,7 @@ const HomePage = () => {
                 ) : (
                     <Carousel interval={4000} controls={false} indicators={false} fade>
                         {reviews.map((review, index) => (
-                            <Carousel.Item key={index}>
+                            <Carousel.Item key={index} style={styles.carouselItem}>
                                 <div style={styles.reviewBox}>
                                     <span style={styles.quoteIcon}>““</span>
                                     <h4 style={styles.reviewTitle}>{review.title}</h4>
