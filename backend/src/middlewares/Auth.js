@@ -61,10 +61,19 @@ const staffMiddleware = (req, res, next) => {
   }
 };
 
+const roleMiddleware = (allowedRoles) => (req, res, next) => {
+  if (req.user && allowedRoles.includes(req.user.role)) {
+    next(); // Nếu role hợp lệ, cho phép tiếp tục
+  } else {
+    res.status(403).json({ message: "Access denied: Unauthorized role" });
+  }
+};
+
 module.exports = {
   generateToken,
   protect,
   adminMiddleware,
   generateRefreshToken,
   staffMiddleware,
+  roleMiddleware,
 };
