@@ -17,6 +17,7 @@ const userRouter = require("./routes/userRouter");
 const blogRouter = require("./routes/blogRouter");
 const roomRouter = require("./routes/roomRouter");
 const serviceRouter = require("./routes/serviceRouter");
+const bookingRouter = require("./routes/bookingRouter");
 
 const User = require("./models/UserModel");
 
@@ -94,6 +95,7 @@ app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api/room", roomRouter);
 app.use("/api/service", serviceRouter);
+app.use("/api/booking", bookingRouter);
 
 app.use(errorHandle);
 

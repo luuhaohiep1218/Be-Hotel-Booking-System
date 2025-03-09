@@ -12,6 +12,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import images from "../assets/images/pages.jpg";
 import { Slider } from "antd";
 import API from "../utils/axiosInstance";
+import ModalBookingService from "../components/ModalComponent/ModalBookingService";
 
 const styles = {
   card: {
@@ -151,6 +152,8 @@ const ServicePage = () => {
   const [services, setServices] = useState([]);
   const [sortPrice, setSortPrice] = useState("");
   const [categories, setCategories] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -189,7 +192,7 @@ const ServicePage = () => {
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [filters, filters, services, sortPrice]);
+  }, [filters, services, sortPrice]);
 
   const handleSelect = (eventKey) => {
     setSelectedOption(eventKey);
@@ -244,6 +247,11 @@ const ServicePage = () => {
         checkbox.checked = false;
       });
     }
+  };
+
+  const handleSelectedService = (service) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
   };
 
   return (
@@ -367,7 +375,12 @@ const ServicePage = () => {
                       <span style={styles.price}>
                         {parsePrice(service.price)}đ
                       </span>
-                      <Button style={styles.button}>Đặt ngay</Button>
+                      <Button
+                        style={styles.button}
+                        onClick={() => handleSelectedService(service)}
+                      >
+                        Đặt ngay
+                      </Button>
                     </div>
                   </Card.Body>
                 </Card>
@@ -376,6 +389,11 @@ const ServicePage = () => {
           </Row>
         </Col>
       </Row>
+      <ModalBookingService
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        service={selectedService}
+      />
     </Container>
   );
 };
