@@ -1,66 +1,19 @@
-import { React, useState } from "react";
-import { Container, Row, Col, Card, Button, Form, Dropdown } from "react-bootstrap";
+import { React, useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Dropdown,
+} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import images from "../assets/images/pages.jpg";
 import { Slider } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-
-const services = [
-  {
-    id: 1,
-    image: "https://storage.googleapis.com/a1aa/image/spa.jpg",
-    rating: "4.9 (15 đánh giá)",
-    location: "Hà Nội",
-    title: "Dịch vụ Spa & Massage cao cấp",
-    details: "Liệu trình thư giãn toàn thân - 90 phút",
-    price: "750,000",
-  },
-  {
-    id: 2,
-    image: "https://storage.googleapis.com/a1aa/image/hotel.jpg",
-    rating: "5.0 (10 đánh giá)",
-    location: "Đà Nẵng",
-    title: "Dịch vụ lưu trú khách sạn 5 sao",
-    details: "Phòng Deluxe - View biển - Ăn sáng miễn phí",
-    price: "2,500,000",
-  },
-  {
-    id: 3,
-    image: "https://storage.googleapis.com/a1aa/image/car-rental.jpg",
-    rating: "4.8 (7 đánh giá)",
-    location: "TP. Hồ Chí Minh",
-    title: "Dịch vụ cho thuê xe sang trọng",
-    details: "Xe Mercedes S-Class - Tài xế riêng",
-    price: "3,200,000",
-  },
-  {
-    id: 4,
-    image: "https://storage.googleapis.com/a1aa/image/event.jpg",
-    rating: "5.0 (5 đánh giá)",
-    location: "Hà Nội",
-    title: "Dịch vụ tổ chức sự kiện chuyên nghiệp",
-    details: "Gói tiệc cưới, hội nghị, sự kiện doanh nghiệp",
-    price: "15,000,000",
-  },
-  {
-    id: 5,
-    image: "https://storage.googleapis.com/a1aa/image/fitness.jpg",
-    rating: "4.9 (12 đánh giá)",
-    location: "Đà Nẵng",
-    title: "Gói tập Gym & Yoga cao cấp",
-    details: "Thẻ thành viên 1 tháng - Hướng dẫn viên riêng",
-    price: "1,200,000",
-  },
-  {
-    id: 6,
-    image: "https://storage.googleapis.com/a1aa/image/tour.jpg",
-    rating: "5.0 (6 đánh giá)",
-    location: "Sa Pa",
-    title: "Dịch vụ tour du lịch trải nghiệm",
-    details: "Chuyến đi 2 ngày 1 đêm - Khám phá thiên nhiên",
-    price: "2,750,000",
-  },
-];
+import API from "../utils/axiosInstance";
+import ModalBookingService from "../components/ModalComponent/ModalBookingService";
 
 const styles = {
   card: {
@@ -158,6 +111,7 @@ const styles = {
     background: "#63c5da",
     marginTop: "5px",
   },
+
   filterSection: {
     padding: "20px",
     backgroundColor: "white",
@@ -192,34 +146,86 @@ const ServicePage = () => {
   const [filters, setFilters] = useState({
     starRating: [],
     amenities: [],
-    priceRange: [0, 20000000],
+    priceRange: [0, 3000000],
   });
+
   const [selectedOption, setSelectedOption] = useState("Không sắp xếp");
+  const [services, setServices] = useState([]);
+  const [sortPrice, setSortPrice] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeout = setTimeout(async () => {
+      try {
+        const [servicesRes, categoriesRes] = await Promise.all([
+          API.get(
+            `/service?filter[price][gte]=${
+              filters.priceRange[0]
+            }&filter[price][lte]=${filters.priceRange[1]}
+            &filter[rating][gte]=${
+              filters.starRating
+            }&sort=${sortPrice}price&filter[category]=${convertArrayToString(
+              filters.amenities
+            )}`,
+            { signal: controller.signal }
+          ),
+          API.get(`/service/categories`, { signal: controller.signal }),
+        ]);
+
+        if (
+          JSON.stringify(servicesRes.data.services) !== JSON.stringify(services)
+        ) {
+          setServices(servicesRes.data.services);
+        }
+
+        setCategories(categoriesRes.data.categories);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Lỗi khi gọi API:", error);
+        }
+      }
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [filters, services, sortPrice]);
 
   const handleSelect = (eventKey) => {
     setSelectedOption(eventKey);
+    if (eventKey === "Giá thấp đến cao") {
+      setSortPrice("+");
+    } else if (eventKey === "Giá cao đến thấp") {
+      setSortPrice("-");
+    } else {
+      setSortPrice("");
+    }
   };
 
-  const filteredServices = [...services]
-    .filter((service) => {
-      const price = parseInt(service.price.replace(/,/g, ""));
-      return price >= filters.priceRange[0] && price <= filters.priceRange[1];
-    })
-    .filter((service) => {
-      if (!filters.starRating) return true; 
-      return service.rating.startsWith(filters.starRating); 
-    })
-    .sort((a, b) => {
-      const priceA = parseInt(a.price.replace(/,/g, ""));
-      const priceB = parseInt(b.price.replace(/,/g, ""));
+  const parsePrice = (price) => {
+    if (typeof price !== "number") {
+      price = parseInt(price, 10);
+      if (isNaN(price)) return "N/A"; // Tránh lỗi nếu giá trị không hợp lệ
+    }
+    return price.toLocaleString("en-US");
+  };
 
-      if (selectedOption === "Giá thấp đến cao") {
-        return priceA - priceB;
-      } else if (selectedOption === "Giá cao đến thấp") {
-        return priceB - priceA;
-      }
-      return 0;
-    });
+  const handleCategoryChange = (categoryName) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      amenities: prevFilters.amenities.includes(categoryName)
+        ? prevFilters.amenities.filter((name) => name !== categoryName) // Bỏ nếu đã có
+        : [...prevFilters.amenities, categoryName], // Thêm nếu chưa có
+    }));
+  };
+
+  const convertArrayToString = (arrCategories) => {
+    return arrCategories.join(",");
+  };
 
   const handleStarRatingChange = (value) => {
     setFilters((prevFilters) => ({
@@ -228,28 +234,25 @@ const ServicePage = () => {
     }));
   };
 
-  const handleFilterChange = (type, value) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [type]: prevFilters[type].includes(value)
-        ? prevFilters[type].filter((item) => item !== value)
-        : [...prevFilters[type], value],
-    }));
-  };
-
   const resetFilters = () => {
     setFilters({
-      starRating: "",
+      starRating: [],
       amenities: [],
-      priceRange: [0, 20000000],
+      priceRange: [0, 3000000], // Nếu có lọc giá, đặt giá trị mặc định
     });
 
+    // Kiểm tra xem có checkbox nào không trước khi đặt lại
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     if (checkboxes.length > 0) {
       checkboxes.forEach((checkbox) => {
         checkbox.checked = false;
       });
     }
+  };
+
+  const handleSelectedService = (service) => {
+    setSelectedService(service);
+    setIsModalOpen(true);
   };
 
   return (
@@ -265,11 +268,16 @@ const ServicePage = () => {
           />
         </div>
         <Dropdown onSelect={handleSelect}>
-          <Dropdown.Toggle variant="light" id="dropdown-basic" bsPrefix="custom-dropdown-toggle" style={styles.titletext}>
+          <Dropdown.Toggle
+            variant="light"
+            id="dropdown-basic"
+            bsPrefix="custom-dropdown-toggle"
+            style={styles.titletext} 
+          >
             {selectedOption} <DownOutlined style={{ marginLeft: "10px" }}/>
           </Dropdown.Toggle>
 
-          <Dropdown.Menu style={styles.dropdownMenu}>
+          <Dropdown.Menu>
             <Dropdown.Item eventKey="Không sắp xếp">
               Không sắp xếp
             </Dropdown.Item>
@@ -282,24 +290,29 @@ const ServicePage = () => {
           </Dropdown.Menu>
         </Dropdown>
       </div>
+
       <Row>
         <Col md={3} style={styles.filterSection}>
           <div style={styles.filterHeaderGroup}>
             <div style={styles.filterLabel}>Lọc kết quả</div>
-            <button style={styles.buttonHeaderFilter} onClick={resetFilters}>Đặt lại</button>
+            <button style={styles.buttonHeaderFilter} onClick={resetFilters}>
+              Đặt lại
+            </button>
           </div>
           <div style={styles.filterGroup}>
-            <Form.Label style={styles.filterLabel}>Khoảng giá: {filters.priceRange[0].toLocaleString()}đ - {filters.priceRange[1].toLocaleString()}đ</Form.Label>
+            <Form.Label style={styles.filterLabel}>
+              Khoảng giá: {filters.priceRange[0].toLocaleString()}đ -{" "}
+              {filters.priceRange[1].toLocaleString()}đ
+            </Form.Label>
             <Slider
               range
               min={0}
-              max={20000000}
-              step={50000}
+              max={3000000}
+              step={100000}
               value={filters.priceRange}
-              onChange={(value) => setFilters((prev) => ({ ...prev, priceRange: value }))}
-              trackStyle={[{ backgroundColor: "gray" }]}
-              handleStyle={[{ borderColor: "gray", backgroundColor: "#ff5733" }]}
-              tipFormatter={(value) => `${value.toLocaleString()}đ`}
+              onChange={(value) =>
+                setFilters((prev) => ({ ...prev, priceRange: value }))
+              }
             />
           </div>
           <div style={styles.filterGroup}>
@@ -328,36 +341,48 @@ const ServicePage = () => {
           </div>
           <div style={styles.filterGroup}>
             <Form.Label style={styles.filterLabel}>Dịch vụ</Form.Label>
-            <Form.Check
-              type="checkbox"
-              label="Phòng gia đình"
-              onChange={() => handleFilterChange('amenities', 'familyRoom')}
-            />
-            <Form.Check
-              type="checkbox"
-              label="Có bể sục"
-              onChange={() => handleFilterChange('amenities', 'jacuzzi')}
-            />
+            {categories.map((category) => (
+              <Form.Check
+                key={category} // Sử dụng tên làm key
+                type="checkbox"
+                label={category}
+                checked={filters.amenities.includes(category)}
+                onChange={() => handleCategoryChange(category)}
+              />
+            ))}
           </div>
         </Col>
         <Col md={9} style={styles.resultSection}>
           <Row>
-            {filteredServices.map((cruise) => (
-              <Col key={cruise.id} xs={12} sm={6} lg={4} className="mb-4">
+            {services.map((service) => (
+              <Col key={service._id} xs={12} sm={6} lg={4} className="mb-4">
                 <Card style={styles.card}>
                   <div style={styles.imageContainer}>
-                    <Card.Img style={styles.image} variant="top" src={cruise.image} alt={cruise.title} />
-                    <div style={styles.ratingBadge}>
-                      {cruise.rating} {cruise.reviews}
-                    </div>
+                    <Card.Img
+                      style={styles.image}
+                      variant="top"
+                      src={service.images[0]}
+                      alt={service.title}
+                    />
+                    <div style={styles.ratingBadge}>{service.rating}</div>
                   </div>
                   <Card.Body>
-                    <div style={styles.location}>{cruise.location}</div>
-                    <Card.Title style={styles.title}>{cruise.title}</Card.Title>
-                    <Card.Text style={styles.details}>{cruise.details}</Card.Text>
+                    <Card.Title style={styles.title}>
+                      {service.title}
+                    </Card.Title>
+                    <Card.Text style={styles.details}>
+                      {service.summary}
+                    </Card.Text>
                     <div style={styles.footer}>
-                      <span style={styles.price}>{cruise.price}đ</span>
-                      <Button style={styles.button}>Đặt ngay</Button>
+                      <span style={styles.price}>
+                        {parsePrice(service.price)}đ
+                      </span>
+                      <Button
+                        style={styles.button}
+                        onClick={() => handleSelectedService(service)}
+                      >
+                        Đặt ngay
+                      </Button>
                     </div>
                   </Card.Body>
                 </Card>
@@ -366,6 +391,11 @@ const ServicePage = () => {
           </Row>
         </Col>
       </Row>
+      <ModalBookingService
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        service={selectedService}
+      />
     </Container>
   );
 };

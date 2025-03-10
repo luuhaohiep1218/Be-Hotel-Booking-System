@@ -16,6 +16,7 @@ const BlogSchema = new mongoose.Schema(
     validUntil: { type: String, required: false },
     customerName: { type: String, required: false, trim: true },
     rating: { type: Number, required: false, min: 1, max: 5 },
+    views: { type: Number, required: false, default: 0 },
   },
   { timestamps: true }
 );

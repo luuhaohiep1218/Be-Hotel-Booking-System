@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
-const { generateToken } = require("../middlewares/Auth");
 
 const updateUserProfile = asyncHandler(async (req, res) => {
   const { full_name, phone } = req.body;
@@ -120,6 +119,7 @@ const getProfileUser = asyncHandler(async (req, res) => {
     }
 
     res.json({
+      _id: user._id,
       full_name: user.full_name,
       email: user.email,
       phone: user.phone,
@@ -132,6 +132,23 @@ const getProfileUser = asyncHandler(async (req, res) => {
       .json({ message: "Internal Server Error", error: error.message });
   }
 });
+const getUserById = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).select(
+      "-password_hash -refreshToken"
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({
+      full_name: user.full_name,
+      email: user.email,
+      phone: user.phone,
+      authProvider: user.authProvider,
+      createdAt: user.createdAt,
+    });
+  } catch (error) {}
+});
 
 module.exports = {
   updateUserProfile,
@@ -139,4 +156,5 @@ module.exports = {
   changePassword,
   getUsers,
   getProfileUser,
+  getUserById,
 };

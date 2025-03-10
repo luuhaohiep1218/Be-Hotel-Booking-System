@@ -15,6 +15,9 @@ const uploadRouter = require("./routes/uploadRouter");
 const feedbackRouter = require("./routes/feedbackRouter");
 const userRouter = require("./routes/userRouter");
 const blogRouter = require("./routes/blogRouter");
+const roomRouter = require("./routes/roomRouter");
+const serviceRouter = require("./routes/serviceRouter");
+const bookingRouter = require("./routes/bookingRouter");
 
 const User = require("./models/UserModel");
 
@@ -41,7 +44,7 @@ app.use(
     resave: false,
     saveUninitialized: true,
   })
-)
+);
 
 passport.use(
   new GoogleStrategy(
@@ -90,6 +93,9 @@ app.use("/api/upload", uploadRouter);
 app.use("/api/feedback", feedbackRouter);
 app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
+app.use("/api/room", roomRouter);
+app.use("/api/service", serviceRouter);
+app.use("/api/booking", bookingRouter);
 
 app.use(errorHandle);
 

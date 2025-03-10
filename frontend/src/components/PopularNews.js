@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import axios from "axios";
+import API from "../utils/axiosInstance";
 
 const FeaturedNews = () => {
-  const [internalNews, setInternalNews] = useState([]);
+  const [blog, setBlog] = useState();
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const fetchBlog = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/internalNews");
-        setInternalNews(response.data);
+        const response = await API.get("/blog/prominent");
+        setBlog(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy internalNews:", error);
       }
     };
 
-    fetchNews();
+    fetchBlog();
   }, []);
-
-  if (internalNews.length === 0) return <p>Không có dữ liệu</p>;
-
-  const featuredPost = internalNews[0]; // Lấy bài viết đầu tiên
 
   return (
     <Container className="mt-5">
-      <h1 className="fw-bold text-dark">
-        {featuredPost.title}
-      </h1>
-      <p className="text-secondary mt-3" style={{ fontSize: "1.1rem", maxWidth: "700px" }}>
-        {featuredPost.summary}
+      <h1 className="fw-bold text-dark">{blog?.title}</h1>
+      <p
+        className="text-secondary mt-3"
+        style={{ fontSize: "1.1rem", maxWidth: "700px" }}
+      >
+        {blog?.summary}
       </p>
-      <div className="mt-3" style={{ color: "#52c4c6", fontSize: "1.5rem", marginBottom: 100 }}>
+      <div
+        className="mt-3"
+        style={{ color: "#52c4c6", fontSize: "1.5rem", marginBottom: 100 }}
+      >
         ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤
       </div>
     </Container>

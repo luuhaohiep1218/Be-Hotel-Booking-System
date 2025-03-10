@@ -64,8 +64,7 @@ const LoginPage = () => {
     try {
       const { data } = await API.post("/auth/login", values);
 
-      // 🟢 Cập nhật trạng thái đăng nhập
-      localStorage.setItem("accessToken", data.accessToken);
+      sessionStorage.setItem("accessToken", data.accessToken);
       setAccessToken(data.accessToken);
       setUser(data.user); // 🔥 Lưu thông tin user vào context
 
@@ -75,7 +74,6 @@ const LoginPage = () => {
       const errorMessage =
         error.response?.data?.message || "Lỗi không xác định!";
 
-      // 🟡 Nếu lỗi 401 (Sai email/mật khẩu), hiển thị thông báo cụ thể
       if (error.response?.status === 401) {
         message.error("Sai email hoặc mật khẩu! Vui lòng kiểm tra lại.");
       } else {
