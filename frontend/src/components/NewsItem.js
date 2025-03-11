@@ -72,18 +72,20 @@ const NewsItem = ({ item }) => {
   // Chuyển item.id thành chuỗi để tránh lỗi
   const itemId = String(item.id || ""); // Nếu item.id là undefined, gán chuỗi rỗng
 
-  let linkTo = "#";
-  if (itemId.startsWith("internal-")) {
-    linkTo = `/news/${itemId.replace("internal-", "")}`;
-  } else if (itemId.startsWith("discount-")) {
-    linkTo = `/discount/${itemId.replace("discount-", "")}`;
-  } else if (itemId.startsWith("feedback-")) {
-    linkTo = `/feedback/${itemId.replace("feedback-", "")}`;
-  }
+  const slugify = (text) => {
+    return text
+      .normalize("NFD") // Chuyển đổi ký tự có dấu thành dạng tổ hợp
+      .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+      .toLowerCase() // Chuyển thành chữ thường
+      .replace(/đ/g, "d") // Chuyển "đ" thành "d"
+      .replace(/[^a-z0-9\s-]/g, "") // Loại bỏ ký tự đặc biệt
+      .trim() // Xóa khoảng trắng đầu và cuối
+      .replace(/\s+/g, "-"); // Thay khoảng trắng bằng dấu "-"
+  };
 
   return (
     <Col md={6} lg={4} className="mb-4">
-      <Link style={{ textDecoration: "none", color: "inherit" }} to={linkTo}>
+      <Link style={{ textDecoration: "none", color: "inherit" }} to={item._id}>
         <NewsCard>
           <NewsImage
             src={item.sections?.[0]?.image || "https://via.placeholder.com/300"}

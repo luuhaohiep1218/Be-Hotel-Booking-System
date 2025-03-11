@@ -1,21 +1,14 @@
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import images from "../assets/images/pages.jpg";
 import background from "../assets/images/section-background.jpg";
 import Banner from "../components/Banner";
 import CardComponent from "../components/CardComponent";
-
-const room = {
-  id: 1,
-  name: "Standard Room",
-  description: "Description of the room",
-  image: "https://via.placeholder.com/150",
-  price: 100,
-};
-
+import ModalBookingRoom from "../components/ModalComponent/ModalBookingRoom";
+import API from "../utils/axiosInstance";
 const styles = {
   sectionBackground: {
     backgroundImage: `url(${background})`,
@@ -62,6 +55,39 @@ const styles = {
 
 function RoomListPage() {
   const navigate = useNavigate();
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+    const [showModal, setShowModal] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await API.get(`/room`);
+        setRooms(response.data.rooms);
+        setLoading(false);
+      } catch (err) {
+        setError("Lỗi khi tải dữ liệu!");
+        setLoading(false);
+      }
+    };
+
+    fetchRooms();
+  }, []);
+
+  if (loading) return <p>Đang tải dữ liệu...</p>;
+  if (error) return <p>{error}</p>;
+   
+  const handleBookRoom=(e, roomId) => {
+  const token = localStorage.getItem("token"); // Lấy token từ localStorage
+
+  if (token) {
+    navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+  } else {
+   setSelectedRoom(rooms); // Lưu phòng được chọn
+      setShowModal(true); // Mở modal
+  }
+  };
   return (
     <Container fluid className="p-0 m-2">
       <Row className="p-2 m-2">
@@ -90,21 +116,38 @@ function RoomListPage() {
                 </p>
               </Col>
             </Row>
-            <CardComponent onClick={(e) =>{  e.stopPropagation(); navigate(`/room-detail/${room.id}`)}}>
-              <div className="d-flex pt-3" style={{}}>
-                <Button type="default" shape="round" size="middle" icon={<ArrowRightOutlined />} style={styles.button}
-                  onClick={(e) => { e.stopPropagation(); navigate(`/booking-room/${room.id}`) }}>
-                  Đặt Phòng Ngay
-                </Button>
-                <Link
-                  to={`/room-detail/${room.id}`}
-                  style={{ marginLeft: "10px", padding: "10px" }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Xem chi tiết
-                </Link>
-              </div>
-            </CardComponent>
+   {Array.isArray(rooms) && rooms.length > 0 ? (
+  <CardComponent data={rooms} pageSize={4}> 
+    {(room) => (
+      <div className="d-flex pt-3">
+        <Button
+                      type="default"
+                      shape="round"
+                      size="middle"
+                      icon={<ArrowRightOutlined />}
+                      disabled={room.status === "đã đặt"}
+                      style={{ marginRight: "10px" }}
+                      onClick={() => handleBookRoom(room)}
+                    >
+                      Đặt Phòng Ngay
+                    </Button>
+        <Link to={`/room-detail/${room._id}`} onClick={(e) => e.stopPropagation()}>
+          Xem chi tiết
+        </Link>
+      </div>
+    )}
+  </CardComponent>
+) : (
+  <p>Không có phòng nào khả dụng</p>
+) } {/* ModalBookingRoom */}
+      {selectedRoom && (
+        <ModalBookingRoom
+          show={showModal}
+          handleClose={() => setShowModal(false)}
+          room={rooms}
+        />
+      )}
+    
 
             <div style={styles.sectionBackground}>
               <Row className="p-0 m-0">

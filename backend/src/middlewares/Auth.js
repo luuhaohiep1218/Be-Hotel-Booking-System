@@ -19,8 +19,6 @@ const protect = asyncHandler(async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("🔍 Decoded Token:", decoded);
-
     if (!decoded || (!decoded.id && !decoded._id)) {
       return res.status(401).json({ message: "Token không hợp lệ" });
     }
@@ -55,10 +53,27 @@ const adminMiddleware = (req, res, next) => {
     res.status(403).json({ message: "Access denied: Admins only" });
   }
 };
+const staffMiddleware = (req, res, next) => {
+  if (req.user && req.user.role === "STAFF") {
+    next(); // Cho phép nhân viên và admin tiếp tục
+  } else {
+    res.status(403).json({ message: "Access denied: Staff only" });
+  }
+};
+
+const roleMiddleware = (allowedRoles) => (req, res, next) => {
+  if (req.user && allowedRoles.includes(req.user.role)) {
+    next(); // Nếu role hợp lệ, cho phép tiếp tục
+  } else {
+    res.status(403).json({ message: "Access denied: Unauthorized role" });
+  }
+};
 
 module.exports = {
   generateToken,
   protect,
   adminMiddleware,
   generateRefreshToken,
+  staffMiddleware,
+  roleMiddleware,
 };

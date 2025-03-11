@@ -11,7 +11,7 @@ const register = asyncHandler(async (req, res) => {
 
   try {
     const userExists = await User.findOne({ email });
-    if (userExists) {
+    if (userExists) { 
       return res.status(400).json({ message: "User already exists" });
     }
 
@@ -20,25 +20,22 @@ const register = asyncHandler(async (req, res) => {
     const user = await User.create({
       full_name,
       email,
-      password_hash: hashedPassword, // Đúng key của database
+      password_hash: hashedPassword,
       phone,
     });
 
     if (user) {
-      // Tạo Access Token và Refresh Token
       const accessToken = generateToken(user._id);
       const refreshToken = generateRefreshToken(user._id);
 
-      // Lưu Refresh Token vào database
       user.refreshToken = refreshToken;
       await user.save();
 
-      // Trả refreshToken qua cookie HTTPOnly (bảo mật hơn)
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "Strict",
-        maxAge: 1 * 24 * 60 * 60 * 1000, // 7 ngày
+        maxAge: 1 * 24 * 60 * 60 * 1000,
       });
 
       res.status(201).json({
@@ -46,6 +43,7 @@ const register = asyncHandler(async (req, res) => {
         full_name: user.full_name,
         email: user.email,
         phone: user.phone,
+        role: user.role,
         accessToken,
       });
     } else {
@@ -65,19 +63,17 @@ const login = asyncHandler(async (req, res) => {
       const accessToken = generateToken(user._id);
       const refreshToken = generateRefreshToken(user._id);
 
-      // Xóa refreshToken cũ và cập nhật refreshToken mới
       user.refreshToken = refreshToken;
       await user.save();
 
-      // Trả refreshToken qua cookie HTTPOnly
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
         sameSite: "Strict",
-        maxAge: 1 * 24 * 60 * 60 * 1000, // 7 ngày
+        maxAge: 1 * 24 * 60 * 60 * 1000,
       });
 
-      res.json({ accessToken });
+      res.json({ accessToken, role: user.role });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
     }
@@ -136,15 +132,21 @@ const logout = asyncHandler(async (req, res) => {
     }
 
     user.refreshToken = null;
-    await user.save();
+    await user.save(); // Xóa refreshToken khỏi DB
 
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "Strict",
+    req.logOut((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Lỗi khi logout" });
+      }
+
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "Strict",
+      });
+
+      return res.json({ message: "Logout thành công" });
     });
-
-    return res.json({ message: "Logout thành công" });
   } catch (error) {
     return res.status(500).json({ message: "Lỗi server khi logout" });
   }
@@ -213,7 +215,7 @@ const sendEmail = ({ recipient_email, newPassword }) => {
               <h3 style="text-align: center; background: #f3f3f3; padding: 10px; border-radius: 5px;">${newPassword}</h3>
               <p>Please change your password after logging in for security reasons.</p>
               <p>If you did not request this change, please ignore this email or contact support.</p>
-              <p style="text-align: center;"><a href="https://yourwebsite.com/reset" style="color: #0070f3;">Go to Login</a></p>
+              <p style="text-align: center;"><a href="http://localhost:3000" style="color: #0070f3;">Go to Login</a></p>
               <hr />
               <p style="font-size: 12px; color: #555;">This is an automated email, please do not reply.</p>
           </div>
@@ -238,19 +240,17 @@ const forgotPassword = asyncHandler(async (req, res) => {
       return res.status(400).json({ message: "Vui lòng nhập email!" });
     }
 
-    // Tìm user theo email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "Không tìm thấy người dùng!" });
     }
 
-    const newPassword = Math.random().toString(36).slice(-8); // Tạo mật khẩu ngẫu nhiên 8 ký tự
+    const newPassword = Math.random().toString(36).slice(-8);
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     user.password_hash = hashedPassword;
 
-    // Kiểm tra nếu lưu thất bại
     const updatedUser = await user.save();
     if (!updatedUser) {
       return res.status(500).json({ message: "Lỗi khi cập nhật mật khẩu!" });

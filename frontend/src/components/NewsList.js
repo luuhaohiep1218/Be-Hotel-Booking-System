@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Pagination, Row } from "antd";
 import NewsItem from "./NewsItem";
 import styled from "styled-components";
@@ -15,7 +15,6 @@ const Divider = styled.div`
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 `;
 
 // Content để card chiếm tối đa không gian và đẩy pagination xuống dưới
@@ -31,44 +30,27 @@ const PaginationWrapper = styled.div`
   padding-bottom: 20px;
 `;
 
-const NewsList = ({ news }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 6;
-
-  if (!Array.isArray(news)) {
-    return <p>Không có dữ liệu tin tức!</p>;
-  }
-
-  // Tính toán dữ liệu theo trang
-  const startIndex = (currentPage - 1) * pageSize;
-  const currentData = news.slice(startIndex, startIndex + pageSize);
-
-  const onChange = (page) => {
-    setCurrentPage(page);
-  };
+const NewsList = (props) => {
+  const { blogs, currentPage, pageSize, totalBlogs, onChangePage } = props;
 
   return (
     <PageContainer>
       <Content>
         <Row gutter={[40, 40]} className="mb-5">
-          {currentData.map((item) => (
-            <NewsItem key={item.id} item={item} />
+          {blogs.map((item) => (
+            <NewsItem key={item._id} item={item} />
           ))}
         </Row>
-
-        {/* Đường kẻ ngang */}
         <Divider />
+        <PaginationWrapper>
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={totalBlogs}
+            onChange={onChangePage}
+          />
+        </PaginationWrapper>
       </Content>
-
-      {/* Div chứa Pagination được canh phải */}
-      <PaginationWrapper>
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={news.length}
-          onChange={onChange}
-        />
-      </PaginationWrapper>
     </PageContainer>
   );
 };

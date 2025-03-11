@@ -1,22 +1,18 @@
 import AboutUs from "../pages/AboutUsPage";
 import AllNewsPage from "../pages/AllNewsPage";
-import ContactPage from "../pages/ContactPage";
-import CustomerPage from "../pages/CustomerPage";
-import DiscountDetail from "../pages/DiscountDetail";
+import CheckoutPage from "../pages/CheckOutPage";
 import FeedbackDetail from "../pages/FeedBackDetail";
 import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
 import NewsDetail from "../pages/NewsDetail";
-import OfferPage from "../pages/OfferPage";
-import OnlyDiscount from "../pages/OnlyDiscount";
-import OnlyFeedbacks from "../pages/OnlyFeedback";
-import OnlyNew from "../pages/OnlyNew";
 import ProfilePage from "../pages/ProfilePage";
+import RoomDetail from "../pages/RoomDetail";
 import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
+import VNPayReturn from "../pages/VnpayReturn";
 
 export const routes = [
   {
@@ -25,28 +21,8 @@ export const routes = [
     isShowHeader: true,
   },
   {
-    path: "/onlyNew",
-    page: OnlyNew,
-    isShowHeader: true,
-  },
-  {
-    path: "/onlyDiscount",
-    page: OnlyDiscount,
-    isShowHeader: true,
-  },
-  {
-    path: "/onlyFeedbacks",
-    page: OnlyFeedbacks,
-    isShowHeader: true,
-  },
-  {
-    path: "/news/:id",
+    path: "/Blog/:blogId",
     page: NewsDetail,
-    isShowHeader: true,
-  },
-  {
-    path: "/discount/:id",
-    page: DiscountDetail,
     isShowHeader: true,
   },
   {
@@ -57,18 +33,6 @@ export const routes = [
   {
     path: "/service",
     page: ServicePage,
-    isShowHeader: true,
-    isPrivate: false,
-  },
-  {
-    path: "/customer",
-    page: CustomerPage,
-    isShowHeader: true,
-    isPrivate: false,
-  },
-  {
-    path: "/offer",
-    page: OfferPage,
     isShowHeader: true,
     isPrivate: false,
   },
@@ -127,9 +91,21 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path: "/contact",
-    page: ContactPage,
+    path:"room-detail/:roomId",
+    page: RoomDetail,
     isShowHeader: true,
-    isPrivate: false,
+    isPrivate: false
+  },
+  {
+    path:"checkout",
+    page: CheckoutPage,
+    isShowHeader: true,
+    isPrivate: true
+  },
+  {
+    path:"/payment-success",
+    page: VNPayReturn,
+    isShowHeader: true,
+    isPrivate: false
   }
 ];
