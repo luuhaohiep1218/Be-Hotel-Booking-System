@@ -61,6 +61,14 @@ const staffMiddleware = (req, res, next) => {
   }
 };
 
+const mktMiddleware = (req, res, next) => {
+  if (req.user && req.user.role === "MKT") {
+    next(); // User is mkt, proceed to the next middleware
+  } else {
+    res.status(403).json({ message: "Access denied: marketing only" });
+  }
+};
+
 const roleMiddleware = (allowedRoles) => (req, res, next) => {
   if (req.user && allowedRoles.includes(req.user.role)) {
     next(); // Nếu role hợp lệ, cho phép tiếp tục
@@ -76,4 +84,5 @@ module.exports = {
   generateRefreshToken,
   staffMiddleware,
   roleMiddleware,
+  mktMiddleware,
 };

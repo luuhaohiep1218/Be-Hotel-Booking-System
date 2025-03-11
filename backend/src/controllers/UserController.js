@@ -150,6 +150,44 @@ const getUserById = asyncHandler(async (req, res) => {
   } catch (error) {}
 });
 
+const getAllUser = asyncHandler(async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const skip = (page - 1) * limit;
+
+    const totalUsers = await User.countDocuments({ role: "USER" });
+    const totalPages = Math.ceil(totalUsers / limit);
+
+    const users = await User.find({ role: "USER" })
+      .skip(skip) // ✅ Phân trang đúng
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    // Trả về dữ liệu đúng định dạng
+    res.json({
+      page,
+      limit,
+      totalUsers,
+      totalPages,
+      users: users.map((user) => ({
+        _id: user._id,
+        full_name: user.full_name,
+        email: user.email,
+        phone: user.phone,
+        authProvider: user.authProvider,
+        isActive: user.isActive ? "Active" : "Inactive",
+        createdAt: user.createdAt,
+      })),
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách người dùng",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = {
   updateUserProfile,
   deleteUser,
@@ -157,4 +195,5 @@ module.exports = {
   getUsers,
   getProfileUser,
   getUserById,
+  getAllUser,
 };

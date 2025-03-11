@@ -6,6 +6,8 @@ import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
+import Mktdashboard from "../pages/MktDashboard";
+import MktCustomerList from "../pages/MktListCustomer";
 import NewsDetail from "../pages/NewsDetail";
 import ProfilePage from "../pages/ProfilePage";
 import RoomDetail from "../pages/RoomDetail";
@@ -19,6 +21,16 @@ export const routes = [
     path: "/Blog",
     page: AllNewsPage,
     isShowHeader: true,
+  },
+  {
+    path: "/mktdashboard",
+    page: Mktdashboard,
+    isShowHeader: false,
+  },
+  {
+    path: "/mktCustomerList",
+    page: MktCustomerList,
+    isShowHeader: false,
   },
   {
     path: "/Blog/:blogId",
@@ -97,7 +109,7 @@ export const routes = [
     isPrivate: false
   },
   {
-    path:"checkout",
+    path:"/checkout",
     page: CheckoutPage,
     isShowHeader: true,
     isPrivate: true
