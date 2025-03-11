@@ -8,6 +8,7 @@ import background from "../assets/images/section-background.jpg";
 import Banner from "../components/Banner";
 import CardComponent from "../components/CardComponent";
 import ModalBookingRoom from "../components/ModalComponent/ModalBookingRoom";
+import { useHotelBooking } from "../context/HotelBookingContext";
 import API from "../utils/axiosInstance";
 const styles = {
   sectionBackground: {
@@ -60,6 +61,7 @@ function RoomListPage() {
   const [error, setError] = useState("");
     const [showModal, setShowModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const { user } = useHotelBooking();
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -81,7 +83,7 @@ function RoomListPage() {
   const handleBookRoom=(e, roomId) => {
   const token = localStorage.getItem("token"); // Lấy token từ localStorage
 
-  if (token) {
+  if (!user) {
     navigate("/login"); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
   } else {
    setSelectedRoom(rooms); // Lưu phòng được chọn
