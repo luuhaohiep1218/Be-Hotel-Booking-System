@@ -4,7 +4,12 @@ import API from "../utils/axiosInstance";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Form, Input, Typography, Card, message } from "antd";
-import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  MailOutlined,
+  LockOutlined,
+  UserOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -54,12 +59,13 @@ const SignupPage = () => {
     try {
       setLoading(true);
       const response = await API.post("/auth/register", {
-        fullName: values.fullName,
+        full_name: values.fullName,
+        phone: values.phone,
         email: values.email,
         password: values.password,
       });
 
-      localStorage.setItem("accessToken", response.data.accessToken);
+      sessionStorage.setItem("accessToken", response.data.accessToken);
 
       message.success("Đăng ký thành công!");
       navigate("/");
@@ -86,6 +92,21 @@ const SignupPage = () => {
             <Input
               prefix={<UserOutlined />}
               placeholder="Nhập tên đầy đủ của bạn"
+              size="large"
+            />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập số điện thoại của bạn!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<PhoneOutlined />}
+              placeholder="Nhập số điện thoại của bạn"
               size="large"
             />
           </Form.Item>
@@ -123,16 +144,16 @@ const SignupPage = () => {
             dependencies={["password"]}
             rules={[
               { required: true, message: "Vui lòng xác nhận mật khẩu!" },
-              // ({ getFieldValue }) => ({
-              //   validator(_, value) {
-              //     if (!value || getFieldValue("password") === value) {
-              //       return Promise.resolve();
-              //     }
-              //     return Promise.reject(
-              //       new Error("Mật khẩu xác nhận không khớp!")
-              //     );
-              //   },
-              // }),
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("Mật khẩu xác nhận không khớp!")
+                  );
+                },
+              }),
             ]}
           >
             <Input.Password
