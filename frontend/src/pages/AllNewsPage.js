@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import NewsList from "../components/NewsList";
-import BlogHeader from "../components/HeaderComponent/BlogHeader";
 import PopularNews from "../components/PopularNews";
 import API from "../utils/axiosInstance";
 import styled from "styled-components";
