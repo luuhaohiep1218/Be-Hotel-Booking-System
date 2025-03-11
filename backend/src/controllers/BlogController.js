@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-
 const Blog = require("../models/BlogModel");
 
 const getAllBlog = asyncHandler(async (req, res) => {
@@ -16,24 +15,16 @@ const getAllBlog = asyncHandler(async (req, res) => {
     const totalBlogs = await Blog.countDocuments(filter);
     const totalPages = Math.ceil(totalBlogs / limit);
 
-    // ✅ Lấy danh sách blog theo filter
     const blogs = await Blog.find(filter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    res.json({
-      page,
-      limit,
-      totalBlogs,
-      totalPages,
-      blogs,
-    });
+    res.json({ page, limit, totalBlogs, totalPages, blogs });
   } catch (error) {
-    res.status(500).json({
-      message: "Lỗi khi lấy danh sách blog",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({ message: "Lỗi khi lấy danh sách blog", error: error.message });
   }
 });
 
@@ -59,7 +50,7 @@ const createBlog = asyncHandler(async (req, res) => {
 
 const importBlogs = asyncHandler(async (req, res) => {
   try {
-    const blogs = req.body; // Dữ liệu từ request (mảng các blog)
+    const blogs = req.body;
     if (!Array.isArray(blogs) || blogs.length === 0) {
       return res.status(400).json({ message: "Dữ liệu không hợp lệ" });
     }
@@ -90,14 +81,7 @@ const getBlogByCategory = asyncHandler(async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    res.json({
-      category,
-      page,
-      limit,
-      totalBlogs,
-      totalPages,
-      blogs: blogs,
-    });
+    res.json({ category, page, limit, totalBlogs, totalPages, blogs });
   } catch (error) {
     res.status(500).json({
       message: "Lỗi khi lấy blog theo category",
@@ -108,17 +92,16 @@ const getBlogByCategory = asyncHandler(async (req, res) => {
 
 const getBlogById = asyncHandler(async (req, res) => {
   try {
-    const { blogId } = req.params; // Lấy blogId từ params
+    const { blogId } = req.params;
 
     if (!blogId) {
       return res.status(400).json({ message: "Blog ID is required" });
     }
 
-    // Tìm và cập nhật số lượt xem
     const blog = await Blog.findByIdAndUpdate(
       blogId,
-      { $inc: { views: 1 } }, // Tăng `views` lên 1
-      { new: true, runValidators: true } // Trả về document đã cập nhật
+      { $inc: { views: 1 } },
+      { new: true, runValidators: true }
     );
 
     if (!blog) {
@@ -151,6 +134,64 @@ const getBlogProminent = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ *  CẬP NHẬT BLOG THEO ID
+ */
+const updateBlog = asyncHandler(async (req, res) => {
+  try {
+    const { blogId } = req.params;
+    const { category, title, summary, sections, location, date } = req.body;
+
+    if (!blogId) {
+      return res.status(400).json({ message: "Blog ID is required" });
+    }
+
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    blog.category = category || blog.category;
+    blog.title = title || blog.title;
+    blog.summary = summary || blog.summary;
+    blog.sections = sections || blog.sections;
+    blog.location = location || blog.location;
+    blog.date = date || blog.date;
+
+    const updatedBlog = await blog.save();
+    res.status(200).json(updatedBlog);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi cập nhật blog", error: error.message });
+  }
+});
+
+/**
+ *  XOÁ BLOG THEO ID
+ */
+const deleteBlog = asyncHandler(async (req, res) => {
+  try {
+    const { blogId } = req.params;
+
+    if (!blogId) {
+      return res.status(400).json({ message: "Blog ID is required" });
+    }
+
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    await blog.deleteOne();
+    res.status(200).json({ message: "Xóa blog thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi xóa blog", error: error.message });
+  }
+});
+
+
+
 module.exports = {
   getAllBlog,
   createBlog,
@@ -158,4 +199,6 @@ module.exports = {
   getBlogByCategory,
   getBlogById,
   getBlogProminent,
+  updateBlog,
+  deleteBlog,
 };

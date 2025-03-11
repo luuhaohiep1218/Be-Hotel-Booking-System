@@ -9,14 +9,25 @@ import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
 import NewsDetail from "../pages/NewsDetail";
-
 import RoomListPage from "../pages/RoomListPage";
+import Mktdashboard from "../pages/MktDashboard";
+import MktCustomerList from "../pages/MktListCustomer";
 
 export const routes = [
   {
     path: "/Blog",
     page: AllNewsPage,
     isShowHeader: true,
+  },
+  {
+    path: "/mktdashboard",
+    page: Mktdashboard,
+    isShowHeader: false,
+  },
+  {
+    path: "/mktCustomerList",
+    page: MktCustomerList,
+    isShowHeader: false,
   },
   {
     path: "/Blog/:blogId",
