@@ -123,6 +123,7 @@ const getProfileUser = asyncHandler(async (req, res) => {
       full_name: user.full_name,
       email: user.email,
       phone: user.phone,
+      role: user.role,
       authProvider: user.authProvider,
       createdAt: user.createdAt,
     });

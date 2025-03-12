@@ -15,6 +15,7 @@ import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
+import AdminManageAccount from "../pages/AdminAccountPage";
 
 export const routes = [
   {
@@ -119,5 +120,12 @@ export const routes = [
     page: VNPayReturn,
     isShowHeader: true,
     isPrivate: false
+  },
+  {
+    path:"/admin",
+    page: AdminManageAccount,
+    isShowHeader: true,
+    isPrivate: false
   }
+
 ];

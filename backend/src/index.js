@@ -19,6 +19,7 @@ const roomRouter = require("./routes/roomRouter");
 const serviceRouter = require("./routes/serviceRouter");
 const bookingRouter = require("./routes/bookingRouter");
 const vnpayRouter = require("./routes/vnpayRouter");
+const adminRouter = require("./routes/adminRouter")
 
 const User = require("./models/UserModel");
 
@@ -98,6 +99,7 @@ app.use("/api/room", roomRouter);
 app.use("/api/service", serviceRouter);
 app.use("/api/booking", bookingRouter);
 app.use("/api/vnpay", vnpayRouter);
+app.use("/api/admin", adminRouter);
 
 app.use(errorHandle);
 
