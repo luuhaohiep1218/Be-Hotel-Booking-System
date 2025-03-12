@@ -69,26 +69,16 @@ const NewsExtra = styled.p`
 `;
 
 const NewsItem = ({ item }) => {
-  // Chuyển item.id thành chuỗi để tránh lỗi
-  const itemId = String(item.id || ""); // Nếu item.id là undefined, gán chuỗi rỗng
-
-  const slugify = (text) => {
-    return text
-      .normalize("NFD") // Chuyển đổi ký tự có dấu thành dạng tổ hợp
-      .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
-      .toLowerCase() // Chuyển thành chữ thường
-      .replace(/đ/g, "d") // Chuyển "đ" thành "d"
-      .replace(/[^a-z0-9\s-]/g, "") // Loại bỏ ký tự đặc biệt
-      .trim() // Xóa khoảng trắng đầu và cuối
-      .replace(/\s+/g, "-"); // Thay khoảng trắng bằng dấu "-"
-  };
-
+  console.log(item.sections?.[0]?.image);
   return (
     <Col md={6} lg={4} className="mb-4">
       <Link style={{ textDecoration: "none", color: "inherit" }} to={item._id}>
         <NewsCard>
           <NewsImage
-            src={item.sections?.[0]?.image || "https://via.placeholder.com/300"}
+            src={
+              item.sections?.[0]?.image ||
+              "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
+            }
             alt={item.title}
           />
           <NewsBody>
