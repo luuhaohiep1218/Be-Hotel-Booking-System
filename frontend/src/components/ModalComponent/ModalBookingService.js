@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Button, message, Image } from "antd";
+import { Modal, Form, Button, message, Image, Select } from "antd";
 import styled from "styled-components";
-import API, { refreshAccessToken } from "../../utils/axiosInstance";
+import API from "../../utils/axiosInstance";
 import { useHotelBooking } from "../../context/HotelBookingContext";
 import { useNavigate } from "react-router-dom";
+
+const { Option } = Select;
 
 // Styled Components
 const StyledModal = styled(Modal)`
@@ -119,7 +121,7 @@ const TotalAmountValue = styled.p`
 const ModalBookingService = ({ isModalOpen, setIsModalOpen, service }) => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const { user, accessToken, setAccessToken } = useHotelBooking();
+  const { user, accessToken } = useHotelBooking();
 
   const [totalPrice, setTotalPrice] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -146,51 +148,48 @@ const ModalBookingService = ({ isModalOpen, setIsModalOpen, service }) => {
   };
 
   const handleConfirm = async () => {
-    console.log("🔹 Access Token before request:", accessToken);
-
-    // Kiểm tra accessToken CHỈ khi nhấn nút "Xác nhận"
     if (!user || !accessToken) {
-      message.warning("Bạn cần đăng nhập để đặt dịch vụ!");
+      message.warning("Vui lòng đăng nhập để tiếp tục đặt dịch vụ.");
       navigate("/login");
       return;
     }
 
+    const values = await form.validateFields();
+
     try {
-      const values = await form.validateFields();
-      await API.post(
-        "/booking/service",
-        { userId: user._id, serviceId: service._id, quantity: values.quantity },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+      if (values.paymentMethod === "vnpay") {
+        const orderId = `${Date.now()}`;
 
-      message.success("Đặt dịch vụ thành công!");
-      handleClose();
-    } catch (error) {
-      if (error.response?.status === 401) {
-        try {
-          const newToken = await refreshAccessToken();
-          setAccessToken(newToken);
-          localStorage.setItem("accessToken", newToken); // Lưu token mới
+        const vnpayResponse = await API.post("/vnpay/create-payment", {
+          amount: totalPrice,
+          orderId: orderId,
+          returnUrl: window.location.origin + `/payment-success`,
+        });
 
-          await API.post(
-            "/booking/service",
-            {
-              userId: user._id,
-              serviceId: service._id,
-              quantity: form.getFieldValue("quantity"),
-            },
-            { headers: { Authorization: `Bearer ${newToken}` } }
-          );
-
-          message.success("Đặt dịch vụ thành công!");
-          handleClose();
-        } catch (refreshError) {
-          message.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
-          navigate("/login");
+        if (vnpayResponse.data.paymentUrl) {
+          sessionStorage.setItem("serviceId", service._id);
+          sessionStorage.setItem("serviceQuantity", values.quantity);
+          window.location.href = vnpayResponse.data.paymentUrl;
+        } else {
+          message.error("Lỗi khi tạo thanh toán VNPay.");
         }
       } else {
-        message.error("Đặt dịch vụ thất bại, vui lòng thử lại!");
+        await API.post(
+          "/booking/service",
+          {
+            userId: user._id,
+            serviceId: service._id,
+            serviceQuantity: values.quantity,
+            paymentMethod: values.paymentMethod,
+          },
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+        message.success("Đặt dịch vụ thành công");
+        handleClose();
       }
+    } catch (error) {
+      message.error("Đặt dịch vụ thất bại, vui lòng thử lại!");
+      console.log(error);
     }
   };
 
@@ -234,12 +233,34 @@ const ModalBookingService = ({ isModalOpen, setIsModalOpen, service }) => {
             </CounterWrapper>
           </Form.Item>
         </StyledCard>
-
         <TotalAmountWrapper>
-          <TotalAmountLabel>Tổng tiền</TotalAmountLabel>
-          <TotalAmountValue>{totalPrice.toLocaleString()} đ</TotalAmountValue>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <TotalAmountLabel>Tổng tiền</TotalAmountLabel>
+              <TotalAmountValue>
+                {totalPrice.toLocaleString()} đ
+              </TotalAmountValue>
+            </div>
+            <Form.Item
+              name="paymentMethod"
+              label="Phương thức thanh toán"
+              rules={[
+                { required: true, message: "Chọn phương thức thanh toán" },
+              ]}
+            >
+              <Select style={{ width: 180 }}>
+                <Option value="counter">Tiền mặt</Option>
+                <Option value="vnpay">VNPAY</Option>
+              </Select>
+            </Form.Item>
+          </div>
         </TotalAmountWrapper>
-
         <ButtonGroup>
           <CancelButton onClick={handleClose}>Hủy</CancelButton>
           <ConfirmButton type="primary" onClick={handleConfirm}>

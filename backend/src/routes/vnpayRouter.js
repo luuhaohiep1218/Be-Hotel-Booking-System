@@ -1,5 +1,8 @@
 const express = require("express");
-const {createVNPayPayment, handleVNPayReturn } = require("../controllers/vnpayController");
+const {
+  createVNPayPayment,
+  handleVNPayReturn,
+} = require("../controllers/vnpayController");
 
 const router = express.Router();
 
