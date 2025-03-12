@@ -9,8 +9,11 @@ import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import ProfilePage from "../pages/ProfilePage";
 import NewsDetail from "../pages/NewsDetail";
-
 import RoomListPage from "../pages/RoomListPage";
+import ServiceDetail from "../pages/ServiceDetail";
+import { ManageService } from "../pages/ManageService";
+
+import TestServiceDetail from "../pages/TestServiceDetail";
 
 export const routes = [
   {
@@ -31,6 +34,18 @@ export const routes = [
   {
     path: "/service",
     page: ServicePage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/service/:serviceId",
+    page: ServiceDetail,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/service-detail",
+    page: TestServiceDetail,
     isShowHeader: true,
     isPrivate: false,
   },
@@ -88,4 +103,10 @@ export const routes = [
     isShowHeader: true,
     isPrivate: true,
   },
+  {
+    path: "/manage-service",
+    page: ManageService,
+    isShowHeader: true,
+    isPrivate: false,
+  }
 ];
