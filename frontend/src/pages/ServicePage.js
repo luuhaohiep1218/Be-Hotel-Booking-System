@@ -14,6 +14,7 @@ import { Slider } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import API from "../utils/axiosInstance";
 import ModalBookingService from "../components/ModalComponent/ModalBookingService";
+import { Link } from "react-router-dom";
 
 const styles = {
   card: {
@@ -25,6 +26,7 @@ const styles = {
     width: "100%",
     height: "100%",
     padding: "15px",
+    cursor: "pointer",
   },
   imageContainer: {
     position: "relative",
@@ -162,11 +164,9 @@ const ServicePage = () => {
       try {
         const [servicesRes, categoriesRes] = await Promise.all([
           API.get(
-            `/service?filter[price][gte]=${
-              filters.priceRange[0]
+            `/service?filter[price][gte]=${filters.priceRange[0]
             }&filter[price][lte]=${filters.priceRange[1]}
-            &filter[rating][gte]=${
-              filters.starRating
+            &filter[rating][gte]=${filters.starRating
             }&sort=${sortPrice}price&filter[category]=${convertArrayToString(
               filters.amenities
             )}`,
@@ -272,9 +272,9 @@ const ServicePage = () => {
             variant="light"
             id="dropdown-basic"
             bsPrefix="custom-dropdown-toggle"
-            style={styles.titletext} 
+            style={styles.titletext}
           >
-            {selectedOption} <DownOutlined style={{ marginLeft: "10px" }}/>
+            {selectedOption} <DownOutlined style={{ marginLeft: "10px" }} />
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
@@ -356,36 +356,38 @@ const ServicePage = () => {
           <Row>
             {services.map((service) => (
               <Col key={service._id} xs={12} sm={6} lg={4} className="mb-4">
-                <Card style={styles.card}>
-                  <div style={styles.imageContainer}>
-                    <Card.Img
-                      style={styles.image}
-                      variant="top"
-                      src={service.images[0]}
-                      alt={service.title}
-                    />
-                    <div style={styles.ratingBadge}>{service.rating}</div>
-                  </div>
-                  <Card.Body>
-                    <Card.Title style={styles.title}>
-                      {service.title}
-                    </Card.Title>
-                    <Card.Text style={styles.details}>
-                      {service.summary}
-                    </Card.Text>
-                    <div style={styles.footer}>
-                      <span style={styles.price}>
-                        {parsePrice(service.price)}đ
-                      </span>
-                      <Button
-                        style={styles.button}
-                        onClick={() => handleSelectedService(service)}
-                      >
-                        Đặt ngay
-                      </Button>
+                <Link to={`/service/${service._id}`} style={{ textDecoration: "none" }}>
+                  <Card style={styles.card}>
+                    <div style={styles.imageContainer}>
+                      <Card.Img
+                        style={styles.image}
+                        variant="top"
+                        src={service.images[0]}
+                        alt={service.title}
+                      />
+                      <div style={styles.ratingBadge}>{service.rating}</div>
                     </div>
-                  </Card.Body>
-                </Card>
+                    <Card.Body>
+                      <Card.Title style={styles.title}>
+                        {service.title}
+                      </Card.Title>
+                      <Card.Text style={styles.details}>
+                        {service.summary}
+                      </Card.Text>
+                      <div style={styles.footer}>
+                        <span style={styles.price}>
+                          {parsePrice(service.price)}đ
+                        </span>
+                        <Button
+                          style={styles.button}
+                          onClick={() => handleSelectedService(service)}
+                        >
+                          Đặt ngay
+                        </Button>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Link>
               </Col>
             ))}
           </Row>
