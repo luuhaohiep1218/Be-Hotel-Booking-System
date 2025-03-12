@@ -1,107 +1,111 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../components/MktSidebar";
 import styled from "styled-components";
+import API from "../utils/axiosInstance";
+import Sidebar from "../components/MktSidebar";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
-import API from "../utils/axiosInstance";
 
-const PageContainer = styled.div`
+const DashboardContainer = styled.div`
   display: flex;
   min-height: 100vh;
-  flex-direction: column;
-`;
-
-const Header = styled.header`
-  background: #007bff;
-  color: white;
-  padding: 15px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-`;
-
-const Footer = styled.footer`
-  background: #343a40;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  margin-top: auto;
-`;
-
-const MainContent = styled.div`
-  display: flex;
-  flex: 1;
+  background: #eef1f6;
 `;
 
 const ContentWrapper = styled.div`
   flex: 1;
   padding: 20px;
+  margin-left: ${(props) => (props.isSidebarOpen ? "250px" : "70px")};
   transition: margin-left 0.3s;
-  margin-left: ${(props) => (props.isSidebarOpen ? "250px" : "80px")};
 `;
 
-const BlogCard = styled.div`
+const SectionTitle = styled.h2`
+  font-size: 2rem;
+  color: #212529;
+  margin: 30px 0 15px;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+`;
+
+const CardContainer = styled.div`
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const Card = styled.div`
   background: white;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-left: 5px solid ${(props) => props.color || "#007bff"};
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 48%;
+  text-align: left;
+  margin-bottom: 20px;
 
-  h4 {
-    color: ${(props) => props.color || "#007bff"};
-    margin-bottom: 8px;
+  h3 {
+    color: #222;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
   }
-
   p {
     color: #555;
-    font-size: 14px;
+    font-size: 1rem;
   }
-
-  small {
-    display: block;
-    margin-top: 5px;
-    color: #777;
+  .views,
+  .rating {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  .views {
+    color: #007bff;
+  }
+  .rating {
+    color: #ffb400;
   }
 `;
 
 const ChartContainer = styled.div`
   background: white;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 25px;
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+  margin-top: 30px;
+  width: 50%;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const MarketingDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [mostViewedBlog, setMostViewedBlog] = useState(null);
+  const [blog, setBlog] = useState(null);
+  const [topRatedService, setTopRatedService] = useState(null);
   const [feedbackSummary, setFeedbackSummary] = useState(null);
-  const [blogRatingSummary, setBlogRatingSummary] = useState(null);
+  const [loadingFeedback, setLoadingFeedback] = useState(true);
 
   useEffect(() => {
-    const fetchBlogData = async () => {
+    const fetchData = async () => {
       try {
-        const [viewedRes, feedbackRes, ratingRes] = await Promise.all([
-          API.get("/blog/prominent"), // Fetch most viewed blog
-          API.get("/blog/feedback-summary"), // Fetch feedback summary
-          API.get("/blog/ratings-summary"), // Fetch blog ratings summary
+        const [blogRes, serviceRes, feedbackRes] = await Promise.all([
+          API.get("/blog/prominent"),
+          API.get("/service/top-rated"),
+          API.get("/feedback/mktDashboardFeedback"),
         ]);
 
-        console.log("Most viewed blog:", viewedRes.data);
-        setMostViewedBlog(viewedRes.data);
-
-        console.log("Feedback summary:", feedbackRes.data);
-        setFeedbackSummary(feedbackRes.data);
-
-        console.log("Blog ratings summary:", ratingRes.data);
-        setBlogRatingSummary(ratingRes.data);
+        setBlog(blogRes.data);
+        setTopRatedService(serviceRes.data);
+        setFeedbackSummary(feedbackRes.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoadingFeedback(false);
       }
     };
 
-    fetchBlogData();
+    fetchData();
   }, []);
 
   const feedbackChartData = {
@@ -110,7 +114,13 @@ const MarketingDashboard = () => {
       {
         label: "Feedback Count",
         data: feedbackSummary
-          ? Object.values(feedbackSummary)
+          ? [
+              feedbackSummary["5"],
+              feedbackSummary["4"],
+              feedbackSummary["3"],
+              feedbackSummary["2"],
+              feedbackSummary["1"],
+            ]
           : [0, 0, 0, 0, 0],
         backgroundColor: [
           "#28a745",
@@ -123,64 +133,61 @@ const MarketingDashboard = () => {
     ],
   };
 
-  const blogRatingChartData = {
-    labels: ["⭐ 5", "⭐ 4", "⭐ 3", "⭐ 2", "⭐ 1"],
-    datasets: [
-      {
-        label: "Blog Count by Rating",
-        data: blogRatingSummary
-          ? Object.values(blogRatingSummary)
-          : [0, 0, 0, 0, 0],
-        backgroundColor: [
-          "#28a745",
-          "#17a2b8",
-          "#ffc107",
-          "#fd7e14",
-          "#dc3545",
-        ],
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
       },
-    ],
+    },
   };
 
   return (
-    <PageContainer>
-      <Header>📊 Marketing Dashboard</Header>
+    <DashboardContainer>
+      <Sidebar onToggle={setIsSidebarOpen} />
+      <ContentWrapper isSidebarOpen={isSidebarOpen}>
+        <h1>📊 Marketing Dashboard</h1>
 
-      <MainContent>
-        <Sidebar onToggle={setIsSidebarOpen} />
-        <ContentWrapper isSidebarOpen={isSidebarOpen}>
-          <h2 style={{ color: "#007bff" }}>Marketing Statistics</h2>
-
-          {/* Blog có lượt xem cao nhất */}
-          <h3>🔥 Most Viewed Blog</h3>
-          {mostViewedBlog ? (
-            <BlogCard color="#ff5733">
-              <h4>{mostViewedBlog.title}</h4>
-              <p>{mostViewedBlog.summary}</p>
-              <small>
-                📍 {mostViewedBlog.location} | 👀 {mostViewedBlog.views} views
-              </small>
-            </BlogCard>
+        <SectionTitle>📄TOP Blog and Service </SectionTitle>
+        <CardContainer>
+          {blog ? (
+            <Card>
+              <h3>{blog.title}</h3>
+              <p>{blog.description}</p>
+              <p className="views">👀 Views: {blog.views}</p>
+              <p>📅 Date: {blog.date}</p>
+              <p>✍️ Author: {blog.customerName}</p>
+            </Card>
           ) : (
-            <p>Loading...</p>
+            <Card>
+              <p>No popular blogs found.</p>
+            </Card>
           )}
+          {topRatedService ? (
+            <Card>
+              <h3>{topRatedService.title}</h3>
+              <p>{topRatedService.description}</p>
+              <p className="rating">⭐ Rating: {topRatedService.rating}</p>
+              <p>🛠️ Category: {topRatedService.category}</p>
+            </Card>
+          ) : (
+            <Card>
+              <p>No top-rated service found.</p>
+            </Card>
+          )}
+        </CardContainer>
 
-          {/* Biểu đồ tổng hợp số lượng đánh giá blog theo rating */}
-          <ChartContainer>
-            <h3>⭐ Blog Rating Summary</h3>
-            <Bar data={blogRatingChartData} />
-          </ChartContainer>
-
-          {/* Biểu đồ tổng hợp số lượng đánh giá feedback */}
-          <ChartContainer>
-            <h3>⭐ Feedback Summary</h3>
-            <Bar data={feedbackChartData} />
-          </ChartContainer>
-        </ContentWrapper>
-      </MainContent>
-
-      <Footer></Footer>
-    </PageContainer>
+        <SectionTitle>📊 Feedback Summary</SectionTitle>
+        <ChartContainer>
+          {loadingFeedback ? (
+            <p>Loading feedback data...</p>
+          ) : (
+            <Bar data={feedbackChartData} options={chartOptions} />
+          )}
+        </ChartContainer>
+      </ContentWrapper>
+    </DashboardContainer>
   );
 };
 
