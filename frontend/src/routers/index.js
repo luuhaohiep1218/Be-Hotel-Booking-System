@@ -15,7 +15,11 @@ import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
+<<<<<<< HEAD
 import MktPostList from "../pages/MktPostList";
+=======
+import AdminManageAccount from "../pages/AdminAccountPage";
+>>>>>>> dca7ffadfec5b356b472428f91585362434edf1d
 
 export const routes = [
   {
@@ -124,6 +128,18 @@ export const routes = [
     path: "/payment-success",
     page: VNPayReturn,
     isShowHeader: true,
+<<<<<<< HEAD
     isPrivate: false,
   },
+=======
+    isPrivate: false
+  },
+  {
+    path:"/admin",
+    page: AdminManageAccount,
+    isShowHeader: true,
+    isPrivate: false
+  }
+
+>>>>>>> dca7ffadfec5b356b472428f91585362434edf1d
 ];
