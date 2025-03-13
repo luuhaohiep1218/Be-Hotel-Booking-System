@@ -29,12 +29,12 @@ router.get("/prominent", getBlogProminent);
 router.get("/:blogId", getBlogById);
 
 //  Thêm blog mới (chỉ Marketing có quyền)
-router.post("/", protect, mktMiddleware, createBlog);
+router.post("/", createBlog);
 
 //  Cập nhật blog (chỉ Marketing có quyền)
-router.put("/:blogId", protect, mktMiddleware, updateBlog);
+router.put("/:blogId", updateBlog);
 
 //  Xóa blog (chỉ Marketing có quyền)
-router.delete("/:blogId", protect, mktMiddleware, deleteBlog);
+router.delete("/:blogId", deleteBlog);
 
 module.exports = router;

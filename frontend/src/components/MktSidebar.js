@@ -86,7 +86,7 @@ const Sidebar = ({ onToggle }) => {
 
   const menuItems = [
     { to: "/mktdashboard", icon: <BsGrid />, label: "Dashboard" },
-    { to: "/userprofile", icon: <BsPerson />, label: "User" },
+    { to: "/profile", icon: <BsPerson />, label: "User" },
     { to: "/mktCustomerList", icon: <BsPieChart />, label: "Customer List" },
     { to: "/mktpostlist", icon: <BsNewspaper />, label: "Post List" },
     { to: "/mktfeedbacklist", icon: <BsHeart />, label: "Feedback" },

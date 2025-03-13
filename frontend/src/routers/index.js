@@ -15,7 +15,11 @@ import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
+<<<<<<< HEAD
+import MktPostList from "../pages/MktPostList";
+=======
 import AdminManageAccount from "../pages/AdminAccountPage";
+>>>>>>> dca7ffadfec5b356b472428f91585362434edf1d
 
 export const routes = [
   {
@@ -26,6 +30,11 @@ export const routes = [
   {
     path: "/mktdashboard",
     page: Mktdashboard,
+    isShowHeader: false,
+  },
+  {
+    path: "/mktPostList",
+    page: MktPostList,
     isShowHeader: false,
   },
   {
@@ -104,21 +113,25 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path:"room-detail/:roomId",
+    path: "room-detail/:roomId",
     page: RoomDetail,
     isShowHeader: true,
-    isPrivate: false
+    isPrivate: false,
   },
   {
-    path:"/checkout",
+    path: "/checkout",
     page: CheckoutPage,
     isShowHeader: true,
-    isPrivate: true
+    isPrivate: true,
   },
   {
-    path:"/payment-success",
+    path: "/payment-success",
     page: VNPayReturn,
     isShowHeader: true,
+<<<<<<< HEAD
+    isPrivate: false,
+  },
+=======
     isPrivate: false
   },
   {
@@ -128,4 +141,5 @@ export const routes = [
     isPrivate: false
   }
 
+>>>>>>> dca7ffadfec5b356b472428f91585362434edf1d
 ];
