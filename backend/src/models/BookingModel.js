@@ -79,7 +79,7 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       enum: ["failed", "pending", "confirmed"],
       default: "pending",
-    },
+    }
   },
   { timestamps: true }
 );

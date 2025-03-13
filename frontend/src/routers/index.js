@@ -1,4 +1,5 @@
 import AboutUs from "../pages/AboutUsPage";
+import AdminManageAccount from "../pages/AdminAccountPage";
 import AllNewsPage from "../pages/AllNewsPage";
 import CheckoutPage from "../pages/CheckOutPage";
 import FeedbackDetail from "../pages/FeedBackDetail";
@@ -10,7 +11,6 @@ import Mktdashboard from "../pages/MktDashboard";
 import MktCustomerList from "../pages/MktListCustomer";
 import NewsDetail from "../pages/NewsDetail";
 import PaymentFailed from "../pages/PaymentFailed";
-import PaymentSuccess from "../pages/PaymentSuccess";
 import ProfilePage from "../pages/ProfilePage";
 import RoomDetail from "../pages/RoomDetail";
 import RoomListPage from "../pages/RoomListPage";
@@ -18,6 +18,7 @@ import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import TestServiceDetail from "../pages/TestServiceDetail";
 import VNPayReturn from "../pages/VnpayReturn";
+import VNPayReturnService from "../pages/VnpayReturnService";
 
 export const routes = [
   {
@@ -130,8 +131,8 @@ export const routes = [
     isPrivate: false
   },
   {
-    path:"/payment-sucess",
-    page: PaymentSuccess,
+    path:"/vnpay-return-service",
+    page: VNPayReturnService,
     isShowHeader:true,
     isPrivate:false 
   },
@@ -141,4 +142,11 @@ export const routes = [
     isShowHeader:true,
     isPrivate:false 
   },
+  {
+    path:"/admin",
+    page: AdminManageAccount,
+    isShowHeader: true,
+    isPrivate: false
+  }
+
 ];

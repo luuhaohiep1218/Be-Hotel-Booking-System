@@ -1,15 +1,8 @@
 import { Card, Col, Pagination, Row } from "antd";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
 
 const { Meta } = Card;
-
-const Divider = styled.div`
-  width: 100%;
-  height: 2px;
-  background-color: #ddd;
-  margin: 20px 0;
-`;
 
 const PageContainer = styled.div`
   display: flex;
@@ -28,60 +21,68 @@ const PaginationWrapper = styled.div`
   padding-bottom: 20px;
 `;
 
+// ✅ Dùng React.memo để tối ưu hiển thị Card
+const MemoizedCard = React.memo(({ item, children }) => {
+  return (
+    <Col key={item._id} xs={24} sm={12} md={8} lg={6}>
+      <Card
+        hoverable
+        cover={item.image ? (
+          <img
+            alt={item.name}
+            src={item.image}
+            style={{ height: "200px", objectFit: "cover" }}
+          />
+        ) : (
+          <div style={{ height: "200px", background: "#f0f0f0" }} />
+        )}
+      >
+        <Meta title={item.name} description={item.description} />
+        <div style={{ marginTop: "10px", fontWeight: "bold" }}>
+          Giá: {item.price.toLocaleString("vi-VN")} VND
+        </div>
+        <div style={{ marginTop: "5px" }}>
+          <strong>Vị trí:</strong> {item.location}
+        </div>
+        <div style={{ marginTop: "5px", color: item.status === "trống" ? "green" : "red" }}>
+          <strong>Trạng thái:</strong> {item.status}
+        </div>
+        <div style={{ marginTop: "5px" }}>
+          <strong>Số lượng còn lại:</strong> {item.quantityLeft}
+        </div>
+        {children && children(item)}
+      </Card>
+    </Col>
+  );
+});
+
 const CardComponent = ({ data, pageSize = 6, children }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  if (!Array.isArray(data)) {
-    console.error("Invalid data: Expected an array.");
-    return null;
-  }
+  // ✅ Đảm bảo data luôn là một mảng, tránh lỗi hooks bị gọi conditionally
+  const safeData = Array.isArray(data) ? data : [];
 
-  // Lấy dữ liệu theo phân trang
-  const startIndex = (currentPage - 1) * pageSize;
-  const currentData = data.slice(startIndex, startIndex + pageSize);
+  // ✅ Dùng useMemo để tối ưu việc tính toán dữ liệu phân trang
+  const currentData = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return safeData.slice(startIndex, startIndex + pageSize);
+  }, [safeData, currentPage, pageSize]);
 
-  const onChange = (page) => {
+  // ✅ Dùng useCallback để tối ưu hàm xử lý thay đổi trang
+  const onChange = useCallback((page) => {
     setCurrentPage(page);
-  };
+  }, []);
 
   return (
     <PageContainer>
       <Content>
         <Row gutter={[24, 24]}>
           {currentData.map((item) => {
-            // Tạo bản sao và cập nhật status nếu quantityLeft = 0
             const updatedItem = { ...item, status: item.quantityLeft === 0 ? "hết phòng" : item.status };
-
             return (
-              <Col key={updatedItem._id} xs={24} sm={12} md={8} lg={6}>
-                <Card
-                  hoverable
-                  cover={updatedItem.image ? (
-                    <img
-                      alt={updatedItem.name}
-                      src={updatedItem.image}
-                      style={{ height: "200px", objectFit: "cover" }}
-                    />
-                  ) : (
-                    <div style={{ height: "200px", background: "#f0f0f0" }} />
-                  )}
-                >
-                  <Meta title={updatedItem.name} description={updatedItem.description} />
-                  <div style={{ marginTop: "10px", fontWeight: "bold" }}>
-                    Giá: {updatedItem.price.toLocaleString("vi-VN")} VND
-                  </div>
-                  <div style={{ marginTop: "5px" }}>
-                    <strong>Vị trí:</strong> {updatedItem.location}
-                  </div>
-                  <div style={{ marginTop: "5px", color: updatedItem.status === "trống" ? "green" : "red" }}>
-                    <strong>Trạng thái:</strong> {updatedItem.status}
-                  </div>
-                  <div style={{ marginTop: "5px" }}>
-                    <strong>Số lượng còn lại:</strong> {updatedItem.quantityLeft}
-                  </div>
-                  {children && children(updatedItem)}
-                </Card>
-              </Col>
+              <MemoizedCard key={updatedItem._id} item={updatedItem}>
+                {children}
+              </MemoizedCard>
             );
           })}
         </Row>
@@ -89,7 +90,7 @@ const CardComponent = ({ data, pageSize = 6, children }) => {
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={data.length}
+            total={safeData.length}
             onChange={onChange}
           />
         </PaginationWrapper>

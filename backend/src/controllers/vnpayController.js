@@ -3,6 +3,8 @@ const querystring = require("querystring");
 const moment = require("moment");
 require("dotenv").config();
 
+const Booking = require("../models/BookingModel");
+
 const createVNPayPayment = (req, res) => {
   try {
     let { amount, orderId, returnUrl } = req.body;
@@ -25,7 +27,8 @@ const createVNPayPayment = (req, res) => {
     const orderType = "other";
     const locale = "vn";
     const currCode = "VND";
-    const ipAddr = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    const ipAddr =
+      req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
     let vnp_Params = {
       vnp_Version: "2.1.0",
@@ -42,8 +45,6 @@ const createVNPayPayment = (req, res) => {
       vnp_CreateDate: createDate,
     };
 
-    console.log("🔹 VNPay Params Before Signing:", vnp_Params);
-
     vnp_Params = Object.fromEntries(
       Object.entries(vnp_Params).filter(([_, v]) => v != null)
     );
@@ -59,18 +60,12 @@ const createVNPayPayment = (req, res) => {
       encodeURIComponent: encodeURIComponent,
     });
 
-    console.log("🔹 Payment Sign Data:", signData);
-    console.log("🔹 VNP_HASHSECRET:", vnp_HashSecret);
-
     const hmac = crypto.createHmac("sha512", vnp_HashSecret);
     const signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-
-    console.log("🔹 Generated Payment Hash:", signed);
 
     vnp_Params["vnp_SecureHash"] = signed;
     const paymentUrl = `${vnp_Url}?${querystring.stringify(vnp_Params)}`;
 
-    console.log("🔹 VNPay Payment URL:", paymentUrl);
     res.json({ paymentUrl });
   } catch (error) {
     console.error("Lỗi khi tạo thanh toán VNPay:", error);
@@ -78,7 +73,7 @@ const createVNPayPayment = (req, res) => {
   }
 };
 
-const handleVNPayReturn = (req, res) => {
+const handleVNPayReturn = async (req, res) => {
   try {
     let vnp_Params = req.query;
     const secureHash = vnp_Params["vnp_SecureHash"];
@@ -92,20 +87,12 @@ const handleVNPayReturn = (req, res) => {
         return acc;
       }, {});
 
- const signData = Object.keys(sortedParams)
-  .map(key => `${key}=${encodeURIComponent(sortedParams[key])}`)
-  .join("&");
-
-
-    console.log("🔹 VNP Params:", sortedParams);
-    console.log("🔹 Sign Data:", signData);
-    console.log("🔹 VNP_HASHSECRET:", process.env.VNP_HASHSECRET);
+    const signData = Object.keys(sortedParams)
+      .map((key) => `${key}=${encodeURIComponent(sortedParams[key])}`)
+      .join("&");
 
     const hmac = crypto.createHmac("sha512", process.env.VNP_HASHSECRET);
     const signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
-
-    console.log("🔹 Generated Hash:", signed);
-    console.log("🔹 Received Hash:", secureHash);
 
     if (secureHash === signed) {
       if (vnp_Params["vnp_ResponseCode"] === "00") {

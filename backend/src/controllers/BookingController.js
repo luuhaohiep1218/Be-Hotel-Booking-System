@@ -4,29 +4,34 @@ const Service = require("../models/ServiceModel");
 const Room = require("../models/RoomModel");
 const bookService = asyncHandler(async (req, res) => {
   try {
-    const { userId, serviceId, quantity } = req.body;
+    const { userId, serviceId, serviceQuantity, paymentMethod } = req.body;
 
-    if (!userId || !serviceId || !quantity) {
+    // Kiểm tra dữ liệu đầu vào
+    if (!userId || !serviceId || !serviceQuantity || !paymentMethod) {
       return res.status(400).json({ message: "Thiếu thông tin đặt dịch vụ" });
     }
 
-    if (quantity < 1) {
+    if (serviceQuantity < 1) {
       return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
     }
 
+    // Tìm dịch vụ theo ID
     const service = await Service.findById(serviceId);
     if (!service) {
       return res.status(404).json({ message: "Dịch vụ không tồn tại" });
     }
 
-    const totalPrice = service.price * quantity;
+    // Tính tổng tiền
+    const totalPrice = service.price * serviceQuantity;
 
+    // Tạo booking
     const booking = new Booking({
       userId,
       type: "service",
       serviceId,
-      quantity,
+      serviceQuantity,
       price: totalPrice,
+      paymentMethod,
       status: "pending",
     });
 
@@ -84,13 +89,20 @@ const getServiceBookings = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Lỗi hệ thống", error: error.message });
   }
 });
- // 📌 API đặt phòng (book room)
+
 const bookRoom = asyncHandler(async (req, res) => {
   try {
     console.log("🟢 Gọi API bookRoom");
     const { userId, rooms, checkIn, checkOut, paymentMethod, transactionId } = req.body;
 
-    if (!userId || !rooms || rooms.length === 0 || !checkIn || !checkOut || !paymentMethod) {
+    if (
+      !userId ||
+      !rooms ||
+      rooms.length === 0 ||
+      !checkIn ||
+      !checkOut ||
+      !paymentMethod
+    ) {
       return res.status(400).json({ message: "Thiếu thông tin đặt phòng" });
     }
 
@@ -112,7 +124,9 @@ const bookRoom = asyncHandler(async (req, res) => {
 
       const room = await Room.findById(roomId);
       if (!room) {
-        return res.status(404).json({ message: `Phòng ${roomId} không tồn tại` });
+        return res
+          .status(404)
+          .json({ message: `Phòng ${roomId} không tồn tại` });
       }
 
       totalPrice += room.price * quantity;
@@ -198,5 +212,10 @@ const handleVnPayReturn = asyncHandler(async (req, res) => {
 });
 
 
+module.exports = {
+  bookService,
+  bookRoom,
+  handleVnPayReturn,
+  getServiceBookings,
+};
 
-module.exports = { bookService,bookRoom, handleVnPayReturn, getServiceBookings };

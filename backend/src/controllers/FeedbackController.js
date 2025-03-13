@@ -69,4 +69,32 @@ const deleteFeedback = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { requestFeedback, getAllFeedback, deleteFeedback };
+const getFeedbackSummary = asyncHandler(async (req, res) => {
+  try {
+    const summary = await Feedback.aggregate([
+      { $group: { _id: "$rating", count: { $sum: 1 } } },
+      { $sort: { _id: 1 } }, // Sắp xếp theo rating (1 -> 5)
+    ]);
+
+    // Chuyển đổi thành object { "1": count, "2": count, ..., "5": count }
+    const feedbackSummary = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    summary.forEach((item) => {
+      feedbackSummary[item._id] = item.count;
+    });
+
+    res.status(200).json({
+      message: "Lấy thống kê feedback thành công!",
+      data: feedbackSummary,
+    });
+  } catch (error) {
+    console.error("🔥 Lỗi khi lấy tổng hợp feedback:", error);
+    res.status(500).json({ message: "Lỗi server" });
+  }
+});
+
+module.exports = {
+  requestFeedback,
+  getAllFeedback,
+  deleteFeedback,
+  getFeedbackSummary,
+};

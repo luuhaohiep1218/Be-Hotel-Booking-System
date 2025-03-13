@@ -15,7 +15,7 @@ const CheckoutRoomForm = () => {
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [bookingType, setBookingType] = useState("room");
   const [formData, setFormData] = useState({
     fullName: user?.full_name || "",
     email: user?.email || "",
@@ -41,69 +41,94 @@ const CheckoutRoomForm = () => {
   const handlePaymentChange = (e) => {
     setFormData({ ...formData, paymentMethod: e.target.value });
   };
+    const handleDateChange = (field, value) => {
+  if (!value) return;
 
-  const handleDateChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
-  };
+  const selectedDate = dayjs(value); // Chuyển đổi `value` thành `dayjs`
+  const today = dayjs().startOf("day");
 
-const handlePayment = async () => {
-  if (!formData.fullName || !formData.email || !formData.phone) {
-    message.error("Vui lòng nhập đầy đủ thông tin!");
-    return;
-  }
-
-  if (!formData.checkIn || !formData.checkOut) {
-    message.error("Vui lòng chọn ngày nhận và trả phòng!");
-    return;
-  }
-
-  if (!totalPrice || totalPrice <= 0) {
-    message.error("Lỗi: Tổng tiền không hợp lệ!");
-    return;
-  }
-
-  if (!user?._id) {
-    message.error("Lỗi: Không tìm thấy User ID, vui lòng đăng nhập!");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    if (formData.paymentMethod === "counter") {
-      setIsModalVisible(true); 
-      setLoading(false); // Giữ trạng thái để không gọi 2 lần
-    } else {
-      const orderId = Date.now().toString();
-
-      localStorage.setItem("selectedRooms", JSON.stringify(selectedRooms));
-      localStorage.setItem("formData", JSON.stringify(formData));
-      localStorage.setItem("user", JSON.stringify(user));
-
-      const vnpayResponse = await axios.post(
-        "http://localhost:8000/api/vnpay/create-payment",
-        {
-          amount: totalPrice,
-          orderId: orderId,
-          returnUrl: `${window.location.origin}/return-vnpay`,
-        }
-      );
-
-      if (vnpayResponse.data.paymentUrl) {
-        window.location.href = vnpayResponse.data.paymentUrl;
-      } else {
-        message.error("Lỗi khi tạo thanh toán VNPay.");
-      }
+  if (field === "checkIn") {
+    if (selectedDate.isBefore(today)) {
+      message.error("Ngày nhận phòng không thể là quá khứ.");
+      return;
     }
-  } catch (error) {
-    message.error("Đã xảy ra lỗi khi đặt phòng.");
-  } finally {
-    setLoading(false);
+    setFormData({ ...formData, checkIn: selectedDate });
+  }
+
+  if (field === "checkOut") {
+    if (!formData.checkIn) {
+      message.error("Vui lòng chọn ngày nhận phòng trước.");
+      return;
+    }
+
+    const checkInDate = dayjs(formData.checkIn); // Chuyển đổi `checkIn` thành `dayjs`
+    if (selectedDate.isSame(checkInDate) || selectedDate.isBefore(checkInDate)) {
+      message.error("Ngày trả phòng phải sau ngày nhận phòng.");
+      return;
+    }
+    
+    setFormData({ ...formData, checkOut: selectedDate });
   }
 };
 
+  const handlePayment = async () => {
+    if (!formData.fullName || !formData.email || !formData.phone) {
+      message.error("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    if (!formData.checkIn || !formData.checkOut) {
+      message.error("Vui lòng chọn ngày nhận và trả phòng!");
+      return;
+    }
+
+    if (!totalPrice || totalPrice <= 0) {
+      message.error("Lỗi: Tổng tiền không hợp lệ!");
+      return;
+    }
+
+    if (!user?._id) {
+      message.error("Lỗi: Không tìm thấy User ID, vui lòng đăng nhập!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      if (formData.paymentMethod === "counter") {
+        setIsModalVisible(true);
+        setLoading(false); // Giữ trạng thái để không gọi 2 lần
+      } else {
+        const orderId = Date.now().toString();
+        localStorage.setItem("orderId", JSON.stringify(orderId));
+        localStorage.setItem("selectedRooms", JSON.stringify(selectedRooms));
+        localStorage.setItem("formData", JSON.stringify(formData));
+        localStorage.setItem("user", JSON.stringify(user));
+
+        const vnpayResponse = await axios.post(
+          "http://localhost:8000/api/vnpay/create-payment",
+          {
+            amount: totalPrice,
+            orderId: orderId,
+            returnUrl: `${window.location.origin}/return-vnpay`,
+          }
+        );
+
+        if (vnpayResponse.data.paymentUrl) {
+          window.location.href = vnpayResponse.data.paymentUrl;
+        } else {
+          message.error("Lỗi khi tạo thanh toán VNPay.");
+        }
+      }
+    } catch (error) {
+      message.error("Đã xảy ra lỗi khi đặt phòng.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleBookingSuccess = async () => {
-      console.log("🟢 Gọi handleBookingSuccess");
+    console.log("🟢 Gọi handleBookingSuccess");
     try {
       const formattedRooms = selectedRooms.map((room) => ({
         roomId: room.roomId ? room.roomId.toString() : "",
@@ -112,7 +137,6 @@ const handlePayment = async () => {
 
       const bookingData = {
         userId: user._id,
-        type: "room",
         rooms: formattedRooms,
         checkIn: formData.checkIn.format("YYYY-MM-DD"),
         checkOut: formData.checkOut.format("YYYY-MM-DD"),
@@ -120,7 +144,7 @@ const handlePayment = async () => {
         paymentMethod: formData.paymentMethod,
         paymentStatus: formData.paymentMethod === "counter" ? "pending" : "paid",
         notes: formData.notes,
-        status: "trống",
+        status: "pending",
       };
 
       await axios.post("http://localhost:8000/api/booking/rooms", bookingData);
@@ -152,22 +176,32 @@ const handlePayment = async () => {
             <Input name="fullName" placeholder="Họ và tên" value={formData.fullName} onChange={handleInputChange} />
             <Input name="email" placeholder="Email" value={formData.email} onChange={handleInputChange} />
             <Input name="phone" placeholder="Số điện thoại" value={formData.phone} onChange={handleInputChange} />
-            <DatePicker placeholder="Chọn ngày nhận phòng" value={formData.checkIn} onChange={(value) => handleDateChange("checkIn", value)} />
-            <DatePicker placeholder="Chọn ngày trả phòng" value={formData.checkOut} onChange={(value) => handleDateChange("checkOut", value)} />
+            <DatePicker
+              placeholder="Chọn ngày nhận phòng"
+              value={formData.checkIn}
+              onChange={(value) => handleDateChange("checkIn", value)}
+            />
+
+            <DatePicker
+              placeholder="Chọn ngày trả phòng"
+              value={formData.checkOut}
+              onChange={(value) => handleDateChange("checkOut", value)}
+            />
+
             <Radio.Group onChange={handlePaymentChange} value={formData.paymentMethod}>
               <Radio value="counter">Thanh toán tại quầy</Radio>
               <Radio value="vnpay">VNPay</Radio>
             </Radio.Group>
             <Button type="primary" loading={loading} onClick={handlePayment}>Xác nhận thanh toán</Button>
-            <SuccessModal 
-  isVisible={isModalVisible} 
-  onClose={() => {
-    setIsModalVisible(false);
-    if (!loading) {
-      handleBookingSuccess();  // Đảm bảo chỉ chạy một lần
-    }
-  }} 
-/>
+            <SuccessModal
+              isVisible={isModalVisible}
+              onClose={() => {
+                setIsModalVisible(false);
+                if (!loading) {
+                  handleBookingSuccess();  // Đảm bảo chỉ chạy một lần
+                }
+              }}
+            />
 
           </Card>
         </Col>
