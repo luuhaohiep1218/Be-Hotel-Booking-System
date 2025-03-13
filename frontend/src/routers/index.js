@@ -28,6 +28,7 @@ export const routes = [
     path: "/mktdashboard",
     page: Mktdashboard,
     isShowHeader: false,
+    isPrivate: true,
   },
   {
     path: "/mktPostList",
@@ -38,6 +39,7 @@ export const routes = [
     path: "/mktCustomerList",
     page: MktCustomerList,
     isShowHeader: false,
+    isPrivate: true,
   },
   {
     path: "/Blog/:blogId",
@@ -119,11 +121,13 @@ export const routes = [
     path: "/payment-success",
     page: VNPayReturn,
     isShowHeader: true,
+    isPrivate: true,
   },
   {
     path: "/admin",
     page: AdminManageAccount,
     isShowHeader: true,
-    isPrivate: false,
+    isPrivate: true,
+
   },
 ];
