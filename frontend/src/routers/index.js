@@ -9,11 +9,14 @@ import LoginSuccess from "../pages/LoginSuccess";
 import Mktdashboard from "../pages/MktDashboard";
 import MktCustomerList from "../pages/MktListCustomer";
 import NewsDetail from "../pages/NewsDetail";
+import PaymentFailed from "../pages/PaymentFailed";
+import PaymentSuccess from "../pages/PaymentSuccess";
 import ProfilePage from "../pages/ProfilePage";
 import RoomDetail from "../pages/RoomDetail";
 import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
+import TestServiceDetail from "../pages/TestServiceDetail";
 import VNPayReturn from "../pages/VnpayReturn";
 
 export const routes = [
@@ -115,9 +118,27 @@ export const routes = [
     isPrivate: true
   },
   {
-    path:"/payment-success",
+    path:"/return-vnpay",
     page: VNPayReturn,
     isShowHeader: true,
     isPrivate: false
-  }
+  },
+  {
+    path:"/test-service",
+    page: TestServiceDetail,
+    isShowHeader: true,
+    isPrivate: false
+  },
+  {
+    path:"/payment-sucess",
+    page: PaymentSuccess,
+    isShowHeader:true,
+    isPrivate:false 
+  },
+  {
+    path:"/payment-fail",
+    page: PaymentFailed,
+    isShowHeader:true,
+    isPrivate:false 
+  },
 ];

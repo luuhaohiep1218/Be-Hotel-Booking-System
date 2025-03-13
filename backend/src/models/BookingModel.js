@@ -70,14 +70,14 @@ const bookingSchema = new mongoose.Schema(
       enum: ["pending", "paid", "failed"],
       default: "pending",
     },
-    transactionId: { type: String }, // Mã giao dịch VNPay (nếu có)
+    transactionId: { type: String,unique: true }, // Mã giao dịch VNPay (nếu có)
     discountCode: { type: String }, // Mã giảm giá (nếu có)
 
     // ✍ Thông tin bổ sung
     notes: { type: String },
     status: {
       type: String,
-      enum: ["empty", "pending", "full"],
+      enum: ["failed", "pending", "confirmed"],
       default: "pending",
     },
   },
