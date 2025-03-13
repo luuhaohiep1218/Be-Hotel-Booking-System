@@ -15,6 +15,7 @@ import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
+import MktPostList from "../pages/MktPostList";
 import AdminManageAccount from "../pages/AdminAccountPage";
 
 export const routes = [
@@ -28,6 +29,11 @@ export const routes = [
     page: Mktdashboard,
     isShowHeader: false,
     isPrivate: true,
+  },
+  {
+    path: "/mktPostList",
+    page: MktPostList,
+    isShowHeader: false,
   },
   {
     path: "/mktCustomerList",
@@ -122,5 +128,6 @@ export const routes = [
     page: AdminManageAccount,
     isShowHeader: true,
     isPrivate: true,
+
   },
 ];
