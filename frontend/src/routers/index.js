@@ -27,11 +27,13 @@ export const routes = [
     path: "/mktdashboard",
     page: Mktdashboard,
     isShowHeader: false,
+    isPrivate: true,
   },
   {
     path: "/mktCustomerList",
     page: MktCustomerList,
     isShowHeader: false,
+    isPrivate: true,
   },
   {
     path: "/Blog/:blogId",
@@ -80,12 +82,6 @@ export const routes = [
     isPrivate: false,
   },
   {
-    path: "/",
-    page: HomePage,
-    isShowHeader: true,
-    isPrivate: false,
-  },
-  {
     path: "/us",
     page: AboutUs,
     isShowHeader: true,
@@ -104,28 +100,27 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path:"room-detail/:roomId",
+    path: "room-detail/:roomId",
     page: RoomDetail,
     isShowHeader: true,
-    isPrivate: false
+    isPrivate: false,
   },
   {
-    path:"/checkout",
+    path: "/checkout",
     page: CheckoutPage,
     isShowHeader: true,
-    isPrivate: true
+    isPrivate: true,
   },
   {
-    path:"/payment-success",
+    path: "/payment-success",
     page: VNPayReturn,
     isShowHeader: true,
-    isPrivate: false
+    isPrivate: true,
   },
   {
-    path:"/admin",
+    path: "/admin",
     page: AdminManageAccount,
     isShowHeader: true,
-    isPrivate: false
-  }
-
+    isPrivate: true,
+  },
 ];
