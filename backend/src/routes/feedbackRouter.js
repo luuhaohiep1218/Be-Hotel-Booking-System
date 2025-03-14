@@ -4,6 +4,8 @@ const {
   requestFeedback,
   getAllFeedback,
   deleteFeedback,
+  getFeedbackSummary,
+  getListFeedbacks,
 } = require("../controllers/FeedbackController");
 
 const router = express.Router();
@@ -11,10 +13,13 @@ const router = express.Router();
 //  Gửi phản hồi (Ai cũng có thể gửi feedback)
 router.post("/", protect, requestFeedback);
 
+router.get("/mktDashboardFeedback", getFeedbackSummary); //mkt
+router.get("/list-feedbacks", getListFeedbacks);
+
 //  Lấy toàn bộ phản hồi (Chỉ Marketing mới được phép)
-router.get("/", protect, mktMiddleware, getAllFeedback);
+router.get("/mktgetfeedback", protect, mktMiddleware, getAllFeedback); //mkt
 
 //  Xóa phản hồi theo ID (Chỉ Marketing mới được phép)
-router.delete("/:feedbackId", protect, mktMiddleware, deleteFeedback);
+router.delete("/:feedbackId", protect, mktMiddleware, deleteFeedback); //mkt
 
 module.exports = router;

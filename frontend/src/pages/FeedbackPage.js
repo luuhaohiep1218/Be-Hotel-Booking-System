@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Card, Rate, Input, Button, Flex, message } from "antd";
 import UploadImage from "../components/UploadImage";
-import API from "../utils/axiosInstance"; // Import API instance
+import API from "../utils/axiosInstance";
+import { useHotelBooking } from "../context/HotelBookingContext";
 
 const { TextArea } = Input;
 
@@ -34,6 +35,8 @@ const Label = styled.p`
 `;
 
 const FeedbackPage = () => {
+  const { user } = useHotelBooking();
+
   const [value, setValue] = useState(5);
   const [feedback, setFeedback] = useState("");
   const [loading, setLoading] = useState(false);
@@ -70,10 +73,10 @@ const FeedbackPage = () => {
         imageUrls = uploadResponse.data.imageUrls || [];
       }
 
-      // ✅ Sau khi upload ảnh thành công, gửi dữ liệu đánh giá
-      const response = await API.post(
+      await API.post(
         "/feedback",
         {
+          userId: user._id,
           rating: value,
           comment: feedback,
           images: imageUrls,

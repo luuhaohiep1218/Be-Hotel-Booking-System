@@ -187,7 +187,6 @@ const HeaderComponent = () => {
             <Image src={logo} alt="Logo" width="80" height="80" rounded />
           </Navbar.Brand>
           <StyledNav>
-            <StyledNavLink to="/offer">ƯU ĐÃI</StyledNavLink>
             <StyledNavLink to="/us">VỀ CHÚNG TÔI</StyledNavLink>
             <StyledNavLink to="/service">DỊCH VỤ</StyledNavLink>
             <StyledNavLink to="/room-list">ĐẶT PHÒNG</StyledNavLink>
