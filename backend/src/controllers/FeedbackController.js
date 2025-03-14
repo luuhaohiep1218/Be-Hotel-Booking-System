@@ -2,12 +2,17 @@ const asyncHandler = require("express-async-handler");
 const Feedback = require("../models/FeedbackModel");
 const aqp = require("api-query-params");
 
+
 /**
  * ✅ Người dùng gửi feedback
  */
 const requestFeedback = asyncHandler(async (req, res) => {
   try {
-    const { rating, comment, images, userId } = req.body;
+    console.log("Body:", req.body);
+    const { rating, comment, userId ,images} = req.body;
+    console.log("img:", images);
+
+
 
     if (!rating || !comment) {
       return res.status(400).json({ message: "Thiếu rating hoặc comment" });
@@ -37,7 +42,9 @@ const requestFeedback = asyncHandler(async (req, res) => {
  */
 const getAllFeedback = asyncHandler(async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    const feedbacks = await Feedback.find()
+      .populate("userId", "full_name")
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       message: "Lấy danh sách phản hồi thành công!",

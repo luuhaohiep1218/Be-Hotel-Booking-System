@@ -105,13 +105,9 @@ const AdminManageAccount = () => {
 
   const handleCreateUser = async () => {
     try {
-      await API.post(
-        "/admin/users",
-        newUser,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      await API.post("/admin/users", newUser, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       setShowCreateModal(false);
       fetchUsers();
     } catch (error) {
@@ -141,6 +137,10 @@ const AdminManageAccount = () => {
 
   const handleDelete = async (id) => {
     try {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this user?"
+      );
+      if (!confirmed) return;
       await API.delete(`/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -187,177 +187,208 @@ const AdminManageAccount = () => {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   return (
-    <Container>
-      <StyledNavbar>
-        <Nav variant="tabs" defaultActiveKey="ALL">
-          {["ALL", "USER", "STAFF", "MARKETING", "ADMIN"].map((role) => (
-            <Nav.Item key={role}>
-              <Nav.Link
-                eventKey={role}
-                onClick={() => setCurrentRole(role)}
-                active={currentRole === role}
-              >
-                {role}
-              </Nav.Link>
-            </Nav.Item>
-          ))}
-        </Nav>
-        {currentRole === "STAFF" && (
-          <SearchButton
-            variant="primary"
-            onClick={() => setShowCreateModal(true)}
-          >
-            Add Staff
-          </SearchButton>
-        )}
-        {currentRole === "MARKETING" && (
-          <SearchButton
-            variant="primary"
-            onClick={() => setShowCreateModal(true)}
-          >
-            Add Marketing
-          </SearchButton>
-        )}
+    <div>
+      <Navbar bg="dark" variant="dark" expand="lg">
+        <Container>
+          <Navbar.Brand href="#home" className="fs-3 fw-bold">
+            ADMIN PAGE
+          </Navbar.Brand>
+        </Container>
+      </Navbar>
+      <Container>
+        <StyledNavbar>
+          <Nav variant="tabs" defaultActiveKey="ALL">
+            {["ALL", "USER", "STAFF", "MARKETING", "ADMIN"].map((role) => (
+              <Nav.Item key={role}>
+                <Nav.Link
+                  eventKey={role}
+                  onClick={() => setCurrentRole(role)}
+                  active={currentRole === role}
+                >
+                  {role}
+                </Nav.Link>
+              </Nav.Item>
+            ))}
+          </Nav>
+          {currentRole === "STAFF" && (
+            <SearchButton
+              variant="primary"
+              onClick={() => setShowCreateModal(true)}
+            >
+              Add Staff
+            </SearchButton>
+          )}
+          {currentRole === "MARKETING" && (
+            <SearchButton
+              variant="primary"
+              onClick={() => setShowCreateModal(true)}
+            >
+              Add Marketing
+            </SearchButton>
+          )}
 
-        <SearchContainer>
-          <Row>
-            <InputGroup>
-              <Col md={7}>
-                <SearchInput
-                  placeholder="Nhập tên hoặc email"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </Col>
-              <Col>
-                <SearchButton style={{marginTop:"4px"}} onClick={filterUsers}>Tìm kiếm</SearchButton>
-              </Col>
-            </InputGroup>
-          </Row>
-        </SearchContainer>
-      </StyledNavbar>
+          <SearchContainer>
+            <Row>
+              <InputGroup>
+                <Col md={7}>
+                  <SearchInput
+                    placeholder="Nhập tên hoặc email"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </Col>
+                <Col>
+                  <SearchButton
+                    style={{ marginTop: "4px" }}
+                    onClick={filterUsers}
+                  >
+                    Tìm kiếm
+                  </SearchButton>
+                </Col>
+              </InputGroup>
+            </Row>
+          </SearchContainer>
+        </StyledNavbar>
 
-      <StyledTable striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Tên</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentUsers.map((user) => (
-            <tr key={user._id}>
-              <td>{user._id}</td>
-              <td>{user.full_name || "Unknown Name"}</td>
-              <td>{user.email || "No email provided"}</td>
-              <td>{user.role || "No role assigned"}</td>
-              <td>
-                <Button variant="warning" onClick={() => handleEdit(user)}>
-                  Edit
-                </Button>
-                <Button variant="danger" onClick={() => handleDelete(user._id)}>
-                  Delete
-                </Button>
-              </td>
+        <StyledTable striped bordered hover>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tên</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
             </tr>
+          </thead>
+          <tbody>
+            {currentUsers.map((user) => (
+              <tr key={user._id}>
+                <td>{user._id}</td>
+                <td>{user.full_name || "Unknown Name"}</td>
+                <td>{user.email || "No email provided"}</td>
+                <td>{user.role || "No role assigned"}</td>
+                <td>
+                  <Button variant="warning" onClick={() => handleEdit(user)}>
+                    Edit
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDelete(user._id)}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </StyledTable>
+
+        <Pagination>
+          {[...Array(totalPages)].map((_, index) => (
+            <Pagination.Item
+              key={index + 1}
+              active={index + 1 === currentPage}
+              onClick={() => paginate(index + 1)}
+            >
+              {index + 1}
+            </Pagination.Item>
           ))}
-        </tbody>
-      </StyledTable>
+        </Pagination>
 
-      <Pagination>
-        {[...Array(totalPages)].map((_, index) => (
-          <Pagination.Item
-            key={index + 1}
-            active={index + 1 === currentPage}
-            onClick={() => paginate(index + 1)}
-          >
-            {index + 1}
-          </Pagination.Item>
-        ))}
-      </Pagination>
-
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit User Role</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Control
-            as="select"
-            value={editUser?.role}
-            onChange={(e) => setEditUser({ ...editUser, role: e.target.value })}
-          >
-            <option>USER</option>
-            <option>STAFF</option>
-            <option>MARKETING</option>
-            <option>ADMIN</option>
-          </Form.Control>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSaveEdit}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create User</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            onChange={(e) =>
-              setNewUser({ ...newUser, full_name: e.target.value })
-            }
-          />
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-          />
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type={showPassword ? "text" : "password"}
-            onChange={(e) =>
-              setNewUser({ ...newUser, password: e.target.value })
-            }
-          ></Form.Control>
-          <span
-            onClick={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "10px",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-            }}
-          >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-          </span>
-          <Form.Label>Role</Form.Label>
-          <Form.Control
-            as="select"
-            value={currentRole}
-            onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-          >
-            <option value="STAFF">STAFF</option>
-            <option value="MARKETING">MARKETING</option>
-          </Form.Control>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleCreateUser}>
-            Create
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Container>
+        <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit User Role</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Control
+              as="select"
+              value={editUser?.role}
+              onChange={(e) =>
+                setEditUser({ ...editUser, role: e.target.value })
+              }
+            >
+              <option>USER</option>
+              <option>STAFF</option>
+              <option>MARKETING</option>
+              <option>ADMIN</option>
+            </Form.Control>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleSaveEdit}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Create User</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              onChange={(e) =>
+                setNewUser({ ...newUser, full_name: e.target.value })
+              }
+            />
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              onChange={(e) =>
+                setNewUser({ ...newUser, email: e.target.value })
+              }
+            />
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type={showPassword ? "text" : "password"}
+              onChange={(e) =>
+                setNewUser({ ...newUser, password: e.target.value })
+              }
+              style={{
+                paddingRight: "40px", // Đảm bảo khoảng trống cho icon
+              }}
+            />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: "absolute",
+                top: "66%",
+                right: "24px",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                color: "#6c757d",
+                height: "20px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
+            <Form.Label>Role</Form.Label>
+            <Form.Control
+              as="select"
+              value={currentRole}
+              onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+            >
+              <option value="STAFF">STAFF</option>
+              <option value="MARKETING">MARKETING</option>
+            </Form.Control>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setShowCreateModal(false)}
+            >
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleCreateUser}>
+              Create
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Container>
+    </div>
   );
 };
 
