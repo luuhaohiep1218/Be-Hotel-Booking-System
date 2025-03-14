@@ -17,6 +17,7 @@ import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
 import MktPostList from "../pages/MktPostList";
 import AdminManageAccount from "../pages/AdminAccountPage";
+import FeedbackListPage from "../pages/MktFeedbackList";
 
 export const routes = [
   {
@@ -38,6 +39,12 @@ export const routes = [
   {
     path: "/mktCustomerList",
     page: MktCustomerList,
+    isShowHeader: false,
+    isPrivate: true,
+  },
+  {
+    path: "/mktfeedbacklist",
+    page: FeedbackListPage,
     isShowHeader: false,
     isPrivate: true,
   },
@@ -126,7 +133,7 @@ export const routes = [
   {
     path: "/admin",
     page: AdminManageAccount,
-    isShowHeader: true,
+    isShowHeader: false,
     isPrivate: true,
 
   },
