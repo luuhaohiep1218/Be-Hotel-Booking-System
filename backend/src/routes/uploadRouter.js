@@ -45,7 +45,8 @@ router.post("/", protect, (req, res) => {
 
     // ✅ Trả về URL đầy đủ của ảnh
     const fileUrls = req.files.map(
-      (file) => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
+      (file) =>
+        `${req.protocol}://${req.get("host")}/api/upload/${file.filename}`
     );
 
     res.json({ message: "Upload thành công!", imageUrls: fileUrls });

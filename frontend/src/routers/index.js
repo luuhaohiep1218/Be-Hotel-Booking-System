@@ -1,5 +1,4 @@
 import AboutUs from "../pages/AboutUsPage";
-import AdminManageAccount from "../pages/AdminAccountPage";
 import AllNewsPage from "../pages/AllNewsPage";
 import CheckoutPage from "../pages/CheckOutPage";
 import FeedbackDetail from "../pages/FeedBackDetail";
@@ -9,8 +8,8 @@ import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
 import Mktdashboard from "../pages/MktDashboard";
 import MktCustomerList from "../pages/MktListCustomer";
+import MktPostList from "../pages/MktPostList";
 import NewsDetail from "../pages/NewsDetail";
-import PaymentFailed from "../pages/PaymentFailed";
 import ProfilePage from "../pages/ProfilePage";
 import RoomDetail from "../pages/RoomDetail";
 import RoomListPage from "../pages/RoomListPage";
@@ -18,7 +17,6 @@ import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import TestServiceDetail from "../pages/TestServiceDetail";
 import VNPayReturn from "../pages/VnpayReturn";
-import VNPayReturnService from "../pages/VnpayReturnService";
 
 export const routes = [
   {
@@ -30,11 +28,18 @@ export const routes = [
     path: "/mktdashboard",
     page: Mktdashboard,
     isShowHeader: false,
+    isPrivate: true,
+  },
+  {
+    path: "/mktPostList",
+    page: MktPostList,
+    isShowHeader: false,
   },
   {
     path: "/mktCustomerList",
     page: MktCustomerList,
     isShowHeader: false,
+    isPrivate: true,
   },
   {
     path: "/Blog/:blogId",
@@ -83,12 +88,6 @@ export const routes = [
     isPrivate: false,
   },
   {
-    path: "/",
-    page: HomePage,
-    isShowHeader: true,
-    isPrivate: false,
-  },
-  {
     path: "/us",
     page: AboutUs,
     isShowHeader: true,
@@ -107,46 +106,27 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path:"room-detail/:roomId",
+    path: "room-detail/:roomId",
     page: RoomDetail,
     isShowHeader: true,
-    isPrivate: false
+    isPrivate: false,
   },
   {
-    path:"/checkout",
+    path: "/checkout",
     page: CheckoutPage,
     isShowHeader: true,
-    isPrivate: true
+    isPrivate: true,
   },
   {
+
     path:"/return-vnpay",
     page: VNPayReturn,
     isShowHeader: true,
-    isPrivate: false
+    isPrivate: true,
   },
   {
     path:"/test-service",
     page: TestServiceDetail,
     isShowHeader: true,
-    isPrivate: false
   },
-  {
-    path:"/vnpay-return-service",
-    page: VNPayReturnService,
-    isShowHeader:true,
-    isPrivate:false 
-  },
-  {
-    path:"/payment-fail",
-    page: PaymentFailed,
-    isShowHeader:true,
-    isPrivate:false 
-  },
-  {
-    path:"/admin",
-    page: AdminManageAccount,
-    isShowHeader: true,
-    isPrivate: false
-  }
-
 ];
