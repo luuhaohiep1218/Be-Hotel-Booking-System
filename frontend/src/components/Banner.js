@@ -18,7 +18,7 @@ function Banner() {
   }
   
   return (
-    <div className="banner mt-4" style ={{position: 'relative' , width: '100%', height: 'auto' }}>
+    <div className="banner mt-2" style ={{position: 'relative' , width: '100%', height: 'auto' }}>
     <div style ={style}>
     <video ref={videoRef} style = {{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '24px'}} autoPlay muted loop  src="https://minio.fares.vn/mixivivu-dev/video/MixivivuHotel.mp4">
       Trình duyệt của bạn không hỗ trợ video.

@@ -1,33 +1,82 @@
 import React, { useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { useMediaQuery } from "react-responsive";
 import styled from "styled-components";
 
 // Styled Components
-const StyledContainer = styled(Container)`
+const RoomSearchContainer = styled.div`
   position: absolute;
-  width: 80%;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 24px;
+  width: 70%;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 16px;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -240px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  bottom: -350px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
   z-index: 10;
+  transition: all 0.3s ease-in-out;
+
+  @media (max-width: 1024px) {
+    width: 80%;
+  }
+
+  @media (max-width: 768px) {
+    position: relative;
+    bottom: auto;
+    width: 100%;
+    transform: none;
+    padding: 20px;
+  }
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 8px;
+`;
+
+const SubTitle = styled.p`
+  text-align: center;
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 20px;
 `;
 
 const StyledForm = styled(Form)`
-  padding: 20px;
   background-color: transparent;
-  box-shadow: none;
 `;
 
-const StyledButton = styled(Button)`
-  height: 40px;
-  border-radius: 20px;
+const FormRow = styled(Row)`
+  margin-bottom: 15px;
+`;
+
+const FormInput = styled(Form.Control)`
+  border-radius: 12px;
   border: 1px solid #ccc;
-  color: #6c757d;
+  padding: 10px;
+`;
+
+const FormSelect = styled(Form.Select)`
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 10px;
+`;
+
+const SearchButton = styled(Button)`
+  width: 100%;
+  height: 45px;
+  border-radius: 12px;
+  background-color: #007bff;
+  border: none;
+  font-weight: bold;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #0056b3;
+  }
 `;
 
 const RoomSearchBox = ({ onSearch }) => {
@@ -40,6 +89,8 @@ const RoomSearchBox = ({ onSearch }) => {
     price: "",
     status: "",
   });
+
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,15 +106,16 @@ const RoomSearchBox = ({ onSearch }) => {
   };
 
   return (
-    <StyledContainer className="mt-5">
-      <h2 className="text-center">Bạn lựa chọn phòng nào?</h2>
-      <p className="text-center text-muted">Hơn 100 phòng sang giá tốt đang chờ bạn</p>
+    <RoomSearchContainer className={isMobile ? "mobile-position" : ""}>
+      <Title>Bạn lựa chọn phòng nào?</Title>
+      <SubTitle>Hơn 100 phòng sang giá tốt đang chờ bạn</SubTitle>
+
       <StyledForm onSubmit={handleSubmit}>
-        <Row className="mb-3">
+        <FormRow>
           <Col md={6}>
             <Form.Group>
               <Form.Label>Tên phòng</Form.Label>
-              <Form.Control
+              <FormInput
                 type="text"
                 name="name"
                 placeholder="Nhập tên phòng"
@@ -75,24 +127,23 @@ const RoomSearchBox = ({ onSearch }) => {
           <Col md={6}>
             <Form.Group>
               <Form.Label>Loại phòng</Form.Label>
-              <Form.Control as="select" name="type" value={searchParams.type} onChange={handleChange}>
+              <FormSelect name="type" value={searchParams.type} onChange={handleChange}>
                 <option value="">Chọn loại</option>
                 <option value="Standard">Standard</option>
                 <option value="Deluxe">Deluxe</option>
                 <option value="Suite">Suite</option>
                 <option value="Luxury">Luxury</option>
                 <option value="Superior">Superior</option>
-
-              </Form.Control>
+              </FormSelect>
             </Form.Group>
           </Col>
-        </Row>
+        </FormRow>
 
-        <Row className="mb-3">
+        <FormRow>
           <Col md={6}>
             <Form.Group>
               <Form.Label>Dịch vụ</Form.Label>
-              <Form.Control
+              <FormInput
                 type="text"
                 name="services"
                 placeholder="WiFi, Hồ bơi..."
@@ -104,21 +155,21 @@ const RoomSearchBox = ({ onSearch }) => {
           <Col md={6}>
             <Form.Group>
               <Form.Label>Vị trí</Form.Label>
-              <Form.Control as="select" name="location" value={searchParams.location} onChange={handleChange}>
+              <FormSelect name="location" value={searchParams.location} onChange={handleChange}>
                 <option value="">Chọn vị trí</option>
                 <option value="biển">Biển</option>
                 <option value="thành phố">Thành phố</option>
                 <option value="biển và thành phố">Biển và Thành phố</option>
-              </Form.Control>
+              </FormSelect>
             </Form.Group>
           </Col>
-        </Row>
+        </FormRow>
 
-        <Row className="mb-3">
+        <FormRow>
           <Col md={4}>
             <Form.Group>
               <Form.Label>Số giường</Form.Label>
-              <Form.Control
+              <FormInput
                 type="number"
                 name="beds"
                 min="1"
@@ -131,33 +182,31 @@ const RoomSearchBox = ({ onSearch }) => {
           <Col md={4}>
             <Form.Group>
               <Form.Label>Giá</Form.Label>
-              <Form.Control as="select" name="price" value={searchParams.price} onChange={handleChange}>
+              <FormSelect name="price" value={searchParams.price} onChange={handleChange}>
                 <option value="">Chọn khoảng giá</option>
                 <option value="<500">Nhỏ hơn 500</option>
                 <option value="500-3000">Từ 500 đến 3000</option>
                 <option value=">3000">Lớn hơn 3000</option>
-              </Form.Control>
+              </FormSelect>
             </Form.Group>
           </Col>
           <Col md={4}>
             <Form.Group>
               <Form.Label>Trạng thái</Form.Label>
-              <Form.Control as="select" name="status" value={searchParams.status} onChange={handleChange}>
+              <FormSelect name="status" value={searchParams.status} onChange={handleChange}>
                 <option value="">Chọn trạng thái</option>
                 <option value="Available">Còn trống</option>
                 <option value="Booked">Đã đặt</option>
-              </Form.Control>
+              </FormSelect>
             </Form.Group>
           </Col>
-        </Row>
+        </FormRow>
 
-        <div className="text-center">
-          <StyledButton type="submit" variant="info">
-            Tìm phòng
-          </StyledButton>
+        <div className="text-center mt-3">
+          <SearchButton type="submit">Tìm phòng</SearchButton>
         </div>
       </StyledForm>
-    </StyledContainer>
+    </RoomSearchContainer>
   );
 };
 

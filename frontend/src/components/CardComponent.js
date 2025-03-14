@@ -23,6 +23,7 @@ const PaginationWrapper = styled.div`
 
 // ✅ Dùng React.memo để tối ưu hiển thị Card
 const MemoizedCard = React.memo(({ item, children }) => {
+  console.log("Render Card:", item.name);
   return (
     <Col key={item._id} xs={24} sm={12} md={8} lg={6}>
       <Card
@@ -78,6 +79,7 @@ const CardComponent = ({ data, pageSize = 6, children }) => {
       <Content>
         <Row gutter={[24, 24]}>
           {currentData.map((item) => {
+            console.log(item);
             const updatedItem = { ...item, status: item.quantityLeft === 0 ? "hết phòng" : item.status };
             return (
               <MemoizedCard key={updatedItem._id} item={updatedItem}>
