@@ -21,7 +21,7 @@ const createVNPayPayment = (req, res) => {
     const vnp_TmnCode = process.env.VNP_TMNCODE;
     const vnp_HashSecret = process.env.VNP_HASHSECRET;
     const vnp_Url = process.env.VNP_URL;
-    const vnp_ReturnUrl = returnUrl;
+    const vnp_ReturnUrl = `${returnUrl}?orderId=${orderId}`;
     const createDate = moment().format("YYYYMMDDHHmmss");
     const orderInfo = `${orderId}`;
     const orderType = "other";

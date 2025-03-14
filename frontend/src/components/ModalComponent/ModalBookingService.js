@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form, Button, message, Image, Select } from "antd";
-import styled from "styled-components";
-import API from "../../utils/axiosInstance";
-import { useHotelBooking } from "../../context/HotelBookingContext";
+import { Button, Form, Image, message, Modal, Select } from "antd";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useHotelBooking } from "../../context/HotelBookingContext";
+import API from "../../utils/axiosInstance";
 
 const { Option } = Select;
 
@@ -163,7 +163,7 @@ const ModalBookingService = ({ isModalOpen, setIsModalOpen, service }) => {
         const vnpayResponse = await API.post("/vnpay/create-payment", {
           amount: totalPrice,
           orderId: orderId,
-          returnUrl: window.location.origin + `/payment-success`,
+          returnUrl: window.location.origin + `/vnpay-return-service`,
         });
 
         if (vnpayResponse.data.paymentUrl) {
