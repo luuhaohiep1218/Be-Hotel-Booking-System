@@ -1,3 +1,4 @@
+import { CopilotKit } from "@copilotkit/react-core";
 import React, { Fragment } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -10,45 +11,45 @@ import { routes } from "./routers/index";
 
 const App = () => {
   return (
-    <HotelBookingProvider>
-      <RoomProvider>
-      <div className="App">
-        <Router>
-          <Routes>
-            {routes.map((route) => {
-              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+    <CopilotKit runtimeUrl="http://localhost:3000"> {/* ✅ Bọc toàn bộ ứng dụng trong CopilotProvider */}
+      <HotelBookingProvider>
+        <RoomProvider>
+          <div className="App">
+            <Router>
+              <Routes>
+                {routes.map((route) => {
+                  const Layout = route.isShowHeader ? DefaultComponent : Fragment;
 
-              return route.isPrivate ? (
-                // Nếu là trang cần bảo vệ thì bọc trong ProtectedRoute
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={
-                    <ProtectedRoute>
-                      <Layout>
-                        <route.page />
-                      </Layout>
-                    </ProtectedRoute>
-                  }
-                />
-              ) : (
-                // Nếu không cần bảo vệ, render bình thường
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={
-                    <Layout>
-                      <route.page />
-                    </Layout>
-                  }
-                />
-              );
-            })}
-          </Routes>
-        </Router>
-      </div>
-      </RoomProvider>
-    </HotelBookingProvider>
+                  return route.isPrivate ? (
+                    <Route
+                      key={route.path}
+                      path={route.path}
+                      element={
+                        <ProtectedRoute>
+                          <Layout>
+                            <route.page />
+                          </Layout>
+                        </ProtectedRoute>
+                      }
+                    />
+                  ) : (
+                    <Route
+                      key={route.path}
+                      path={route.path}
+                      element={
+                        <Layout>
+                          <route.page />
+                        </Layout>
+                      }
+                    />
+                  );
+                })}
+              </Routes>
+            </Router>
+          </div>
+        </RoomProvider>
+      </HotelBookingProvider>
+    </CopilotKit> 
   );
 };
 

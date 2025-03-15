@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import images from "../assets/images/pages.jpg";
 import background from "../assets/images/section-background.jpg";
+import AIAssistant from "../components/AIComponent/AIAssistant";
 import Banner from "../components/Banner";
 import CardComponent from "../components/CardComponent";
 import ModalBookingRoom from "../components/ModalComponent/ModalBookingRoom";
 import RoomSearchBox from "../components/RoomSearchBox";
 import { useHotelBooking } from "../context/HotelBookingContext";
 import { RoomContext } from "../context/RoomContext";
+
 
 const SectionBackground = styled.div`
   background-image: url(${background});
@@ -56,14 +58,45 @@ const StyledButton = styled(Button)`
   &:hover {
     background-color: #1a8fa0;
   }
+    
+`;
+const AIButton = styled(Button)`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #22acbf;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 20px;
+  z-index: 1000;
+  &:hover {
+    background-color: #1a8fa0;
+  }
 `;
 
+const AIContainer = styled.div`
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  display: ${(props) => (props.show ? "flex" : "none")};
+  flex-direction: column;
+  z-index: 1000;
+`;
 function RoomListPage() {
   const navigate = useNavigate();
   const { rooms, filteredRooms, loading, error, handleFilterRooms } = useContext(RoomContext);
   const { user } = useHotelBooking();
   const [showModal, setShowModal] = useState(false);;
   const [selectedRoom, setSelectedRoom] = useState(null);
+    const [showAI, setShowAI] = useState(false); // Quản lý hiển thị AI Assistant
+
+  
  console.log(filteredRooms);
   const handleBookRoom = (room) => {
     if (!user) {
@@ -85,7 +118,7 @@ function RoomListPage() {
       <Row className="p-2 m-2">
         <Banner />
         <RoomSearchBox onSearch={handleFilterRooms} />
-        <Row className="mt-10" style={{ marginTop: "210px" }}>
+        <Row className="mt-10" style={{ marginTop: "300px" }}>
           {Array.isArray(filteredRooms) && filteredRooms.length > 0 && (
             <Col lg={12} className="mt-5">
             {filteredRooms.length > 0 ? (
@@ -133,6 +166,13 @@ function RoomListPage() {
           </StyledButton>
         </SectionBackground>
       </Row>
+      {/* Nút bật/tắt AI Assistant */}
+       <AIButton onClick={() => setShowAI(!showAI)}>
+        {showAI ? "Đóng Trợ Lý" : "Mở Trợ Lý"}
+      </AIButton>
+
+      {/* Trợ lý AI */}
+      <AIAssistant showAI={showAI} toggleAI={setShowAI} user={user} />
     </Container>
   );
 }
