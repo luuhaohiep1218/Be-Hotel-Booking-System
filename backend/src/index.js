@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const session = require("express-session");
+const path = require("path");
 
 const db = require("./config/db");
 const { errorHandle } = require("./middlewares/errorMiddleware");
@@ -101,7 +102,18 @@ app.use("/api/service", serviceRouter);
 app.use("/api/booking", bookingRouter);
 app.use("/api/vnpay", vnpayRouter);
 app.use("/api/admin", adminRouter);
+<<<<<<< HEAD
 app.use("/api/ai", aiRoutes);
+=======
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
+>>>>>>> 002db6d01cc88c9ecc94e80e0e894f318ddb3f26
 
 app.use(errorHandle);
 

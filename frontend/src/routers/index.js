@@ -17,6 +17,8 @@ import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import TestServiceDetail from "../pages/TestServiceDetail";
 import VNPayReturn from "../pages/VnpayReturn";
+import AdminManageAccount from "../pages/AdminAccountPage";
+import FeedbackListPage from "../pages/MktFeedbackList";
 
 export const routes = [
   {
@@ -38,6 +40,12 @@ export const routes = [
   {
     path: "/mktCustomerList",
     page: MktCustomerList,
+    isShowHeader: false,
+    isPrivate: true,
+  },
+  {
+    path: "/mktfeedbacklist",
+    page: FeedbackListPage,
     isShowHeader: false,
     isPrivate: true,
   },
@@ -122,6 +130,12 @@ export const routes = [
     path:"/return-vnpay",
     page: VNPayReturn,
     isShowHeader: true,
+    isPrivate: true,
+  },
+  {
+    path: "/admin",
+    page: AdminManageAccount,
+    isShowHeader: false,
     isPrivate: true,
   },
   {
