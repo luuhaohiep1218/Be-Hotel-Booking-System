@@ -106,7 +106,6 @@ const AllNewsPage = () => {
   return (
     <Container style={{ padding: "40px" }}>
       <PopularNews />
-      {/* <BlogHeader /> */}
       <StyledTabs defaultActiveKey="1" items={items} onChange={onChangeTag} />
       <Row>
         <Col style={{ padding: "20px" }}>

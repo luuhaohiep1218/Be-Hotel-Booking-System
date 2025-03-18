@@ -7,6 +7,7 @@ const NewsCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 90%;
   height: 100%;
   border-radius: 20px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
@@ -23,7 +24,7 @@ const NewsCard = styled.div`
 `;
 
 const NewsImage = styled.img`
-  width: 92%;
+  width: 87%;
   height: auto;
   object-fit: cover;
   border-radius: 20px;
