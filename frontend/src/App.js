@@ -1,4 +1,3 @@
-import { CopilotKit } from "@copilotkit/react-core";
 import React, { Fragment } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -11,8 +10,7 @@ import { routes } from "./routers/index";
 
 const App = () => {
   return (
-    <CopilotKit runtimeUrl="http://localhost:3000"> {/* ✅ Bọc toàn bộ ứng dụng trong CopilotProvider */}
-      <HotelBookingProvider>
+       <HotelBookingProvider>
         <RoomProvider>
           <div className="App">
             <Router>
@@ -49,7 +47,6 @@ const App = () => {
           </div>
         </RoomProvider>
       </HotelBookingProvider>
-    </CopilotKit> 
   );
 };
 

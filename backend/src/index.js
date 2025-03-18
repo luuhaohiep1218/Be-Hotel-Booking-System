@@ -102,9 +102,7 @@ app.use("/api/service", serviceRouter);
 app.use("/api/booking", bookingRouter);
 app.use("/api/vnpay", vnpayRouter);
 app.use("/api/admin", adminRouter);
-<<<<<<< HEAD
 app.use("/api/ai", aiRoutes);
-=======
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(
   cors({
@@ -112,8 +110,6 @@ app.use(
     credentials: true,
   })
 );
-
->>>>>>> 002db6d01cc88c9ecc94e80e0e894f318ddb3f26
 
 app.use(errorHandle);
 
