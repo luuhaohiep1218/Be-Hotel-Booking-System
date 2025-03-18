@@ -24,8 +24,13 @@ const RoomSchema = new mongoose.Schema(
     description: { type: String, required: true, trim: true },
     images: { type: [String], required: true },
     price: { type: Number, required: true },
-    status: { type: String, required: true, enum: ["trống", "đã đặt"] },
+
+    status: { type: String, required: true, enum: ["trống", "hết phòng"] },// thay đổi thành hết phòng để hiển thị trên giao diện
     isActive: { type: Boolean, default: true },
+    quantity: { type: Number, required: true, default: 1 }, // Số
+    // Số lượng phòng còn lại
+    quantityLeft: { type: Number, required: true, default: 0 }, 
+
     comments: { type: [CommentSchema], default: [] }, // Mảng chứa các bình luận
   },
   { timestamps: true }

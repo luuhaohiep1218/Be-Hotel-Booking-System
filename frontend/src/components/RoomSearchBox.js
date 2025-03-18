@@ -1,124 +1,212 @@
-import React from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { useMediaQuery } from "react-responsive";
+import styled from "styled-components";
+
+// Styled Components
+const RoomSearchContainer = styled.div`
+  position: absolute;
+  width: 70%;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -350px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+  z-index: 10;
+  transition: all 0.3s ease-in-out;
+
+  @media (max-width: 1024px) {
+    width: 80%;
+  }
+
+  @media (max-width: 768px) {
+    position: relative;
+    bottom: auto;
+    width: 100%;
+    transform: none;
+    padding: 20px;
+  }
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 8px;
+`;
+
+const SubTitle = styled.p`
+  text-align: center;
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 20px;
+`;
+
+const StyledForm = styled(Form)`
+  background-color: transparent;
+`;
+
+const FormRow = styled(Row)`
+  margin-bottom: 15px;
+`;
+
+const FormInput = styled(Form.Control)`
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 10px;
+`;
+
+const FormSelect = styled(Form.Select)`
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  padding: 10px;
+`;
+
+const SearchButton = styled(Button)`
+  width: 100%;
+  height: 45px;
+  border-radius: 12px;
+  background-color: #007bff;
+  border: none;
+  font-weight: bold;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
 
 const RoomSearchBox = ({ onSearch }) => {
-  const style = {
-    position: "absolute",
-    transform: "translateX(-50%)",
-    width: "60%",
-    left: "50%",
-    
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    padding: "20px",
-    borderRadius: "24px",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-    bottom: "-126px",
-    border: "1px solid #ccc",
+  const [searchParams, setSearchParams] = useState({
+    name: "",
+    type: "",
+    services: "",
+    location: "",
+    beds: 1,
+    price: "",
+    status: "",
+  });
+
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      [name]: name === "beds" ? Math.max(1, parseInt(value) || 1) : value,
+    }));
   };
-  const styleInput = {
-    height: "40px",
-    borderRadius: "20px",
-    border: "1px solid #ccc",
-    paddingLeft: "26px",
-  }
-  const styleButton = {
-    height: "40px",
-    borderRadius: "20px",
-    border: "1px solid #ccc",
-    placeholder: {
-      color: "#6c757d",
-    }
-  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch(searchParams);
+  };
+
   return (
-    <Container className="mt-5" style={style}>
-      <h2 className="text-center">Bạn lựa chọn phòng nào?</h2>
-      <p className="text-center text-muted">
-        Hơn 100 phòng sang giá tốt đang chờ bạn
-      </p>
-      <Form className="p-3 border rounded bg-shadow w-100">
-<Row className="align-items-center">
-          <Col md={4} style={{ position: "relative" }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                position: "absolute",
-                left: "16px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#6c757d",
-              }}
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <Form.Control
-              style={styleInput}
-              type="text"
-              placeholder="Nhập tên phòng"
-            />
-          </Col>
+    <RoomSearchContainer className={isMobile ? "mobile-position" : ""}>
+      <Title>Bạn lựa chọn phòng nào?</Title>
+      <SubTitle>Hơn 100 phòng sang giá tốt đang chờ bạn</SubTitle>
 
+      <StyledForm onSubmit={handleSubmit}>
+        <FormRow>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Tên phòng</Form.Label>
+              <FormInput
+                type="text"
+                name="name"
+                placeholder="Nhập tên phòng"
+                value={searchParams.name}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Loại phòng</Form.Label>
+              <FormSelect name="type" value={searchParams.type} onChange={handleChange}>
+                <option value="">Chọn loại</option>
+                <option value="Standard">Standard</option>
+                <option value="Deluxe">Deluxe</option>
+                <option value="Suite">Suite</option>
+                <option value="Luxury">Luxury</option>
+                <option value="Superior">Superior</option>
+              </FormSelect>
+            </Form.Group>
+          </Col>
+        </FormRow>
 
-          <Col md={3} style={{ position: "relative" }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                position: "absolute",
-                left: "16px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#6c757d",
-                pointerEvents: "none", // Ngăn không cho SVG ảnh hưởng đến tương tác
-              }}
-            >
-              <path d="M5.7 15C4.03377 15.6353 3 16.5205 3 17.4997C3 19.4329 7.02944 21 12 21C16.9706 21 21 19.4329 21 17.4997C21 16.5205 19.9662 15.6353 18.3 15M12 9H12.01M18 9C18 13.0637 13.5 15 12 18C10.5 15 6 13.0637 6 9C6 5.68629 8.68629 3 12 3C15.3137 3 18 5.68629 18 9ZM13 9C13 9.55228 12.5523 10 12 10C11.4477 10 11 9.55228 11 9C11 8.44772 11.4477 8 12 8C12.5523 8 13 8.44772 13 9Z"></path>
-            </svg>
-            <Form.Select style={styleInput}>
-              <option>Tất cả kiểu phòng </option>
-              <option>Hà Nội</option>
-              <option>TP. Hồ Chí Minh</option>
-            </Form.Select>
+        <FormRow>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Dịch vụ</Form.Label>
+              <FormInput
+                type="text"
+                name="services"
+                placeholder="WiFi, Hồ bơi..."
+                value={searchParams.services}
+                onChange={handleChange}
+              />
+            </Form.Group>
           </Col>
-          <Col md={3} style={{ position: "relative" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" style={{
-                position: "absolute",
-                left: "16px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                  color: "#6c757d",
-                pointerEvents: "none", // Ngăn không cho SVG ảnh hưởng đến tương tác
-              }}width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 10V9.91667C15 8.85812 14.1419 8 13.0833 8H11C9.89543 8 9 8.89543 9 10C9 11.1046 9.89543 12 11 12H13C14.1046 12 15 12.8954 15 14C15 15.1046 14.1046 16 13 16H10.9583C9.87678 16 9 15.1232 9 14.0417V14M12 17.5V6.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            <Form.Select style={styleInput}>
-              <option>Tất cả mức giá</option>
-              <option>500K - 1 Triệu</option>
-              <option>1 Triệu - 3 Triệu</option>
-            </Form.Select>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Vị trí</Form.Label>
+              <FormSelect name="location" value={searchParams.location} onChange={handleChange}>
+                <option value="">Chọn vị trí</option>
+                <option value="biển">Biển</option>
+                <option value="thành phố">Thành phố</option>
+                <option value="biển và thành phố">Biển và Thành phố</option>
+              </FormSelect>
+            </Form.Group>
           </Col>
-          <Col md={2}>
-            <Button variant="info" style={{ height: "40px", borderRadius: "20px" }} className="w-100">
-              Tìm kiếm
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+        </FormRow>
 
-    </Container>
+        <FormRow>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Số giường</Form.Label>
+              <FormInput
+                type="number"
+                name="beds"
+                min="1"
+                placeholder="Số giường"
+                value={searchParams.beds}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Giá</Form.Label>
+              <FormSelect name="price" value={searchParams.price} onChange={handleChange}>
+                <option value="">Chọn khoảng giá</option>
+                <option value="<500">Nhỏ hơn 500</option>
+                <option value="500-3000">Từ 500 đến 3000</option>
+                <option value=">3000">Lớn hơn 3000</option>
+              </FormSelect>
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Trạng thái</Form.Label>
+              <FormSelect name="status" value={searchParams.status} onChange={handleChange}>
+                <option value="">Chọn trạng thái</option>
+                <option value="Available">Còn trống</option>
+                <option value="Booked">Đã đặt</option>
+              </FormSelect>
+            </Form.Group>
+          </Col>
+        </FormRow>
+
+        <div className="text-center mt-3">
+          <SearchButton type="submit">Tìm phòng</SearchButton>
+        </div>
+      </StyledForm>
+    </RoomSearchContainer>
   );
 };
 

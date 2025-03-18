@@ -130,7 +130,7 @@ const StyledDiv = styled.div`
 const HeaderComponent = () => {
   const navigate = useNavigate();
 
-  const { accessToken, setAccessToken, setUser } = useHotelBooking();
+  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
 
   const handleLogout = async () => {
     try {
@@ -166,6 +166,19 @@ const HeaderComponent = () => {
       key: "1",
     },
   ];
+
+  if (user?.role === "ADMIN") {
+    items.unshift({
+      label: (
+        <StyledLink to={"/admin"}>
+          <i className="bi bi-shield-lock"></i>
+          Quản lý
+        </StyledLink>
+      ),
+      key: "admin",
+    });
+  }
+
   return (
     <>
       <StyledNavbar data-bs-theme="light">

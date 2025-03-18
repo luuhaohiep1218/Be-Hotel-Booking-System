@@ -84,12 +84,16 @@ const NewsItem = ({ item }) => {
       .replace(/\s+/g, "-"); // Thay khoảng trắng bằng dấu "-"
   };
 
+  console.log(item.sections?.[0]?.image);
   return (
     <Col md={6} lg={4} className="mb-4">
       <Link style={{ textDecoration: "none", color: "inherit" }} to={item._id}>
         <NewsCard>
           <NewsImage
-            src={item.sections?.[0]?.image || "https://via.placeholder.com/300"}
+            src={
+              item.sections?.[0]?.image ||
+              "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
+            }
             alt={item.title}
           />
           <NewsBody>

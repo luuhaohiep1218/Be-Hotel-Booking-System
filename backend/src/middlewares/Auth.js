@@ -3,10 +3,10 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 const generateRefreshToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "1d" });
+  return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
 };
 
 const protect = asyncHandler(async (req, res, next) => {
@@ -61,6 +61,15 @@ const staffMiddleware = (req, res, next) => {
   }
 };
 
+const mktMiddleware = (req, res, next) => {
+  if (req.user && req.user.role === "MARKETING") {
+    next(); // User is mkt, proceed to the next middleware
+  } else {
+    res.status(403).json({ message: "Access denied: marketing only" });
+  }
+};
+
+
 const roleMiddleware = (allowedRoles) => (req, res, next) => {
   if (req.user && allowedRoles.includes(req.user.role)) {
     next(); // Nếu role hợp lệ, cho phép tiếp tục
@@ -76,4 +85,5 @@ module.exports = {
   generateRefreshToken,
   staffMiddleware,
   roleMiddleware,
+  mktMiddleware,
 };
