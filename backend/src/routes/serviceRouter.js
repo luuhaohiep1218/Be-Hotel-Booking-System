@@ -42,5 +42,4 @@ router.delete(
   staffMiddleware,
   deleteReview
 );
-
 module.exports = router;

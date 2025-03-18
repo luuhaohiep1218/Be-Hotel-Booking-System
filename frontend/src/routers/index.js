@@ -7,6 +7,7 @@ import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
+import ServiceDetail from "../pages/ServiceDetail";
 import Mktdashboard from "../pages/MktDashboard";
 import FeedbackListPage from "../pages/MktFeedbackList";
 import MktCustomerList from "../pages/MktListCustomer";
@@ -62,6 +63,12 @@ export const routes = [
   {
     path: "/service",
     page: ServicePage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/service/:serviceId",
+    page: ServiceDetail,
     isShowHeader: true,
     isPrivate: false,
   },
@@ -126,7 +133,6 @@ export const routes = [
     isPrivate: true,
   },
   {
-
     path:"/return-vnpay",
     page: VNPayReturn,
     isShowHeader: true,

@@ -42,6 +42,7 @@ const bookingSchema = new mongoose.Schema(
       },
     },
 
+
     // 🛎 Chỉ dùng cho đặt dịch vụ
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -50,6 +51,7 @@ const bookingSchema = new mongoose.Schema(
         return this.type === "service";
       },
     },
+
     serviceQuantity: {
       type: Number,
       min: 1,

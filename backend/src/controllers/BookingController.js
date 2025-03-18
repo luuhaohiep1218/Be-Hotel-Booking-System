@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Booking = require("../models/BookingModel");
 const Service = require("../models/ServiceModel");
+
 const Room = require("../models/RoomModel");
 const bookService = asyncHandler(async (req, res) => {
   try {
@@ -218,4 +219,3 @@ module.exports = {
   handleVnPayReturn,
   getServiceBookings,
 };
-

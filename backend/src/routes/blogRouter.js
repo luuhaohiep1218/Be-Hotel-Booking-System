@@ -9,6 +9,7 @@ const {
   getBlogProminent,
   updateBlog,
   deleteBlog,
+
 } = require("../controllers/BlogController");
 
 const router = express.Router();
@@ -21,6 +22,8 @@ router.post("/import", protect, mktMiddleware, importBlogs);
 
 //  Lấy blog theo danh mục
 router.get("/category/:category", getBlogByCategory);
+router.get("/prominent", getBlogProminent);
+router.get("/:blogId", getBlogById);
 
 //  Lấy blog nổi bật
 router.get("/prominent", getBlogProminent);
