@@ -321,6 +321,24 @@ const getUniqueCategories = asyncHandler(async (req, res) => {
   }
 });
 
+const getTopRatedService = asyncHandler(async (req, res) => {
+  try {
+    const service = await Service.findOne({ rating: { $exists: true } }).sort({
+      rating: -1,
+    });
+
+    if (!service) {
+      return res.status(404).json({ message: "No top-rated service found" });
+    }
+
+    res.status(200).json(service);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
 module.exports = {
   createService,
   addReview,
@@ -331,4 +349,5 @@ module.exports = {
   getServiceDetail,
   getListServices,
   getUniqueCategories,
+  getTopRatedService,
 };

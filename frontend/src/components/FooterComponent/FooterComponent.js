@@ -1,6 +1,6 @@
-import { Container, Row, Col } from "react-bootstrap";
-import styled from "styled-components";
+import { Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import styled from "styled-components";
 import logo from "../../assets/logo/logo-footer.png";
 
 // Styled Components
@@ -50,9 +50,9 @@ const FooterComponent = () => {
           {/* Cột 1: Logo + Thông tin công ty */}
           <Col md={4}>
             <FooterLogo src={logo} alt="Logo" />
-            <FooterText>Công ty TNHH Du Lịch và Dịch Vụ Mixivivu</FooterText>
+            <FooterText>Công ty TNHH Du Lịch và Dịch Vụ GoLodge</FooterText>
             <FooterText>
-              Tầng 7, số nhà 25, ngõ 38 phố Yên Lãng, Láng Hạ, Đống Đa, Hà Nội
+              Phòng 321, Tòa nhà Beta, Đại học FPT Hà Nội, Thạch Hòa, Thạch Thất, Hà Nội
             </FooterText>
             <FooterText>Mã số doanh nghiệp: 0110376372</FooterText>
           </Col>

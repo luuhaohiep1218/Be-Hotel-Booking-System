@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 import API from "../utils/axiosInstance";
 import images from "../assets/images/pages.jpg";
 
+
 const FeaturedNews = () => {
   const [blog, setBlog] = useState();
 

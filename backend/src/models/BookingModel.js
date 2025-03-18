@@ -9,14 +9,26 @@ const bookingSchema = new mongoose.Schema(
     },
     type: { type: String, enum: ["room", "service"], required: true },
 
-    // Chỉ dùng cho đặt phòng
-    roomId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Room",
-      required: function () {
-        return this.type === "room";
+    // 🏨 Đặt nhiều phòng
+    rooms: [
+      {
+        roomId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Room",
+          required: function () {
+            return this.type === "room";
+          },
+        },
+        quantity: {
+          type: Number,
+          min: 1,
+          required: function () {
+            return this.type === "room";
+          },
+        },
       },
-    },
+    ],
+
     checkIn: {
       type: Date,
       required: function () {
@@ -30,7 +42,8 @@ const bookingSchema = new mongoose.Schema(
       },
     },
 
-    // Chỉ dùng cho đặt dịch vụ
+
+    // 🛎 Chỉ dùng cho đặt dịch vụ
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",
@@ -38,7 +51,8 @@ const bookingSchema = new mongoose.Schema(
         return this.type === "service";
       },
     },
-    quantity: {
+
+    serviceQuantity: {
       type: Number,
       min: 1,
       required: function () {
@@ -46,13 +60,28 @@ const bookingSchema = new mongoose.Schema(
       },
     },
 
-    // Dùng chung cho cả hai
+    // 💰 Thông tin thanh toán
     price: { type: Number, required: true },
-    status: {
+    paymentMethod: {
       type: String,
-      enum: ["pending", "confirmed", "canceled"],
+      enum: ["counter", "vnpay"],
+      required: true,
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
       default: "pending",
     },
+    transactionId: { type: String,unique: true }, // Mã giao dịch VNPay (nếu có)
+    discountCode: { type: String }, // Mã giảm giá (nếu có)
+
+    // ✍ Thông tin bổ sung
+    notes: { type: String },
+    status: {
+      type: String,
+      enum: ["failed", "pending", "confirmed"],
+      default: "pending",
+    }
   },
   { timestamps: true }
 );
