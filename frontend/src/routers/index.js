@@ -13,8 +13,6 @@ import RoomListPage from "../pages/RoomListPage";
 import ServiceDetail from "../pages/ServiceDetail";
 import { ManageService } from "../pages/ManageService";
 
-import TestServiceDetail from "../pages/TestServiceDetail";
-
 export const routes = [
   {
     path: "/Blog",
@@ -40,12 +38,6 @@ export const routes = [
   {
     path: "/service/:serviceId",
     page: ServiceDetail,
-    isShowHeader: true,
-    isPrivate: false,
-  },
-  {
-    path: "/service-detail",
-    page: TestServiceDetail,
     isShowHeader: true,
     isPrivate: false,
   },
