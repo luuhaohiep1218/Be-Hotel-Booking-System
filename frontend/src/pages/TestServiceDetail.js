@@ -1,9 +1,9 @@
+import { Form, Input, Rate, Space } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState } from "react";
-import { Badge, Card, Carousel, Col, Container, ProgressBar, Row } from "react-bootstrap";
+import { Badge, Button, Card, Carousel, Col, Container, ProgressBar, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import images from "../assets/images/pages.jpg";
-
 const serviceData = {
     name: "Du thuyền Indochine",
     rating: 5.0,
@@ -63,6 +63,7 @@ const styles = {
         fontWeight: "bold",
     },
     feedback: {
+        paddingBottom: "10px",
         borderBottom: "1px solid #ccc",
     },
     titleFeedback: {
@@ -74,7 +75,7 @@ const styles = {
     formFeedback: {
         display: "flex",
         flexDirection: "column",
-        gap: "24px",
+        gap: "30px",
     },
     ratingContainer: {
         borderRadius: "20px",
@@ -103,9 +104,17 @@ const TestServiceDetail = () => {
         setReview({ ...review, [name]: value });
     };
 
+  const [form] = Form.useForm();
+  
+  const onFinish = (values) => {
+    console.log('Form Values:', values);
+  };
+  const { TextArea } = Input;
+
+
 
     return (
-        <Container className="mt-4">
+    <Container className="mt-4">
             <Row className="align-items-center">
                 <Col md={8}>
                     <h2 className="fw-bold">{serviceData.name}</h2>
@@ -232,7 +241,89 @@ const TestServiceDetail = () => {
                     ))}
                 </Col>
             </Row>
-        </Container>
+ <div style={{maxWidth:"700px", margin: 'auto', padding: '20px'}}>
+  <Form
+    form={form}
+    name="feedback-form"
+    onFinish={onFinish}
+    layout="vertical"
+  >
+    <div className ="form-info" style={{display:"flex", textAlign:"center", justifyContent:"space-evenly"}}>
+    <Row gutter={16} style = {{paddingRight:"10px"}}>
+      {/* Quality Rating */}
+      <Col lg={12} md={12} xs={24} style={{paddingRight: "5px"}}>
+        <Form.Item
+          label="Chất lượng"
+          name="rating"
+          rules={[{ required: true, message: 'Vui lòng đánh giá chất lượng!' }]}
+        >
+          <Rate />
+        </Form.Item>
+      </Col>
+
+      {/* Name Field */}
+      <Col lg={12} md={12} xs={24}>
+        <Form.Item
+          label="Họ và tên"
+          name="name"
+          rules={[{ required: true, message: 'Vui lòng nhập họ và tên của bạn!' }]}
+        >
+          <Input placeholder="Nhập họ và tên" />
+        </Form.Item>
+      </Col>
+    </Row>
+
+    <Row gutter={16}>
+      {/* Phone Number Field */}
+      <Col lg={12} md={12} xs={24}>
+        <Form.Item
+          label="Số điện thoại"
+          name="phone"
+          rules={[{ required: true, message: 'Vui lòng nhập số điện thoại của bạn!' }]}
+        >
+          <Input placeholder="Nhập số điện thoại" />
+        </Form.Item>
+      </Col>
+
+      {/* Email Field */}
+      <Col lg={12} md={12} xs={24}>
+        <Form.Item
+          label="Địa chỉ email"
+          name="email"
+          rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
+        >
+          <Input placeholder="Nhập email" />
+        </Form.Item>
+      </Col>
+    </Row>
+    </div>
+    <Row gutter={16}>
+      {/* Comment / Review Field */}
+      <Col span={24}>
+        <Form.Item
+          label="Đánh giá của bạn"
+          name="comment"
+          rules={[{ required: true, message: 'Vui lòng nhập ý kiến của bạn!' }]}
+        >
+          <TextArea rows={4} placeholder="Nhập yêu cầu của bạn" />
+        </Form.Item>
+      </Col>
+    </Row>
+
+    {/* Submit Button */}
+    <Form.Item>
+      <Space style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button type="primary" htmlType="submit">
+          Gửi
+        </Button>
+      </Space>
+    </Form.Item>
+  </Form>
+</div>
+
+
+    </Container>
+
     );
 };
 
