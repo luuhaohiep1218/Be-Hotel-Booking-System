@@ -69,6 +69,7 @@ const mktMiddleware = (req, res, next) => {
   }
 };
 
+
 const roleMiddleware = (allowedRoles) => (req, res, next) => {
   if (req.user && allowedRoles.includes(req.user.role)) {
     next(); // Nếu role hợp lệ, cho phép tiếp tục
