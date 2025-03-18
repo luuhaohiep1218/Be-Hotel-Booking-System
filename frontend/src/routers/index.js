@@ -16,7 +16,6 @@ import RoomDetail from "../pages/RoomDetail";
 import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
-import TestServiceDetail from "../pages/TestServiceDetail";
 import VNPayReturn from "../pages/VnpayReturn";
 import AdminManageAccount from "../pages/AdminAccountPage";
 import FeedbackListPage from "../pages/MktFeedbackList";
@@ -143,10 +142,5 @@ export const routes = [
     page: AdminManageAccount,
     isShowHeader: false,
     isPrivate: true,
-  },
-  {
-    path:"/test-service",
-    page: TestServiceDetail,
-    isShowHeader: true,
-  },
+  }
 ];

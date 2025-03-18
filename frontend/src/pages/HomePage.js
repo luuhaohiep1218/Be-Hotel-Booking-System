@@ -306,6 +306,8 @@ const HomePage = () => {
     setSelectedService(service);
     setIsModalOpen(true);
   };
+  
+  const lastestService = serviceProminent.slice(0, 3);
 
   return (
     <div>
@@ -390,7 +392,7 @@ const HomePage = () => {
           </p>
         </div>
         <Row>
-          {serviceProminent.map((service) => (
+          {lastestService.map((service) => (
             <Col key={service.id} xs={12} sm={6} lg={4} className="mb-4">
               <Card style={styles.card}>
                 <div style={styles.imageContainer}>
