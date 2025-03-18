@@ -1,5 +1,6 @@
 import { Card, Col, Pagination, Row } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import styled from "styled-components";
 
 const { Meta } = Card;
@@ -24,7 +25,14 @@ const PaginationWrapper = styled.div`
 
 // ✅ Dùng React.memo để tối ưu hiển thị Card
 const MemoizedCard = React.memo(({ item, children }) => {
-  console.log("Render Card:", item.name);
+  const navigate = useNavigate(); // Hook điều hướng
+
+  // Khi nhấn vào card, chuyển hướng đến trang chi tiết
+  const handleCardClick = () => {
+    const encodedName = encodeURIComponent(item.name); // Mã hóa tên item
+    navigate(`/room/${encodedName}`); // Điều hướng đến trang chi tiết của item
+  };
+
   return (
     <Col key={item._id} xs={24} sm={12} md={8} lg={6}>
       <Card
@@ -38,6 +46,7 @@ const MemoizedCard = React.memo(({ item, children }) => {
         ) : (
           <div style={{ height: "200px", background: "#f0f0f0" }} />
         )}
+        onClick={handleCardClick} // Gắn sự kiện onClick để chuyển hướng
       >
         <Meta title={item.name} description={item.description} />
         <div style={{ marginTop: "10px", fontWeight: "bold" }}>
@@ -80,7 +89,6 @@ const CardComponent = ({ data, pageSize = 6, children }) => {
       <Content>
         <Row gutter={[24, 24]}>
           {currentData.map((item) => {
-            console.log(item);
             const updatedItem = { ...item, status: item.quantityLeft === 0 ? "hết phòng" : item.status };
             return (
               <MemoizedCard key={updatedItem._id} item={updatedItem}>

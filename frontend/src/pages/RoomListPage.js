@@ -94,10 +94,14 @@ function RoomListPage() {
   const { user } = useHotelBooking();
   const [showModal, setShowModal] = useState(false);;
   const [selectedRoom, setSelectedRoom] = useState(null);
-    const [showAI, setShowAI] = useState(false); // Quản lý hiển thị AI Assistant
+  const [showAI, setShowAI] = useState(false); // Quản lý hiển thị AI Assistant
+ const handleViewRoomDetail = (roomId) => {
+  console.log(`Navigating to room detail with ID: ${roomId}`);
+  navigate(`/room/${roomId}`);
+};
 
   
- console.log(filteredRooms);
+  console.log(filteredRooms);
   const handleBookRoom = (room) => {
     if (!user) {
       navigate("/login");
@@ -106,10 +110,10 @@ function RoomListPage() {
       setShowModal(true);
     }
   };
-  
- const ModalComponent = selectedRoom ? (
-  <ModalBookingRoom show={showModal} handleClose={() => setShowModal(false)} room={rooms} filteredRooms={filteredRooms} />
-) : null;
+
+  const ModalComponent = selectedRoom ? (
+    <ModalBookingRoom show={showModal} handleClose={() => setShowModal(false)} room={rooms} filteredRooms={filteredRooms} />
+  ) : null;
   if (loading) return <p>Đang tải dữ liệu...</p>;
   if (error) return <p>{error}</p>;
 
@@ -119,35 +123,40 @@ function RoomListPage() {
         <Banner />
         <RoomSearchBox onSearch={handleFilterRooms} />
         <Row className="mt-10" style={{ marginTop: "300px" }}>
+          <Heading>Danh sách phòng <br />và các đánh giá của chúng tôi</Heading>
           {Array.isArray(filteredRooms) && filteredRooms.length > 0 && (
             <Col lg={12} className="mt-5">
-            {filteredRooms.length > 0 ? (
-              <CardComponent data={filteredRooms} pageSize={4}>
-                {(rooms) => (
-                  <div className="d-flex pt-3">
-                    <Button
-                      type="default"
-                      shape="round"
-                      size="middle"
-                      icon={<ArrowRightOutlined />}
-                      disabled={rooms.status === "đã đặt"}
-                      style={{ marginRight: "10px" }}
-                      onClick={() => handleBookRoom(rooms)}
-                    >
-                      Đặt Phòng Ngay
-                    </Button>
-                  </div>
-                )}
-              </CardComponent>
-            ) : (
-              <p>Không có phòng nào khả dụng</p>
-            )}
-            {ModalComponent}
-          </Col>
+              {filteredRooms.length > 0 ? (
+                <CardComponent data={filteredRooms} pageSize={4} >
+                  {(rooms) => (
+                    <div className="d-flex pt-3"onClick={() => handleViewRoomDetail(rooms.id)}>
+                      <Button
+                        type="default"
+                        shape="round"
+                        size="middle"
+                        icon={<ArrowRightOutlined />}
+                        disabled={rooms.status === "đã đặt"}
+                        style={{ marginRight: "10px" }}
+                                
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngừng sự kiện của button chặn sự kiện của card
+                          handleBookRoom(rooms)}}
+                      >
+                        Đặt Phòng Ngay
+                      </Button>
+                    </div>
+                  )}
+                </CardComponent>
+              ) : (
+                <p>Không có phòng nào khả dụng</p>
+              )}
+              {ModalComponent}
+            </Col>
+
           )}
-          
         </Row>
-         <SectionBackground>
+
+        <SectionBackground>
           <Col lg={6} className="m-0 p-0">
             <Heading>Khám phá Sự đặc sắc<br />và Cập nhật tin tức mới nhất</Heading>
             <img src={images} alt="Khám phá tin tức" style={{ maxWidth: "100%", height: "auto", marginLeft: "20px" }} />
@@ -167,7 +176,7 @@ function RoomListPage() {
         </SectionBackground>
       </Row>
       {/* Nút bật/tắt AI Assistant */}
-       <AIButton onClick={() => setShowAI(!showAI)}>
+      <AIButton onClick={() => setShowAI(!showAI)}>
         {showAI ? "Đóng Trợ Lý" : "Mở Trợ Lý"}
       </AIButton>
 

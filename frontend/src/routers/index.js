@@ -1,4 +1,5 @@
 import AboutUs from "../pages/AboutUsPage";
+import AdminManageAccount from "../pages/AdminAccountPage";
 import AllNewsPage from "../pages/AllNewsPage";
 import CheckoutPage from "../pages/CheckOutPage";
 import FeedbackDetail from "../pages/FeedBackDetail";
@@ -7,6 +8,7 @@ import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
 import Mktdashboard from "../pages/MktDashboard";
+import FeedbackListPage from "../pages/MktFeedbackList";
 import MktCustomerList from "../pages/MktListCustomer";
 import MktPostList from "../pages/MktPostList";
 import NewsDetail from "../pages/NewsDetail";
@@ -17,8 +19,6 @@ import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import TestServiceDetail from "../pages/TestServiceDetail";
 import VNPayReturn from "../pages/VnpayReturn";
-import AdminManageAccount from "../pages/AdminAccountPage";
-import FeedbackListPage from "../pages/MktFeedbackList";
 
 export const routes = [
   {
@@ -114,7 +114,7 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path: "room-detail/:roomId",
+    path: "room/:roomName",
     page: RoomDetail,
     isShowHeader: true,
     isPrivate: false,

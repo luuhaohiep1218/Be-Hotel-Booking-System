@@ -154,5 +154,26 @@ const deleteRooms = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Lỗi hệ thống, vui lòng thử lại!" });
   }
 });
+// lấy thông tin chi tiết của các phòng 
+const getRoomDetailsById = asyncHandler(async (req, res) => {
+  try {
+    const { roomId } = req.body; // Lấy ID từ body của request
 
-module.exports = { createRoom, updateInfoRoom, deleteRooms, getListRooms };
+    // Kiểm tra xem phòng có tồn tại không
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: "Phòng không tồn tại!" });
+    }
+
+    // Trả về thông tin chi tiết phòng
+    res.status(200).json({
+      message: "Lấy thông tin phòng thành công!",
+      room,
+    });
+  } catch (error) {
+    console.error("🔥 Lỗi khi lấy thông tin phòng:", error);
+    res.status(500).json({ message: "Lỗi hệ thống, vui lòng thử lại!" });
+  }
+});
+
+module.exports = { createRoom, updateInfoRoom, deleteRooms, getListRooms, getRoomDetailsById };
