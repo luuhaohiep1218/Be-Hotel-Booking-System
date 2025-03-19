@@ -64,6 +64,7 @@ const ProfilePage = () => {
   const showModalChangePassword = () => {
     setIsModalChangePassword(true);
   };
+  console.log(user);
 
   return (
     <ProfileSection>

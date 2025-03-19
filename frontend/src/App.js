@@ -17,12 +17,11 @@ const App = () => {
               const Layout = route.isShowHeader ? DefaultComponent : Fragment;
 
               return route.isPrivate ? (
-                // Nếu là trang cần bảo vệ thì bọc trong ProtectedRoute
                 <Route
                   key={route.path}
                   path={route.path}
                   element={
-                    <ProtectedRoute>
+                    <ProtectedRoute allowedRoles={route.allowedRoles}>
                       <Layout>
                         <route.page />
                       </Layout>

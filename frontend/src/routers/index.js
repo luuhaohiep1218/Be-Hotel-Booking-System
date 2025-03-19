@@ -122,5 +122,6 @@ export const routes = [
     page: AdminManageAccount,
     isShowHeader: true,
     isPrivate: true,
+    allowedRoles: ["ADMIN", "USER"],
   },
 ];
