@@ -1,11 +1,20 @@
 import { Navigate } from "react-router-dom";
-import { useHotelBooking } from "../context/HotelBookingContext"; // Lấy user từ context
+import { useHotelBooking } from "../context/HotelBookingContext";
+import { useState, useEffect } from "react";
 
 const ProtectedRoute = ({ children, allowedRoles = ["USER"] }) => {
-  const { user, accessToken } = useHotelBooking(); // ✅ Lấy user từ context
+  const { user, accessToken } = useHotelBooking();
+  const [loading, setLoading] = useState(true);
 
-  console.log("🔍 User từ context:", user);
-  console.log("✅ Danh sách quyền truy cập:", allowedRoles);
+  useEffect(() => {
+    if (user && accessToken) {
+      setLoading(false);
+    }
+  }, [user, accessToken]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Hoặc thêm spinner để báo hiệu
+  }
 
   if (!user || !accessToken) {
     return <Navigate to="/login" replace />;

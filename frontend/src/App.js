@@ -22,7 +22,7 @@ const App = () => {
                     key={route.path}
                     path={route.path}
                     element={
-                      <ProtectedRoute>
+                      <ProtectedRoute allowedRoles={route.allowedRoles}>
                         <Layout>
                           <route.page />
                         </Layout>

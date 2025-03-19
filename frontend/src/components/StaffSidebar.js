@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import styled from "styled-components";
-import {
-  BsGrid,
-  BsBoxArrowRight,
-} from "react-icons/bs";
+import { BsGrid, BsBoxArrowRight } from "react-icons/bs";
 import { MdOutlineBedroomParent } from "react-icons/md";
 import { GrServices } from "react-icons/gr";
+import { useHotelBooking } from "../context/HotelBookingContext";
 
 const SidebarWrapper = styled.div`
   width: ${(props) => (props.isOpen ? "250px" : "58px")};
@@ -77,6 +75,10 @@ const Label = styled.span`
 `;
 
 const StaffSidebar = ({ onToggle }) => {
+  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
+
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const toggleSidebar = () => {
@@ -87,8 +89,25 @@ const StaffSidebar = ({ onToggle }) => {
   const menuItems = [
     { to: "/staff-dashboard", icon: <BsGrid />, label: "Dashboard" },
     { to: "/manage-service", icon: <GrServices />, label: "Manage Service" },
-    { to: "/manage-room", icon: <MdOutlineBedroomParent />, label: "Manage Room" },
+    {
+      to: "/manage-room",
+      icon: <MdOutlineBedroomParent />,
+      label: "Manage Room",
+    },
   ];
+  const handleLogout = async () => {
+    try {
+      console.warn("🚪 Đang logout...");
+
+      // 🛑 Xóa accessToken & chuyển về trang login
+      setAccessToken(null);
+      sessionStorage.removeItem("accessToken"); // 🔄 Dùng sessionStorage thay vì localStorage
+      setUser(null);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("🔥 Lỗi logout:", error.message);
+    }
+  };
 
   return (
     <SidebarWrapper isOpen={isOpen}>
@@ -107,7 +126,7 @@ const StaffSidebar = ({ onToggle }) => {
           </NavItem>
         ))}
         <NavItem>
-          <StyledLink as={Link} to="/">
+          <StyledLink as={Link} to="/" onClick={handleLogout}>
             <Icon>
               <BsBoxArrowRight />
             </Icon>

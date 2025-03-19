@@ -16,6 +16,8 @@ import {
 import styled from "styled-components";
 import { Eye, EyeOff } from "lucide-react";
 import { useHotelBooking } from "../context/HotelBookingContext";
+import { LogoutOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
 
 const StyledNavbar = styled(Navbar)`
   margin-bottom: 20px;
@@ -74,6 +76,10 @@ const AdminManageAccount = () => {
   const [editUser, setEditUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+  const navigate = useNavigate();
+
+  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
+
   const [newUser, setNewUser] = useState({
     full_name: "",
     email: "",
@@ -81,8 +87,6 @@ const AdminManageAccount = () => {
     role: "STAFF",
   });
   const usersPerPage = 10;
-
-  const { accessToken } = useHotelBooking();
 
   useEffect(() => {
     fetchUsers();
@@ -186,6 +190,20 @@ const AdminManageAccount = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
+  const handleLogout = async () => {
+    try {
+      console.warn("🚪 Đang logout...");
+
+      // 🛑 Xóa accessToken & chuyển về trang login
+      setAccessToken(null);
+      sessionStorage.removeItem("accessToken"); // 🔄 Dùng sessionStorage thay vì localStorage
+      setUser(null);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("🔥 Lỗi logout:", error.message);
+    }
+  };
+
   return (
     <div>
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -193,6 +211,10 @@ const AdminManageAccount = () => {
           <Navbar.Brand href="#home" className="fs-3 fw-bold">
             ADMIN PAGE
           </Navbar.Brand>
+          <LogoutOutlined
+            style={{ color: "white", fontSize: "24px" }}
+            onClick={handleLogout}
+          />
         </Container>
       </Navbar>
       <Container>
