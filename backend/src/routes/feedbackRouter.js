@@ -7,11 +7,12 @@ const {
   getFeedbackSummary,
   getListFeedbacks,
 } = require("../controllers/FeedbackController");
+const upload = require("../middlewares/uploadImage");
 
 const router = express.Router();
 
 //  Gửi phản hồi (Ai cũng có thể gửi feedback)
-router.post("/", protect, requestFeedback);
+router.post("/", upload.array("images", 5), requestFeedback);
 
 router.get("/mktDashboardFeedback", getFeedbackSummary); //mkt
 router.get("/list-feedbacks", getListFeedbacks);

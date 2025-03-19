@@ -1,75 +1,88 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useHotelBooking } from "../context/HotelBookingContext";
-import API from "../utils/axiosInstance";
-import { notification } from "antd"; // Thay vì dùng message
+import { message, Spin } from "antd";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import SuccessModal from "../components/ModalComponent/SuccessModal"; // Import modal
 
-const VNPayReturn = () => {
-  const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState(null);
-  const [message, setMessage] = useState("");
-  const { user, accessToken } = useHotelBooking();
+const VnpayReturn = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isProcessingRef = useRef(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    const responseCode = searchParams.get("vnp_ResponseCode");
-    if (responseCode === "00") {
-      setStatus("success");
-      setMessage("Thanh toán thành công!");
+    if (isProcessingRef.current) return;
+    isProcessingRef.current = true;
 
-      const serviceId = sessionStorage.getItem("serviceId");
-      const serviceQuantity = sessionStorage.getItem("serviceQuantity");
-
-      if (serviceId && serviceQuantity && user && accessToken) {
-        API.post(
-          "/booking/service",
-          {
-            userId: user._id,
-            serviceId,
-            serviceQuantity: Number(serviceQuantity),
-            paymentMethod: "vnpay",
-          },
-          { headers: { Authorization: `Bearer ${accessToken}` } }
-        )
-          .then(() => {
-            notification.success({
-              message: "Đặt dịch vụ thành công",
-              description: "Bạn đã đặt dịch vụ thành công!",
-            });
-
-            sessionStorage.removeItem("serviceId");
-            sessionStorage.removeItem("serviceQuantity");
-          })
-          .catch(() => {
-            notification.error({
-              message: "Lỗi lưu đơn",
-              description:
-                "Đặt dịch vụ thành công nhưng không thể lưu vào hệ thống!",
-            });
-          });
-      }
-    } else {
-      setStatus("failed");
-      setMessage("Thanh toán thất bại. Vui lòng thử lại!");
-
-      notification.error({
-        message: "Thanh toán thất bại",
-        description: "Vui lòng thử lại sau!",
-      });
+    const query = new URLSearchParams(location.search);
+    const vnp_ResponseCode = query.get("vnp_ResponseCode");
+    const orderId = query.get("vnp_TxnRef");
+    const amount = query.get("vnp_Amount");
+    
+    if (!orderId || !amount) {
+      message.error("Lỗi: Không tìm thấy thông tin giao dịch.");
+      navigate("/");
+      return;
     }
-  }, [searchParams, user, accessToken]);
+
+    const handleBookingSuccessVnPay = async () => {
+      try {
+        const selectedRooms = JSON.parse(localStorage.getItem("selectedRooms")) || [];
+        const formData = JSON.parse(localStorage.getItem("formData")) || {};
+        const user = JSON.parse(localStorage.getItem("user")) || {};
+
+        if (!user._id || !selectedRooms.length) {
+          message.error("Lỗi: Không tìm thấy thông tin đặt phòng.");
+          navigate("/checkout");
+          return;
+        }
+
+        const formattedRooms = selectedRooms.map((room) => ({
+          roomId: room.roomId?.toString() || "",
+          quantity: room.count || 0,
+        }));
+
+        const bookingData = {
+          userId: user._id,
+          type: "room",
+          rooms: formattedRooms,
+          checkIn: formData.checkIn || "",
+          checkOut: formData.checkOut || "",
+          price: amount / 100,
+          paymentMethod: "vnpay",
+          paymentStatus: "paid",
+          status: "confirmed",
+          transactionId: orderId,
+        };
+
+        await axios.post("http://localhost:8000/api/booking/rooms", bookingData);
+        
+        localStorage.removeItem("selectedRooms");
+        localStorage.removeItem("formData");
+
+        setIsModalVisible(true); // Hiển thị modal thành công
+
+      } catch (error) {
+        message.error("Lỗi khi lưu thông tin đặt phòng.");
+        navigate("/payment-failed");
+      }
+    };
+
+    if (vnp_ResponseCode === "00") {
+      console.log("✅ Thanh toán thành công, bắt đầu tạo đơn đặt phòng...");
+      handleBookingSuccessVnPay();
+    } else {
+      message.error("Thanh toán thất bại. Vui lòng thử lại.");
+      navigate("/checkout");
+    }
+  }, [location]);
 
   return (
-    <div className="container text-center mt-5">
-      {status === "success" ? (
-        <div className="alert alert-success">{message}</div>
-      ) : (
-        <div className="alert alert-danger">{message}</div>
-      )}
-      <a href="/" className="btn btn-primary mt-3">
-        Quay lại trang chủ
-      </a>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <Spin size="large" />
+      <SuccessModal isVisible={isModalVisible} onClose={() => navigate("/room-list")} />
     </div>
   );
 };
 
-export default VNPayReturn;
+export default VnpayReturn;

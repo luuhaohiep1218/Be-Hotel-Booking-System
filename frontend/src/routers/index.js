@@ -6,8 +6,10 @@ import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
+import ServiceDetail from "../pages/ServiceDetail";
 import Mktdashboard from "../pages/MktDashboard";
 import MktCustomerList from "../pages/MktListCustomer";
+import MktPostList from "../pages/MktPostList";
 import NewsDetail from "../pages/NewsDetail";
 import ProfilePage from "../pages/ProfilePage";
 import RoomDetail from "../pages/RoomDetail";
@@ -15,8 +17,11 @@ import RoomListPage from "../pages/RoomListPage";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
-import MktPostList from "../pages/MktPostList";
 import AdminManageAccount from "../pages/AdminAccountPage";
+import FeedbackListPage from "../pages/MktFeedbackList";
+import ManageService from "../pages/ManageService";
+import StaffDashboard from "../pages/StaffDashboard";
+import ManageRoom from "../pages/ManageRoom";
 
 export const routes = [
   {
@@ -42,6 +47,12 @@ export const routes = [
     isPrivate: true,
   },
   {
+    path: "/mktfeedbacklist",
+    page: FeedbackListPage,
+    isShowHeader: false,
+    isPrivate: true,
+  },
+  {
     path: "/Blog/:blogId",
     page: NewsDetail,
     isShowHeader: true,
@@ -54,6 +65,12 @@ export const routes = [
   {
     path: "/service",
     page: ServicePage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/service/:serviceId",
+    page: ServiceDetail,
     isShowHeader: true,
     isPrivate: false,
   },
@@ -118,7 +135,7 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path: "/payment-success",
+    path: "/return-vnpay",
     page: VNPayReturn,
     isShowHeader: true,
     isPrivate: true,
@@ -126,8 +143,25 @@ export const routes = [
   {
     path: "/admin",
     page: AdminManageAccount,
-    isShowHeader: true,
+    isShowHeader: false,
     isPrivate: true,
-    allowedRoles: ["ADMIN", "USER"],
+  },
+  {
+    path: "/manage-service",
+    page: ManageService,
+    isShowHeader: false,
+    isPrivate: true,
+  },
+  {
+    path: "/staff-dashboard",
+    page: StaffDashboard,
+    isShowHeader: false,
+    isPrivate: true,
+  },
+  {
+    path: "/manage-room",
+    page: ManageRoom,
+    isShowHeader: false,
+    isPrivate: true,
   },
 ];

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import API from "../utils/axiosInstance";
+import images from "../assets/images/pages.jpg";
+
 
 const FeaturedNews = () => {
   const [blog, setBlog] = useState();
@@ -28,11 +30,12 @@ const FeaturedNews = () => {
       >
         {blog?.summary}
       </p>
-      <div
-        className="mt-3"
-        style={{ color: "#52c4c6", fontSize: "1.5rem", marginBottom: 100 }}
-      >
-        ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤ ⬤
+      <div>
+        <img
+          src={images}
+          alt="Khám phá dịch vụ khách sạn"
+          style={{ maxWidth: "100%", height: "auto", marginBottom: "50px" }}
+        />
       </div>
     </Container>
   );

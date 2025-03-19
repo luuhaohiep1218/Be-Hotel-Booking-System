@@ -78,14 +78,14 @@ const CustomModal = styled(Modal)`
   }
 `;
 
-function ModalBookingRoom({ show, handleClose, room }) {
+function ModalBookingRoom({ show, handleClose, filteredRooms, room }) {
   const [selectedRooms, setSelectedRooms] = useState({});
   const [error, setError] = useState("");
   const navigate = useNavigate();
   // Hàm tăng/giảm số lượng phòng
   const handleRoomChange = (roomId, price, maxQty, change) => {
     setSelectedRooms((prev) => {
-      const selectedRoom = room.find((r) => r._id === roomId); // Tìm đúng phòng
+      const selectedRoom = filteredRooms.find((r) => r._id === roomId); // Tìm đúng phòng
       if (!selectedRoom) return prev; // Tránh lỗi nếu không tìm thấy phòng
 
       const newCount = (prev[roomId]?.count || 0) + change;

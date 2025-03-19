@@ -7,6 +7,7 @@ const NewsCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 90%;
   height: 100%;
   border-radius: 20px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
@@ -23,7 +24,7 @@ const NewsCard = styled.div`
 `;
 
 const NewsImage = styled.img`
-  width: 92%;
+  width: 87%;
   height: auto;
   object-fit: cover;
   border-radius: 20px;
@@ -69,6 +70,20 @@ const NewsExtra = styled.p`
 `;
 
 const NewsItem = ({ item }) => {
+  // Chuyển item.id thành chuỗi để tránh lỗi
+  const itemId = String(item.id || ""); // Nếu item.id là undefined, gán chuỗi rỗng
+
+  const slugify = (text) => {
+    return text
+      .normalize("NFD") // Chuyển đổi ký tự có dấu thành dạng tổ hợp
+      .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+      .toLowerCase() // Chuyển thành chữ thường
+      .replace(/đ/g, "d") // Chuyển "đ" thành "d"
+      .replace(/[^a-z0-9\s-]/g, "") // Loại bỏ ký tự đặc biệt
+      .trim() // Xóa khoảng trắng đầu và cuối
+      .replace(/\s+/g, "-"); // Thay khoảng trắng bằng dấu "-"
+  };
+
   console.log(item.sections?.[0]?.image);
   return (
     <Col md={6} lg={4} className="mb-4">

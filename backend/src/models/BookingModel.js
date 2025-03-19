@@ -42,6 +42,7 @@ const bookingSchema = new mongoose.Schema(
       },
     },
 
+
     // 🛎 Chỉ dùng cho đặt dịch vụ
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -50,6 +51,7 @@ const bookingSchema = new mongoose.Schema(
         return this.type === "service";
       },
     },
+
     serviceQuantity: {
       type: Number,
       min: 1,
@@ -70,10 +72,16 @@ const bookingSchema = new mongoose.Schema(
       enum: ["pending", "paid", "failed"],
       default: "pending",
     },
-    transactionId: { type: String },
+    transactionId: { type: String,unique: true }, // Mã giao dịch VNPay (nếu có)
+    discountCode: { type: String }, // Mã giảm giá (nếu có)
 
     // ✍ Thông tin bổ sung
     notes: { type: String },
+    status: {
+      type: String,
+      enum: ["failed", "pending", "confirmed"],
+      default: "pending",
+    }
   },
   { timestamps: true }
 );
