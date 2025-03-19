@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Table, Input, Button, Modal, Form, Pagination } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import StaffSidebar from "../components/StaffSidebar";
+import StaffSidebar from "../components/StaffSidebar"; // Import StaffSidebar
 
 // Styled components
-const MServiceContainer = styled.div`
+const ManageRoomContainer = styled.div`
   display: flex;
   min-height: 100vh;
   background: #eef1f6;
@@ -29,38 +29,38 @@ const Header = styled.header`
   letter-spacing: 1px;
 `;
 
-const ManageService = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); // Hiển thị modal thêm/sửa dịch vụ
-  const [editingService, setEditingService] = useState(null); // Dịch vụ đang chỉnh sửa
+const ManageRoom = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Trạng thái mở/đóng sidebar
+  const [isModalVisible, setIsModalVisible] = useState(false); // Hiển thị modal thêm/sửa phòng
+  const [editingRoom, setEditingRoom] = useState(null); // Phòng đang chỉnh sửa
   const [form] = Form.useForm(); // Form quản lý dữ liệu
 
   // Dữ liệu mẫu (mock data)
-  const mockServices = [
+  const mockRooms = [
     {
       id: 1,
-      name: "Dịch vụ phòng",
-      description: "Dọn dẹp phòng hàng ngày",
-      price: "500,000 VND",
+      name: "Phòng 101",
+      description: "Phòng đơn, view đẹp",
+      capacity: 2,
     },
     {
       id: 2,
-      name: "Dịch vụ ăn uống",
-      description: "Phục vụ bữa sáng miễn phí",
-      price: "0 VND",
+      name: "Phòng 102",
+      description: "Phòng đôi, tiện nghi",
+      capacity: 4,
     },
     {
       id: 3,
-      name: "Dịch vụ spa",
-      description: "Massage thư giãn",
-      price: "1,000,000 VND",
+      name: "Phòng 103",
+      description: "Phòng gia đình",
+      capacity: 6,
     },
   ];
 
-  // Mở modal thêm/sửa dịch vụ
-  const showModal = (service = null) => {
-    setEditingService(service);
-    form.setFieldsValue(service || { name: "", description: "", price: "" });
+  // Mở modal thêm/sửa phòng
+  const showModal = (room = null) => {
+    setEditingRoom(room);
+    form.setFieldsValue(room || { name: "", description: "", capacity: "" });
     setIsModalVisible(true);
   };
 
@@ -70,16 +70,16 @@ const ManageService = () => {
     form.resetFields();
   };
 
-  // Xử lý lưu dịch vụ (chỉ là giao diện, không có logic API)
-  const handleSaveService = (values) => {
-    console.log("Dữ liệu dịch vụ:", values);
+  // Xử lý lưu phòng (chỉ là giao diện, không có logic API)
+  const handleSaveRoom = (values) => {
+    console.log("Dữ liệu phòng:", values);
     setIsModalVisible(false);
   };
 
   // Cột của bảng
   const columns = [
     {
-      title: "Tên dịch vụ",
+      title: "Tên phòng",
       dataIndex: "name",
       key: "name",
     },
@@ -89,9 +89,9 @@ const ManageService = () => {
       key: "description",
     },
     {
-      title: "Giá",
-      dataIndex: "price",
-      key: "price",
+      title: "Sức chứa",
+      dataIndex: "capacity",
+      key: "capacity",
     },
     {
       title: "Hành động",
@@ -101,7 +101,7 @@ const ManageService = () => {
           <Button type="link" onClick={() => showModal(record)}>
             Sửa
           </Button>
-          <Button type="link" danger onClick={() => console.log("Xóa dịch vụ:", record.id)}>
+          <Button type="link" danger onClick={() => console.log("Xóa phòng:", record.id)}>
             Xóa
           </Button>
         </div>
@@ -110,27 +110,30 @@ const ManageService = () => {
   ];
 
   return (
-    <MServiceContainer>
+    <ManageRoomContainer>
+      {/* Sidebar */}
       <StaffSidebar onToggle={setIsSidebarOpen} />
-      <ContentWrapper isSidebarOpen={isSidebarOpen}>
-        <Header>Quản lý dịch vụ</Header>
 
-        {/* Thanh tìm kiếm và nút thêm dịch vụ */}
+      {/* Nội dung chính */}
+      <ContentWrapper isSidebarOpen={isSidebarOpen}>
+        <Header>Quản lý phòng</Header>
+
+        {/* Thanh tìm kiếm và nút thêm phòng */}
         <div style={{ marginBottom: "16px", display: "flex", gap: "10px" }}>
           <Input
-            placeholder="Tìm kiếm dịch vụ..."
+            placeholder="Tìm kiếm phòng..."
             prefix={<SearchOutlined />}
             style={{ width: 300 }}
           />
           <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal()}>
-            Thêm dịch vụ
+            Thêm phòng
           </Button>
         </div>
 
-        {/* Bảng hiển thị danh sách dịch vụ */}
+        {/* Bảng hiển thị danh sách phòng */}
         <Table
           columns={columns}
-          dataSource={mockServices}
+          dataSource={mockRooms}
           rowKey="id"
           pagination={false}
         />
@@ -139,23 +142,23 @@ const ManageService = () => {
         <Pagination
           current={1}
           pageSize={5}
-          total={mockServices.length}
+          total={mockRooms.length}
           onChange={(page, size) => console.log("Chuyển trang:", page, size)}
           style={{ marginTop: "16px", textAlign: "right" }}
         />
 
-        {/* Modal thêm/sửa dịch vụ */}
+        {/* Modal thêm/sửa phòng */}
         <Modal
-          title={editingService ? "Sửa dịch vụ" : "Thêm dịch vụ"}
+          title={editingRoom ? "Sửa phòng" : "Thêm phòng"}
           visible={isModalVisible}
           onCancel={handleCancel}
           footer={null}
         >
-          <Form form={form} onFinish={handleSaveService} layout="vertical">
+          <Form form={form} onFinish={handleSaveRoom} layout="vertical">
             <Form.Item
-              label="Tên dịch vụ"
+              label="Tên phòng"
               name="name"
-              rules={[{ required: true, message: "Vui lòng nhập tên dịch vụ" }]}
+              rules={[{ required: true, message: "Vui lòng nhập tên phòng" }]}
             >
               <Input />
             </Form.Item>
@@ -163,11 +166,11 @@ const ManageService = () => {
               <Input.TextArea />
             </Form.Item>
             <Form.Item
-              label="Giá"
-              name="price"
-              rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+              label="Sức chứa"
+              name="capacity"
+              rules={[{ required: true, message: "Vui lòng nhập sức chứa" }]}
             >
-              <Input />
+              <Input type="number" />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">
@@ -180,8 +183,8 @@ const ManageService = () => {
           </Form>
         </Modal>
       </ContentWrapper>
-    </MServiceContainer>
+    </ManageRoomContainer>
   );
 };
 
-export default ManageService;
+export default ManageRoom;

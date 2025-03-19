@@ -19,6 +19,9 @@ import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
 import AdminManageAccount from "../pages/AdminAccountPage";
 import FeedbackListPage from "../pages/MktFeedbackList";
+import ManageService from "../pages/ManageService";
+import StaffDashboard from "../pages/StaffDashboard";
+import ManageRoom from "../pages/ManageRoom";
 
 export const routes = [
   {
@@ -142,5 +145,23 @@ export const routes = [
     page: AdminManageAccount,
     isShowHeader: false,
     isPrivate: true,
-  }
+  },
+  {
+    path: "/manage-service",
+    page: ManageService,
+    isShowHeader: false,
+    isPrivate: true,
+  },
+  {
+    path: "/staff-dashboard",
+    page: StaffDashboard,
+    isShowHeader: false,
+    isPrivate: true,
+  },
+  {
+    path: "/manage-room",
+    page: ManageRoom,
+    isShowHeader: false,
+    isPrivate: true,
+  },
 ];
