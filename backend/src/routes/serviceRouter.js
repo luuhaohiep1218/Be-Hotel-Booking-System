@@ -29,17 +29,7 @@ router.post("/", protect, staffMiddleware, createService);
 router.put("/:serviceId", protect, staffMiddleware, updateService);
 router.delete("/:serviceId", protect, staffMiddleware, deleteService);
 
-router.post("/:serviceId/reviews", protect, staffMiddleware, addReview);
-router.put(
-  "/:serviceId/reviews/:reviewId",
-  protect,
-  staffMiddleware,
-  updateReview
-);
-router.delete(
-  "/:serviceId/reviews/:reviewId",
-  protect,
-  staffMiddleware,
-  deleteReview
-);
+router.post("/:serviceId/reviews", protect, addReview);
+router.put("/:serviceId/reviews/:reviewId", protect, updateReview);
+router.delete("/:serviceId/reviews/:reviewId", protect, deleteReview);
 module.exports = router;

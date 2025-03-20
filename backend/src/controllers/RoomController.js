@@ -100,8 +100,8 @@ const createRoom = asyncHandler(async (req, res) => {
 
 const updateInfoRoom = asyncHandler(async (req, res) => {
   try {
-    const { id } = req.params; // Lấy ID phòng từ URL
-    const updateData = req.body; // Dữ liệu cập nhật từ client
+    const { id } = req.params;
+    const updateData = req.body;
 
     // Kiểm tra phòng có tồn tại không
     const room = await Room.findById(id);
@@ -109,9 +109,12 @@ const updateInfoRoom = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy phòng!" });
     }
 
-    // Cập nhật thông tin phòng
-    Object.assign(room, updateData);
-    const updatedRoom = await room.save();
+    // Cập nhật thông tin phòng, giữ nguyên dữ liệu cũ nếu không truyền lên
+    const updatedRoom = await Room.findByIdAndUpdate(id, updateData, {
+      new: true, // Trả về dữ liệu sau khi cập nhật
+      runValidators: true, // Kiểm tra validate của schema
+      omitUndefined: true, // Bỏ qua các giá trị undefined
+    });
 
     res.status(200).json({
       message: "Cập nhật thông tin phòng thành công!",
