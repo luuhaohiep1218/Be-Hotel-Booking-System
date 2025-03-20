@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Table, Input, Button, Modal, Form, Pagination } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Input, Button, Modal, Form, Pagination, message } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import StaffSidebar from "../components/StaffSidebar"; // Import StaffSidebar
+import API from "../utils/axiosInstance";
 
 // Styled components
 const ManageRoomContainer = styled.div`
@@ -33,7 +34,22 @@ const ManageRoom = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Trạng thái mở/đóng sidebar
   const [isModalVisible, setIsModalVisible] = useState(false); // Hiển thị modal thêm/sửa phòng
   const [editingRoom, setEditingRoom] = useState(null); // Phòng đang chỉnh sửa
+  const [rooms, setRooms] = useState([]); // Danh sách phòng
+
   const [form] = Form.useForm(); // Form quản lý dữ liệu
+
+  const fetchData = async () => {
+    try {
+      const roomResponse = await API.get("/room?sort=+quantityLeft");
+      setRooms(roomResponse.data.rooms);
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu phòng:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   // Dữ liệu mẫu (mock data)
   const mockRooms = [
@@ -71,9 +87,21 @@ const ManageRoom = () => {
   };
 
   // Xử lý lưu phòng (chỉ là giao diện, không có logic API)
-  const handleSaveRoom = (values) => {
-    console.log("Dữ liệu phòng:", values);
-    setIsModalVisible(false);
+  const handleSaveRoom = async (values) => {
+    try {
+      if (editingRoom) {
+        // Gọi API cập nhật thông tin phòng
+        console.log(editingRoom._id);
+        const { data } = await API.put(`/room/${editingRoom._id}`, values);
+        message.success("Cập nhật phòng thành công!");
+      }
+
+      fetchData(); // Load lại danh sách phòng
+      setIsModalVisible(false);
+    } catch (error) {
+      console.error("🔥 Lỗi khi cập nhật phòng:", error);
+      message.error("Cập nhật phòng thất bại!");
+    }
   };
 
   // Cột của bảng
@@ -89,9 +117,41 @@ const ManageRoom = () => {
       key: "description",
     },
     {
-      title: "Sức chứa",
-      dataIndex: "capacity",
-      key: "capacity",
+      title: "Phòng",
+      dataIndex: "beds",
+      key: "beds",
+    },
+    {
+      title: "Vị trí",
+      dataIndex: "location",
+      key: "location",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Tổng số phòng",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "Số phòng còn lại",
+      dataIndex: "quantityLeft",
+      key: "quantityLeft",
+    },
+    {
+      title: "Dịch vụ của phòng",
+      dataIndex: "services",
+      key: "services",
+      render: (services) => (
+        <ul style={{ listStyleType: "disc", paddingLeft: "20px", margin: 0 }}>
+          {services.map((service, index) => (
+            <li key={index}>{service}</li>
+          ))}
+        </ul>
+      ),
     },
     {
       title: "Hành động",
@@ -101,7 +161,11 @@ const ManageRoom = () => {
           <Button type="link" onClick={() => showModal(record)}>
             Sửa
           </Button>
-          <Button type="link" danger onClick={() => console.log("Xóa phòng:", record.id)}>
+          <Button
+            type="link"
+            danger
+            onClick={() => console.log("Xóa phòng:", record.id)}
+          >
             Xóa
           </Button>
         </div>
@@ -125,15 +189,19 @@ const ManageRoom = () => {
             prefix={<SearchOutlined />}
             style={{ width: 300 }}
           />
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal()}>
+          {/* <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => showModal()}
+          >
             Thêm phòng
-          </Button>
+          </Button> */}
         </div>
 
         {/* Bảng hiển thị danh sách phòng */}
         <Table
           columns={columns}
-          dataSource={mockRooms}
+          dataSource={rooms}
           rowKey="id"
           pagination={false}
         />
@@ -142,7 +210,7 @@ const ManageRoom = () => {
         <Pagination
           current={1}
           pageSize={5}
-          total={mockRooms.length}
+          total={rooms.length}
           onChange={(page, size) => console.log("Chuyển trang:", page, size)}
           style={{ marginTop: "16px", textAlign: "right" }}
         />
@@ -162,15 +230,22 @@ const ManageRoom = () => {
             >
               <Input />
             </Form.Item>
+            <Form.Item
+              label="Loại phòng"
+              name="type"
+              rules={[{ required: true, message: "Vui lòng nhập loại phòng" }]}
+            >
+              <Input />
+            </Form.Item>
             <Form.Item label="Mô tả" name="description">
               <Input.TextArea />
             </Form.Item>
             <Form.Item
-              label="Sức chứa"
-              name="capacity"
-              rules={[{ required: true, message: "Vui lòng nhập sức chứa" }]}
+              label="Trạng thái"
+              name="status"
+              rules={[{ required: true, message: "Vui lòng nhập trạng thái" }]}
             >
-              <Input type="number" />
+              <Input />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit">

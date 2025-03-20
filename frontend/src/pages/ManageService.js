@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Table, Input, Button, Modal, Form, Pagination } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Input, Button, Modal, Form, Pagination, message } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import StaffSidebar from "../components/StaffSidebar";
+import API from "../utils/axiosInstance";
 
 // Styled components
 const MServiceContainer = styled.div`
@@ -31,57 +32,61 @@ const Header = styled.header`
 
 const ManageService = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); // Hiển thị modal thêm/sửa dịch vụ
-  const [editingService, setEditingService] = useState(null); // Dịch vụ đang chỉnh sửa
-  const [form] = Form.useForm(); // Form quản lý dữ liệu
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingService, setEditingService] = useState(null);
+  const [services, setServices] = useState([]); // Luôn khởi tạo là mảng rỗng
+  const [form] = Form.useForm();
 
-  // Dữ liệu mẫu (mock data)
-  const mockServices = [
-    {
-      id: 1,
-      name: "Dịch vụ phòng",
-      description: "Dọn dẹp phòng hàng ngày",
-      price: "500,000 VND",
-    },
-    {
-      id: 2,
-      name: "Dịch vụ ăn uống",
-      description: "Phục vụ bữa sáng miễn phí",
-      price: "0 VND",
-    },
-    {
-      id: 3,
-      name: "Dịch vụ spa",
-      description: "Massage thư giãn",
-      price: "1,000,000 VND",
-    },
-  ];
+  const fetchData = async () => {
+    try {
+      const response = await API.get("/service");
+      setServices(response.data.services);
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu dịch vụ:", error);
+    }
+  };
 
-  // Mở modal thêm/sửa dịch vụ
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const showModal = (service = null) => {
     setEditingService(service);
     form.setFieldsValue(service || { name: "", description: "", price: "" });
     setIsModalVisible(true);
   };
 
-  // Đóng modal
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
   };
 
-  // Xử lý lưu dịch vụ (chỉ là giao diện, không có logic API)
-  const handleSaveService = (values) => {
-    console.log("Dữ liệu dịch vụ:", values);
-    setIsModalVisible(false);
+  const handleSaveService = async (values) => {
+    try {
+      if (editingService) {
+        // Nếu đang chỉnh sửa, gọi API sửa dịch vụ
+        await API.put(`/service/${editingService._id}`, values);
+        message.success("Cập nhật dịch vụ thành công!");
+      }
+      setIsModalVisible(false);
+      form.resetFields();
+      fetchData(); // Lấy lại dữ liệu sau khi thêm/sửa
+    } catch (error) {
+      console.error("Lỗi khi lưu dịch vụ:", error);
+      message.error("Đã xảy ra lỗi khi lưu dịch vụ!");
+    }
   };
 
-  // Cột của bảng
   const columns = [
     {
       title: "Tên dịch vụ",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "title",
+      key: "title",
+    },
+    {
+      title: "Tóm tắt",
+      dataIndex: "summary",
+      key: "summary",
     },
     {
       title: "Mô tả",
@@ -89,9 +94,9 @@ const ManageService = () => {
       key: "description",
     },
     {
-      title: "Giá",
-      dataIndex: "price",
-      key: "price",
+      title: "Loại dịch vụ",
+      dataIndex: "category",
+      key: "category",
     },
     {
       title: "Hành động",
@@ -101,7 +106,11 @@ const ManageService = () => {
           <Button type="link" onClick={() => showModal(record)}>
             Sửa
           </Button>
-          <Button type="link" danger onClick={() => console.log("Xóa dịch vụ:", record.id)}>
+          <Button
+            type="link"
+            danger
+            onClick={() => console.log("Xóa dịch vụ:", record.id)}
+          >
             Xóa
           </Button>
         </div>
@@ -115,36 +124,36 @@ const ManageService = () => {
       <ContentWrapper isSidebarOpen={isSidebarOpen}>
         <Header>Quản lý dịch vụ</Header>
 
-        {/* Thanh tìm kiếm và nút thêm dịch vụ */}
         <div style={{ marginBottom: "16px", display: "flex", gap: "10px" }}>
           <Input
             placeholder="Tìm kiếm dịch vụ..."
             prefix={<SearchOutlined />}
             style={{ width: 300 }}
           />
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal()}>
+          {/* <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => showModal()}
+          >
             Thêm dịch vụ
-          </Button>
+          </Button> */}
         </div>
 
-        {/* Bảng hiển thị danh sách dịch vụ */}
         <Table
           columns={columns}
-          dataSource={mockServices}
+          dataSource={Array.isArray(services) ? services : []} // Luôn là mảng
           rowKey="id"
           pagination={false}
         />
 
-        {/* Phân trang */}
         <Pagination
           current={1}
           pageSize={5}
-          total={mockServices.length}
+          total={services.length}
           onChange={(page, size) => console.log("Chuyển trang:", page, size)}
           style={{ marginTop: "16px", textAlign: "right" }}
         />
 
-        {/* Modal thêm/sửa dịch vụ */}
         <Modal
           title={editingService ? "Sửa dịch vụ" : "Thêm dịch vụ"}
           visible={isModalVisible}
@@ -154,7 +163,7 @@ const ManageService = () => {
           <Form form={form} onFinish={handleSaveService} layout="vertical">
             <Form.Item
               label="Tên dịch vụ"
-              name="name"
+              name="title"
               rules={[{ required: true, message: "Vui lòng nhập tên dịch vụ" }]}
             >
               <Input />
@@ -163,9 +172,18 @@ const ManageService = () => {
               <Input.TextArea />
             </Form.Item>
             <Form.Item
-              label="Giá"
-              name="price"
-              rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+              label="Tóm tắt"
+              name="summary"
+              rules={[{ required: true, message: "Vui lòng nhập tóm tắt" }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Loại dịch vụ"
+              name="category"
+              rules={[
+                { required: true, message: "Vui lòng nhập loại dịch vụ" },
+              ]}
             >
               <Input />
             </Form.Item>
