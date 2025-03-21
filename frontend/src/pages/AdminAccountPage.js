@@ -18,6 +18,9 @@ import { Eye, EyeOff } from "lucide-react";
 import { useHotelBooking } from "../context/HotelBookingContext";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Sidebar from "../components/AdminSlidebar";
 
 const StyledNavbar = styled(Navbar)`
   margin-bottom: 20px;
@@ -75,6 +78,7 @@ const AdminManageAccount = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -84,13 +88,19 @@ const AdminManageAccount = () => {
     full_name: "",
     email: "",
     password: "",
-    role: "STAFF",
+    role: "",
   });
   const usersPerPage = 10;
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  useEffect(() => {
+    if (currentRole !== "ALL") {
+      setNewUser((prev) => ({ ...prev, role: currentRole }));
+    }
+  }, [currentRole]);
 
   useEffect(() => {
     filterUsers();
@@ -112,10 +122,15 @@ const AdminManageAccount = () => {
       await API.post("/admin/users", newUser, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+      toast.success("🎉 Tạo tài khoản thành công!");
       setShowCreateModal(false);
       fetchUsers();
     } catch (error) {
-      console.error("Failed to create user:", error);
+      if (error.response && error.response.status === 400) {
+        toast.error("📧 Email đã tồn tại! Vui lòng nhập email khác.");
+      } else {
+        toast.error("⚠️ Đã có lỗi xảy ra! Vui lòng thử lại.");
+      }
     }
   };
 
@@ -204,23 +219,51 @@ const AdminManageAccount = () => {
     }
   };
 
+  const navbarStyle = {
+    position: "fixed",
+    zIndex: "100",
+    width: "100%",
+  };
+
+  const adminTitleStyle = {
+    display: "inline-block",
+    transition: "transform 0.3s ease-in-out", // Hiệu ứng mượt mà
+    transform: isSidebarOpen ? "translateX(200px)" : "translateX(0)", // Dịch sang phải khi mở sidebar
+  };
+
+  const AnimatedContainer = styled(Container)`
+    transition: transform 0.3s ease-in-out;
+    transform: ${({ isSidebarOpen }) =>
+      isSidebarOpen ? "translateX(200px)" : "translateX(0)"};
+    width: ${({ isSidebarOpen }) =>
+      isSidebarOpen ? "calc(100% - 300px)" : "100%"};
+    margin-left: ${({ isSidebarOpen }) =>
+      isSidebarOpen ? "80px" : "80px"};
+  `;
+
   return (
-    <div>
-      <Navbar bg="dark" variant="dark" expand="lg">
+    <div maxwidth="1920px">
+      <Sidebar onToggle={setIsSidebarOpen} />
+      <Navbar bg="dark" variant="dark" expand="lg" style={navbarStyle}>
         <Container>
-          <Navbar.Brand href="#home" className="fs-3 fw-bold">
+          <Navbar.Brand
+            href="#home"
+            className="fs-3 fw-bold"
+            style={adminTitleStyle}
+          >
             ADMIN PAGE
           </Navbar.Brand>
           <LogoutOutlined
             style={{ color: "white", fontSize: "24px" }}
-            onClick={handleLogout}
+            onClick={() => console.log("Logging out...")}
           />
         </Container>
       </Navbar>
-      <Container>
+      <div style={{ height: "80px" }} />
+      <AnimatedContainer isSidebarOpen={isSidebarOpen}>
         <StyledNavbar>
           <Nav variant="tabs" defaultActiveKey="ALL">
-            {["ALL", "USER", "STAFF", "MARKETING", "ADMIN"].map((role) => (
+            {["ALL", "USER", "STAFF", "MARKETING"].map((role) => (
               <Nav.Item key={role}>
                 <Nav.Link
                   eventKey={role}
@@ -355,6 +398,11 @@ const AdminManageAccount = () => {
                 setNewUser({ ...newUser, full_name: e.target.value })
               }
             />
+            <ToastContainer
+              style={{ "z-index": "9999" }}
+              position="top-right"
+              autoClose={3000}
+            />
             <Form.Label>Email</Form.Label>
             <Form.Control
               onChange={(e) =>
@@ -409,7 +457,7 @@ const AdminManageAccount = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </Container>
+      </AnimatedContainer>
     </div>
   );
 };

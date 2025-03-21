@@ -69,12 +69,12 @@ const AboutUS = () => {
     {
       icon: <FaStar size={30} color={primaryColor} />,
       title: "Sản phẩm phong phú",
-      text: "Tại địa chỉ website: https://mixivivu.com, du khách có thể dễ dàng tìm thấy các sản phẩm du lịch chất lượng...",
+      text: "Tại địa chỉ website: https://golodge.com, du khách có thể dễ dàng tìm thấy các sản phẩm du lịch chất lượng...",
     },
     {
       icon: <FaDollarSign size={30} color={primaryColor} />,
       title: "Mức giá hấp dẫn",
-      text: "Mixi Vivu cam kết cung cấp dịch vụ với mức giá tốt nhất, cùng nhiều chương trình khuyến mãi...",
+      text: "Golodge cam kết cung cấp dịch vụ với mức giá tốt nhất, cùng nhiều chương trình khuyến mãi...",
     },
     {
       icon: <FaLock size={30} color={primaryColor} />,
