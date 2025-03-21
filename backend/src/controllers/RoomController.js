@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Room = require("../models/RoomModel");
 const aqp = require("api-query-params");
+const { default: mongoose } = require("mongoose");
 
 const getListRooms = asyncHandler(async (req, res) => {
   try {
@@ -100,11 +101,11 @@ const createRoom = asyncHandler(async (req, res) => {
 
 const updateInfoRoom = asyncHandler(async (req, res) => {
   try {
-    const { id } = req.params; // Lấy ID phòng từ URL
+    const { _id } = req.params; // Lấy ID phòng từ URL
     const updateData = req.body; // Dữ liệu cập nhật từ client
 
     // Kiểm tra phòng có tồn tại không
-    const room = await Room.findById(id);
+    const room = await Room.findById(_id);
     if (!room) {
       return res.status(404).json({ message: "Không tìm thấy phòng!" });
     }
@@ -157,15 +158,20 @@ const deleteRooms = asyncHandler(async (req, res) => {
 // lấy thông tin chi tiết của các phòng 
 const getRoomDetailsById = asyncHandler(async (req, res) => {
   try {
-    const { roomId } = req.body; // Lấy ID từ body của request
+    const { roomId } = req.params;
+    console.log("Received roomId:", roomId);  // Log the roomId
 
-    // Kiểm tra xem phòng có tồn tại không
+    if (!mongoose.Types.ObjectId.isValid(roomId)) {
+      return res.status(400).json({ message: "Invalid room ID format!" });
+    }
+
     const room = await Room.findById(roomId);
+    console.log("Room found:", room);  // Log the result from the database
+
     if (!room) {
       return res.status(404).json({ message: "Phòng không tồn tại!" });
     }
 
-    // Trả về thông tin chi tiết phòng
     res.status(200).json({
       message: "Lấy thông tin phòng thành công!",
       room,
@@ -175,5 +181,6 @@ const getRoomDetailsById = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Lỗi hệ thống, vui lòng thử lại!" });
   }
 });
+
 
 module.exports = { createRoom, updateInfoRoom, deleteRooms, getListRooms, getRoomDetailsById };

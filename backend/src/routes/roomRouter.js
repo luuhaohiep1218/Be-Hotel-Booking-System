@@ -18,5 +18,5 @@ router.get("/", getListRooms);
 router.post("/", protect, staffMiddleware, createRoom);
 router.put("/:id", protect, staffMiddleware, updateInfoRoom);
 router.delete("/", protect, adminMiddleware, deleteRooms);
-router.post("/room-detail ")
+router.get("/:roomId", getRoomDetailsById);
 module.exports = router;

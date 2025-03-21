@@ -66,7 +66,8 @@ const styles = {
         paddingBottom: "10px",
         borderBottom: "1px solid #ccc",
     },
-    titleFeedback: {
+  
+  titleFeedback: {
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "space-between",
@@ -95,7 +96,6 @@ const styles = {
         padding: "16px",
     }
 }
-
 const TestServiceDetail = () => {
     const [review, setReview] = useState({ name: "", email: "", phone: "", rating: 0, comment: "" });
 

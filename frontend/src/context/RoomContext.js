@@ -8,6 +8,7 @@ export const RoomProvider = ({ children }) => {
   const [filteredRooms, setFilteredRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [roomDetails, setRoomDetails] = useState(null);
 
   const fetchRooms = async () => {
     try {
@@ -34,6 +35,14 @@ export const RoomProvider = ({ children }) => {
   useEffect(() => {
     fetchRooms();
   }, []);
+ const roomId = localStorage.getItem("roomId"); // Get roomId from localStorage
+
+useEffect(() => {
+  if (roomId && !roomDetails) {
+    getRoomDetails(roomId); // Only fetch if roomDetails are not already available
+  }
+}, [roomId, roomDetails]); // Add roomDetails as a dependency to avoid re-fetching if already loaded
+
 
   const handleFilterRooms = useCallback(
     (filters) => {
@@ -65,9 +74,21 @@ export const RoomProvider = ({ children }) => {
     },
     [rooms]
   );
+   
+  const getRoomDetails = async (roomId) => {
+  try {
+    const response = await API.get(`/room/${roomId}`);
+    console.log(response.data);  // Log the response to inspect its structure
+    setRoomDetails(response.data.room); // Update this line based on the actual response structure
+  } catch (error) {
+    console.error("Error fetching room details:", error);
+    setError("Không thể lấy thông tin phòng");
+  }
+};
+
 
   return (
-    <RoomContext.Provider value={{ rooms, filteredRooms, loading, error, handleFilterRooms }}>
+    <RoomContext.Provider value={{ rooms, filteredRooms, loading, error,roomDetails, handleFilterRooms,  getRoomDetails }}>
       {children}
     </RoomContext.Provider>
   );

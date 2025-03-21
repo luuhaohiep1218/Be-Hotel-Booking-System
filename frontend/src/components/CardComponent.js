@@ -1,4 +1,4 @@
-import { Card, Col, Pagination, Row } from "antd";
+import { Card, Carousel, Col, Pagination, Row } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import styled from "styled-components";
@@ -30,21 +30,40 @@ const MemoizedCard = React.memo(({ item, children }) => {
   // Khi nhấn vào card, chuyển hướng đến trang chi tiết
   const handleCardClick = () => {
     const encodedName = encodeURIComponent(item.name); // Mã hóa tên item
-    navigate(`/room/${encodedName}`); // Điều hướng đến trang chi tiết của item
+    navigate(`/room/${encodedName}`);
+    localStorage.setItem("roomId", item._id);
+    // Điều hướng đến trang chi tiết của item
   };
 
   return (
     <Col key={item._id} xs={24} sm={12} md={8} lg={6}>
       <Card
         hoverable
-        cover={item.image ? (
+        cover={item.images ? (
+          item.images && item.images.length > 0 ? (
+    <Carousel autoplay>
+      {item.images.map((img, index) => (
+        console.log(img),
+        <div key={index}>
           <img
-            alt={item.name}
-            src={item.image}
-            style={{ height: "200px", objectFit: "cover" }}
+            alt={`${item.name}-${index}`}
+            src={img}
+            style={{ maxHeight: "200px", objectFit: "cover", width: "100%",borderRadius: "10px" }}
           />
+        </div>
+      ))}
+    </Carousel>
+          ) : (
+            <img
+              alt={item.name}
+              src={item.images[0]}
+              style={{ height: "200px", objectFit: "cover" }}
+            />
+          )
         ) : (
-          <div style={{ height: "200px", background: "#f0f0f0" }} />
+          <div style={{ height: "200px", background: "#f0f0f0" }}>
+           <img src="" alt="test" />
+          </div>
         )}
         onClick={handleCardClick} // Gắn sự kiện onClick để chuyển hướng
       >

@@ -95,10 +95,7 @@ function RoomListPage() {
   const [showModal, setShowModal] = useState(false);;
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showAI, setShowAI] = useState(false); // Quản lý hiển thị AI Assistant
- const handleViewRoomDetail = (roomId) => {
-  console.log(`Navigating to room detail with ID: ${roomId}`);
-  navigate(`/room/${roomId}`);
-};
+
 
   
   console.log(filteredRooms);
@@ -129,7 +126,7 @@ function RoomListPage() {
               {filteredRooms.length > 0 ? (
                 <CardComponent data={filteredRooms} pageSize={4} >
                   {(rooms) => (
-                    <div className="d-flex pt-3"onClick={() => handleViewRoomDetail(rooms.id)}>
+                    <div className="d-flex pt-3">
                       <Button
                         type="default"
                         shape="round"
