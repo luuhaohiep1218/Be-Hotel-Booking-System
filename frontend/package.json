@@ -27,6 +27,7 @@
     "react-router-dom": "^7.1.5",
     "react-scripts": "5.0.1",
     "react-select": "^5.10.1",
+    "react-toastify": "^11.0.5",
     "styled-components": "^6.1.15",
     "webpack": "^5.98.0"
   },
