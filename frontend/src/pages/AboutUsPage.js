@@ -1,103 +1,171 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
+import { FaGem, FaStar, FaDollarSign, FaLock } from "react-icons/fa";
+import styled from "styled-components";
 
-const styles = {
-  bannerImage: {
-    width: "100vw",
-    height: "auto",
-    display: "block",
-  },
-  desContainer: {
-    textAlign: "center",
-    marginTop: "5rem",
-    marginBottom: "5rem",
-  },
-  desTitle: {
-    fontWeight: "bold",
-    fontSize: "2rem",
-    color: "#800000",
-    textTransform: "uppercase",
-    borderBottom: "3px solid #800000",
-    display: "inline-block",
-    paddingBottom: "5px",
-  },
-  desImage: {
-    width: "100%",
-    borderRadius: "10px",
-  },
-  desTextContainer: {
-    textAlign: "justify",
-    lineHeight: "1.8",
-  },
-  desParagraph: {
-    marginBottom: "1rem",
-  },
-};
+// Màu chủ đạo
+const primaryColor = "#22ACC1";
 
-const AboutUs = () => {
+// Styled Components
+const Section = styled.section`
+  margin-top: 40px;
+`;
+
+const Title = styled.h4`
+  font-weight: bold;
+  color: ${primaryColor};
+`;
+
+const FeatureCard = styled(Card)`
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border: none;
+  transition: transform 0.2s ease-in-out;
+  height: 100%;
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
+
+const IconCircle = styled.div`
+  width: 50px;
+  height: 50px;
+  background-color: ${primaryColor}33; /* Màu xanh nhạt 20% */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  margin-bottom: 15px;
+`;
+
+const ContactInfo = styled.p`
+  font-size: 16px;
+  line-height: 1.6;
+`;
+const SlashContainer = styled.div`
+  display: flex;
+  gap: 10px; /* Khoảng cách giữa các dấu */
+  align-items: center;
+  padding: 20px;
+  marginbottom: "100px";
+`;
+
+const Slash = styled.span`
+  font-size: 16px; /* Kích thước */
+  font-weight: bold;
+  color: #22acc1; /* Màu xanh chủ đạo */
+  opacity: 1; /* Độ mờ */
+  transform: rotate(15deg); /* Nghiêng dấu */
+`;
+
+const AboutUS = () => {
+  const features = [
+    {
+      icon: <FaGem size={30} color={primaryColor} />,
+      title: "Đội ngũ chuyên nghiệp, tâm huyết",
+      text: "Chúng tôi có đội ngũ nhân viên kinh nghiệm, tâm huyết, luôn lắng nghe những thắc mắc...",
+    },
+    {
+      icon: <FaStar size={30} color={primaryColor} />,
+      title: "Sản phẩm phong phú",
+      text: "Tại địa chỉ website: https://mixivivu.com, du khách có thể dễ dàng tìm thấy các sản phẩm du lịch chất lượng...",
+    },
+    {
+      icon: <FaDollarSign size={30} color={primaryColor} />,
+      title: "Mức giá hấp dẫn",
+      text: "Mixi Vivu cam kết cung cấp dịch vụ với mức giá tốt nhất, cùng nhiều chương trình khuyến mãi...",
+    },
+    {
+      icon: <FaLock size={30} color={primaryColor} />,
+      title: "Bảo mật thông tin",
+      text: "Mọi thông tin cá nhân của khách hàng đều được bảo mật tuyệt đối, tạo sự an tâm khi sử dụng dịch vụ...",
+    },
+  ];
+
   return (
-    <div>
-      <img
-        src="https://a25hotel.com/files/images/sinh%20nh%E1%BA%ADt-100.jpg"
-        alt="About Us Banner"
-        style={styles.bannerImage}
-      />
-      <Container style={styles.desContainer}>
-        <h2 style={styles.desTitle}>Về Chúng Tôi</h2>
-        <Row className="mt-4">
-          <Col md={6}>
-            <img
-              src="https://a25hotel.com/files/images/sinh%20nh%E1%BA%ADt-100.jpg"
-              alt="About Us"
-              style={styles.desImage}
-            />
-          </Col>
-          <Col md={6} style={styles.desTextContainer}>
-            <p style={styles.desParagraph}>
-              Thương hiệu khách sạn A25 được thành lập từ năm 2003, qua hơn hai
-              thập kỷ phát triển, A25 đã tạo dựng và khẳng định được dấu ấn của
-              mình trong lĩnh vực lưu trú, nghỉ dưỡng, với hệ thống hơn 60 khách
-              sạn trải dài không chỉ ở Việt Nam, mà còn mở rộng trên thế giới.
-            </p>
-            <p style={styles.desParagraph}>
-              Một đặc điểm chung dễ nhận thấy và tạo ấn tượng sâu sắc nhất với
-              những vị khách đã từng đến với A25 chính là vị trí tiện lợi, toàn
-              bộ hệ thống khách sạn của A25 đều được đặt tại các quận trung tâm,
-              tâm điểm giao thương về văn hóa và du lịch ở các thành phố lớn
-              như: Hà Nội, TP. Hồ Chí Minh và Đà Nẵng, Hạ Long. Điều này giúp du
-              khách dễ dàng khám phá và đắm chìm trong không gian đậm đà văn hóa
-              truyền thống của Việt Nam hay hòa mình vào nhịp sống hiện đại và
-              sôi động của các thành phố lớn.
-            </p>
-          </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col>
-            <p style={styles.desParagraph}>
-              Với hơn 2000 phòng nghỉ, được trang bị đầy đủ tiện nghi hiện đại,
-              cùng hệ thống nhà hàng Bistro sang trọng và các phòng hợp hội nghị
-              rộng lớn, A25 mang đến nhiều lựa chọn vượt trội trong cùng phân
-              khúc, đáp ứng mọi nhu cầu về dịch vụ lưu trú, nghỉ ngơi hoặc tổ
-              chức tiệc, hội thảo cho du khách trong và ngoài nước.
-            </p>
-            <p style={styles.desParagraph}>
-              Không chỉ cung cấp dịch vụ lưu trú, khách sạn A25 còn hỗ trợ đặt
-              vé máy bay, vé tàu hỏa, thuê xe ô tô, gia hạn và làm mới visa, hộ
-              chiếu, cũng như tổ chức các tour du lịch trọn gói trong và ngoài
-              nước để đảm bảo chuyến tham quan của du khách thoải mái và tiện
-              lợi nhất.
-            </p>
-            <p style={styles.desParagraph}>
-              Nhưng điểm mạnh lớn nhất của chúng tôi, và được hàng ngàn lượt
-              khách đánh giá cao, chính là đội ngũ nhân viên. Thân thiện, tận
-              tâm và tử tế, đó luôn là phương châm phục vụ của đội ngũ nhân viên
-              dày dặn kinh nghiệm tại hệ thống khách sạn A25.
-            </p>
-          </Col>
-        </Row>
+    <Container style={{ margin: "5%" }}>
+      <Container className="my-5" style={{ maxWidth: "80%" }}>
+        <h2 className="fw-bold ">Về Golodge</h2>
+        <SlashContainer>
+          {Array.from({ length: 10 }).map((_, index) => (
+            <Slash key={index}>/</Slash>
+          ))}
+        </SlashContainer>
+        <Section>
+          <Title>1. Chúng tôi là Golodge</Title>
+          <p style={{ fontSize: "20px", lineHeight: "1.6" }}>
+            Golodge.com là sản phẩm chính thức của Công ty TNHH Du lịch và Dịch
+            vụ Golodge. Chúng tôi cung cấp các dịch vụ du lịch đa dạng và chất
+            lượng cao.Với niềm đam mê du lịch, ưa khám phá, chúng tôi đã cùng
+            nhau xây dựng một website – nơi mà khách hàng sẽ dễ dàng lựa chọn
+            cho mình cũng như những người thân yêu chuyến nghỉ dưỡng đáng nhớ.
+          </p>
+        </Section>
+
+        <Section>
+          <Title>2. Tại sao chọn chúng tôi?</Title>
+          <Row className="g-4">
+            {features.map((feature, index) => (
+              <Col md={6} key={index}>
+                <FeatureCard>
+                  <Card.Body>
+                    <IconCircle>{feature.icon}</IconCircle>
+                    <Card.Title className="fw-bold">{feature.title}</Card.Title>
+                    <Card.Text>{feature.text}</Card.Text>
+                  </Card.Body>
+                </FeatureCard>
+              </Col>
+            ))}
+          </Row>
+        </Section>
+
+        <Section>
+          <Title>3. Sản phẩm dịch vụ</Title>
+          <ul style={{ fontSize: "20px", lineHeight: "2" }}>
+            <li>
+              <strong>Đặt phòng khách sạn và resort:</strong> Hệ thống khách sạn
+              và resort cao cấp, đáp ứng mọi nhu cầu lưu trú.
+            </li>
+            <li>
+              <strong>Ẩm thực:</strong> Dịch vụ ẩm thực đa dạng, từ món ăn địa
+              phương đến ẩm thực quốc tế.
+            </li>
+            <li>
+              <strong>Spa & Massage:</strong> Trải nghiệm thư giãn với các liệu
+              pháp spa chuyên nghiệp.
+            </li>
+            <li>
+              <strong>Dịch vụ giặt ủi:</strong> Giặt ủi nhanh chóng, sạch sẽ,
+              giúp bạn luôn có trang phục hoàn hảo.
+            </li>
+            <li>
+              <strong>Tour du lịch:</strong> Các tour du lịch hấp dẫn, khám phá
+              những địa điểm tuyệt đẹp.
+            </li>
+          </ul>
+        </Section>
+
+        <Section>
+          <Title>4. Liên hệ với chúng tôi</Title>
+          <FeatureCard style={{ width: "70%", fontSize: "20px" }}>
+            <Card.Body>
+              <ContactInfo style={{ fontSize: "16px" }}>
+                <strong>Công ty TNHH Du lịch và Dịch vụ Golodge</strong>
+                <br />
+                Địa chỉ: Phòng 321, Tòa nhà Beta, Đại học FPT Hà Nội, Thạch Hòa,
+                Thạch Thất, Hà Nội
+                <br />
+                Điện thoại: 022222222
+                <br />
+                Email: Golodge@gmail.com
+              </ContactInfo>
+            </Card.Body>
+          </FeatureCard>
+        </Section>
       </Container>
-    </div>
+    </Container>
   );
 };
 
-export default AboutUs;
+export default AboutUS;
