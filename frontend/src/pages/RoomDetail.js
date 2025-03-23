@@ -1,53 +1,53 @@
-import { Form, Input, Rate, Space } from "antd";
-import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Badge, Button, Card, Carousel, Col, Container, ProgressBar, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Form, Input, Rate, Space } from "antd"
+import "bootstrap/dist/css/bootstrap.min.css"
+import { useContext, useEffect, useRef, useState } from "react"
+import { Badge, Button, Card, Carousel, Col, Container, ProgressBar, Row } from "react-bootstrap"
+import { Link } from "react-router-dom"
 import { RoomContext } from "../context/RoomContext"; // Using RoomContext to fetch data
 
 const RoomDetail = () => {
-  const roomId = localStorage.getItem("roomId"); // Get roomId from localStorage
-  console.log("Received roomId:", roomId); // Log roomId immediately
+  const roomId = localStorage.getItem("roomId") // Get roomId from localStorage
+  console.log("Received roomId:", roomId) // Log roomId immediately
 
-  const { roomDetails, loading, error, getRoomDetails } = useContext(RoomContext); // Fetch roomDetails from RoomContext
+  const { roomDetails, loading, error, getRoomDetails } = useContext(RoomContext) // Fetch roomDetails from RoomContext
 
-  const [review, setReview] = useState({ name: "", email: "", phone: "", rating: 0, comment: "" });
-  const [form] = Form.useForm();
+  const [review, setReview] = useState({ name: "", email: "", phone: "", rating: 0, comment: "" })
+  const [form] = Form.useForm()
 
-  const hasLogged = useRef(false);
+  const hasLogged = useRef(false)
   useEffect(() => {
     if (!hasLogged.current) {
-      console.log("Log roomId once:", roomId); // Log roomId only once during the first render
-      hasLogged.current = true; // Set to true after the first log
+      console.log("Log roomId once:", roomId) // Log roomId only once during the first render
+      hasLogged.current = true // Set to true after the first log
     }
 
     if (roomId) {
-      getRoomDetails(roomId); // Fetch room details when roomId changes
+      getRoomDetails(roomId) // Fetch room details when roomId changes
     }
-  }, [roomId]);
+  }, [roomId])
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setReview({ ...review, [name]: value });
-  };
+    const { name, value } = e.target
+    setReview({ ...review, [name]: value })
+  }
 
   const onFinish = (values) => {
-    console.log('Form Values:', values);
-  };
+    console.log("Form Values:", values)
+  }
 
   if (loading) {
-    return <div>Đang tải dữ liệu...</div>;
+    return <div>Đang tải dữ liệu...</div>
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div>{error}</div>
   }
 
   if (!roomDetails) {
-    return <div>Không tìm thấy phòng</div>;
+    return <div>Không tìm thấy phòng</div>
   }
 
-  const { TextArea } = Input;
+  const { TextArea } = Input
 
   const styles = {
     titlecontainer: {
@@ -78,29 +78,38 @@ const RoomDetail = () => {
     ratingContainer: {
       borderRadius: "20px",
       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      width: "100%",
+      maxWidth: "800px",
+      margin: "auto",
+      height: "auto",
     },
     ratingCardBody: {
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
       gap: "48px",
+      padding: "20px"
     },
     reviewCard: {
       borderRadius: "20px",
       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      width: "100%",
+      maxWidth: "800px",
+      margin: "auto",
+      height: "auto",
     },
     reviewCardBody: {
       padding: "16px",
     },
-  };
-  const formattedPrice = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-}).format(roomDetails?.price || 0);
- const comments = roomDetails?.comments?.[0]; // Get the first comment object
-  const reviews = comments?.reviews || []; // Get reviews from the first comment or set to an empty array if not available
-  const starRatings = comments?.starRatings || []; // Get starRatings
-  const totalReviews = comments?.total || 0;
+  }
+  const formattedPrice = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(roomDetails?.price || 0)
+  const comments = roomDetails?.comments?.[0] // Get the first comment object
+  const reviews = comments?.reviews || [] // Get reviews from the first comment or set to an empty array if not available
+  const starRatings = comments?.starRatings || [] // Get starRatings
+  const totalReviews = comments?.total || 0
   return (
     <Container className="mt-4">
       <Row className="align-items-center">
@@ -108,7 +117,7 @@ const RoomDetail = () => {
           <h2 className="fw-bold">{roomDetails?.name || "Loading..."}</h2>
           <div style={styles.titlecontainer}>
             <Badge bg="warning-subtle" text="dark">
-              ⭐ {comments.rating || 0} ({comments?.total } đánh giá)
+              ⭐ {comments.rating || 0} ({comments?.total} đánh giá)
             </Badge>
             <Badge className="ms-2" bg="info-subtle" text="dark">
               📍 {roomDetails?.location || "Loading..."} | <Link>Xem bản đồ và lịch trình</Link>
@@ -123,19 +132,17 @@ const RoomDetail = () => {
       <Row className="mt-3">
         <Col>
           <Carousel>
-            {roomDetails?.images?.length > 0 ? roomDetails?.images?.map((image, index) => (
-              <Carousel.Item key={index}>
-                <img
-                  className="d-block w-100 rounded"
-                  src={image}
-                  alt={`Slide ${index + 1}`}
-                />
-              </Carousel.Item>
-            )) : (
+            {roomDetails?.images?.length > 0 ? (
+              roomDetails?.images?.map((image, index) => (
+                <Carousel.Item key={index}>
+                  <img className="d-block w-100 rounded" src={image || "/placeholder.svg"} alt={`Slide ${index + 1}`} />
+                </Carousel.Item>
+              ))
+            ) : (
               <Carousel.Item>
                 <img
                   className="d-block w-100 rounded"
-                  src={roomDetails.images[0]}
+                  src={roomDetails.images[0] || "/placeholder.svg"}
                   alt="Slide default"
                 />
               </Carousel.Item>
@@ -175,43 +182,46 @@ const RoomDetail = () => {
           <Card className="mt-3 p-3" style={styles.ratingContainer}>
             <Card.Body style={styles.ratingCardBody}>
               {/* Hiển thị điểm trung bình với biểu tượng sao */}
-              <div className="d-flex flex-column align-items-center">
-                <h2 className="fw-bold text-warning">
-                  {comments?.rating?.toFixed(2) || 0}
+              <div className="d-flex align-items-center">
+                <h2 className="fw-bold text-warning" style={{ fontSize: "36px", color: "#FF9800" }}>
+                  {comments?.rating?.toFixed(2) || "4.92"}
                 </h2>
                 <div>
-                  {[...Array(5)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={i < Math.round(comments?.rating) ? "text-warning" : "text-secondary"}
-                      style={{ fontSize: "1.5rem" }}
-                    >
-                      ⭐
-                    </span>
-                  ))}
+                  <span className="text-warning" style={{ fontSize: "24px" }}>
+                    ⭐
+                  </span>
                 </div>
-                <p className="text-muted">
-                  ({comments?.rating?.toFixed(2) || 0} đánh giá)
-                </p>
               </div>
 
               {/* Hiển thị chi tiết số lượng đánh giá từng sao */}
-              {comments.length > 0 && (
-        <div>
-          {comments.starRatings.map((count, i) => (
-                                    <div key={i} className="d-flex align-items-center">
-                                        <span className="text-primary">{i + 1} sao</span>
-                                        <ProgressBar
-                                            now={(count / totalReviews) * 100}
-                                            className="flex-grow-1 mx-2"
-                                            variant={count > 0 ? "warning" : "light"}
-                                            style={{ height: "8px", borderRadius: "10px" }}
-                                        />
-                                        <span className="text-muted">{count} đánh giá</span>
-                                    </div>
-                                ))}
-        </div>
-      )}
+              <div className="flex-grow-1" style={{ maxWidth: "500px", width: "100%",height: "auto" }}>
+                {[1, 2, 3, 4, 5].map((star) => {
+                  // Find the corresponding star rating or default to 0
+                  const ratingCount = starRatings[star - 1] || 0
+
+                  return (
+                    <div key={star} className="d-flex align-items-center mb-2">
+                      <span className="text-primary me-2" style={{ width: "70px", color: "#3F51B5" }}>
+                        {star} sao
+                      </span>
+                      <ProgressBar
+                        now={ratingCount > 0 ? 100 : 0}
+                        className="flex-grow-1 mx-2"
+                        variant={ratingCount > 0 ? "warning" : "light"}
+                        style={{
+                          height: "8px",
+                          borderRadius: "10px",
+                          backgroundColor: "#f0f0f0",
+                          width: "100%",
+                        }}
+                      />
+                      <span className="text-muted ms-2" style={{ width: "130px" }}>
+                        {ratingCount} đánh giá
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
             </Card.Body>
           </Card>
 
@@ -220,7 +230,9 @@ const RoomDetail = () => {
               <Card.Body style={styles.reviewCardBody}>
                 <h5>{review?.name || "Anonymous"}</h5>
                 {[...Array(review?.rating || 0)].map((_, i) => (
-                  <span key={i} className="text-warning">⭐</span>
+                  <span key={i} className="text-warning">
+                    ⭐
+                  </span>
                 ))}
                 <p>{review?.comment || "No comment"}</p>
                 <small className="text-muted">{review?.date || "Unknown date"}</small>
@@ -230,64 +242,59 @@ const RoomDetail = () => {
         </Col>
       </Row>
 
-      <div style={{ maxWidth: "700px", margin: 'auto', padding: '20px' }}>
-        <Form
-          form={form}
-          name="feedback-form"
-          onFinish={onFinish}
-          layout="vertical"
-        > 
-         <div className ="form-info" style={{display:"flex", textAlign:"center", justifyContent:"space-evenly"}}>
-          <Row gutter={16} style={{ paddingRight: "10px" }}>
-            <Col lg={12} md={12} xs={24} style={{ paddingRight: "5px" }}>
-              <Form.Item
-                label="Chất lượng"
-                name="rating"
-                rules={[{ required: true, message: 'Vui lòng đánh giá chất lượng!' }]}
-              >
-                <Rate />
-              </Form.Item>
-            </Col>
+      <div style={{ maxWidth: "800px", margin: "auto", padding: "20px" }}>
+        <Form form={form} name="feedback-form" onFinish={onFinish} layout="vertical">
+          <div className="form-info" style={{ display: "flex", textAlign: "center", justifyContent: "space-evenly" }}>
+            <Row gutter={16} style={{ paddingRight: "10px" }}>
+              <Col lg={12} md={12} xs={24} style={{ paddingRight: "5px" }}>
+                <Form.Item
+                  label="Chất lượng"
+                  name="rating"
+                  rules={[{ required: true, message: "Vui lòng đánh giá chất lượng!" }]}
+                >
+                  <Rate />
+                </Form.Item>
+              </Col>
 
-            <Col lg={12} md={12} xs={24}>
-              <Form.Item
-                label="Họ và tên"
-                name="name"
-                rules={[{ required: true, message: 'Vui lòng nhập họ và tên của bạn!' }]}
-              >
-                <Input placeholder="Nhập họ và tên" />
-              </Form.Item>
-            </Col>
-          </Row>
+              <Col lg={12} md={12} xs={24}>
+                <Form.Item
+                  label="Họ và tên"
+                  name="name"
+                  rules={[{ required: true, message: "Vui lòng nhập họ và tên của bạn!" }]}
+                >
+                  <Input placeholder="Nhập họ và tên" />
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Row gutter={16}>
-            <Col lg={12} md={12} xs={24}>
-              <Form.Item
-                label="Số điện thoại"
-                name="phone"
-                rules={[{ required: true, message: 'Vui lòng nhập số điện thoại của bạn!' }]}
-              >
-                <Input placeholder="Nhập số điện thoại" />
-              </Form.Item>
-            </Col>
+            <Row gutter={16}>
+              <Col lg={12} md={12} xs={24}>
+                <Form.Item
+                  label="Số điện thoại"
+                  name="phone"
+                  rules={[{ required: true, message: "Vui lòng nhập số điện thoại của bạn!" }]}
+                >
+                  <Input placeholder="Nhập số điện thoại" />
+                </Form.Item>
+              </Col>
 
-            <Col lg={12} md={12} xs={24}>
-              <Form.Item
-                label="Địa chỉ email"
-                name="email"
-                rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
-              >
-                <Input placeholder="Nhập email" />
-              </Form.Item>
-            </Col>
-          </Row>
+              <Col lg={12} md={12} xs={24}>
+                <Form.Item
+                  label="Địa chỉ email"
+                  name="email"
+                  rules={[{ required: true, message: "Vui lòng nhập email của bạn!" }]}
+                >
+                  <Input placeholder="Nhập email" />
+                </Form.Item>
+              </Col>
+            </Row>
           </div>
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
                 label="Đánh giá của bạn"
                 name="comment"
-                rules={[{ required: true, message: 'Vui lòng nhập ý kiến của bạn!' }]}
+                rules={[{ required: true, message: "Vui lòng nhập ý kiến của bạn!" }]}
               >
                 <TextArea rows={4} placeholder="Nhập yêu cầu của bạn" />
               </Form.Item>
@@ -295,7 +302,7 @@ const RoomDetail = () => {
           </Row>
 
           <Form.Item>
-            <Space style={{ display: 'flex', justifyContent: 'center' }}>
+            <Space style={{ display: "flex", justifyContent: "center" }}>
               <Button type="primary" htmlType="submit">
                 Gửi
               </Button>
@@ -304,7 +311,8 @@ const RoomDetail = () => {
         </Form>
       </div>
     </Container>
-  );
-};
+  )
+}
 
-export default RoomDetail;
+export default RoomDetail
+

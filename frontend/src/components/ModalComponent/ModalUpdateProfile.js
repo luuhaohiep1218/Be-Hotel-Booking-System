@@ -1,5 +1,5 @@
+import { Button, Form, Input, message, Modal } from "antd";
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, message } from "antd";
 import API, { refreshAccessToken } from "../../utils/axiosInstance";
 
 const ModalUpdateProfile = ({
@@ -31,14 +31,14 @@ const ModalUpdateProfile = ({
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      console.log("✅ Cập nhật thành công:", response.data);
       message.success("Hồ sơ cập nhật thành công! 🎉");
 
-      setUser(response.data); // ✅ Cập nhật state user
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...response.data,
+      }));
       setIsModalUpdateProfile(false); // ✅ Đóng modal
     } catch (error) {
-      console.error("❌ Lỗi cập nhật hồ sơ:", error);
-
       if (error.response?.status === 401) {
         console.log("🔄 Token hết hạn, thử refresh...");
         const newToken = await refreshAccessToken();

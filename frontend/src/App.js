@@ -10,43 +10,42 @@ import { routes } from "./routers/index";
 
 const App = () => {
   return (
-       <HotelBookingProvider>
-        <RoomProvider>
-          <div className="App">
-            <Router>
-              <Routes>
-                {routes.map((route) => {
-                  const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-
-                  return route.isPrivate ? (
-                    <Route
-                      key={route.path}
-                      path={route.path}
-                      element={
-                        <ProtectedRoute>
-                          <Layout>
-                            <route.page />
-                          </Layout>
-                        </ProtectedRoute>
-                      }
-                    />
-                  ) : (
-                    <Route
-                      key={route.path}
-                      path={route.path}
-                      element={
+    <HotelBookingProvider>
+      <RoomProvider>
+        <div className="App">
+          <Router>
+            <Routes>
+              {routes.map((route) => {
+                const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+                return route.isPrivate ? (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={
+                      <ProtectedRoute allowedRoles={route.allowedRoles}>
                         <Layout>
                           <route.page />
                         </Layout>
-                      }
-                    />
-                  );
-                })}
-              </Routes>
-            </Router>
-          </div>
-        </RoomProvider>
-      </HotelBookingProvider>
+                      </ProtectedRoute>
+                    }
+                  />
+                ) : (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={
+                      <Layout>
+                        <route.page />
+                      </Layout>
+                    }
+                  />
+                );
+              })}
+            </Routes>
+          </Router>
+        </div>
+      </RoomProvider>
+    </HotelBookingProvider>
   );
 };
 

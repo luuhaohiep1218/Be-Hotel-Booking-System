@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import styled from "styled-components";
-import {
-  BsGrid,
-  BsPerson,
-  BsPieChart,
-  BsNewspaper,
-  BsHeart,
-  BsBoxArrowRight,
-} from "react-icons/bs";
+import { BsGrid, BsBoxArrowRight } from "react-icons/bs";
+import { MdOutlineBedroomParent } from "react-icons/md";
+import { GrServices } from "react-icons/gr";
 import { useHotelBooking } from "../context/HotelBookingContext";
 
 const SidebarWrapper = styled.div`
@@ -64,6 +59,7 @@ const StyledLink = styled(Nav.Link)`
   text-decoration: none;
   font-size: 15px;
   transition: background 0.3s;
+  background-color: ${(props) => (props.isActive ? "#444" : "transparent")};
   &:hover {
     background-color: #444;
   }
@@ -78,22 +74,26 @@ const Label = styled.span`
   display: ${(props) => (props.isOpen ? "block" : "none")};
 `;
 
-const Sidebar = ({ onToggle }) => {
+const StaffSidebar = ({ onToggle }) => {
+  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
+
   const navigate = useNavigate();
 
-  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
-    onToggle(!isOpen); // Gửi trạng thái ra ngoài
+    onToggle(!isOpen);
   };
 
   const menuItems = [
-    { to: "/mktdashboard", icon: <BsGrid />, label: "Dashboard" },
-    { to: "/profile", icon: <BsPerson />, label: "User" },
-    { to: "/mktCustomerList", icon: <BsPieChart />, label: "Customer List" },
-    { to: "/mktpostlist", icon: <BsNewspaper />, label: "Post List" },
-    { to: "/mktfeedbacklist", icon: <BsHeart />, label: "Feedback" },
+    { to: "/staff-dashboard", icon: <BsGrid />, label: "Dashboard" },
+    { to: "/manage-service", icon: <GrServices />, label: "Manage Service" },
+    {
+      to: "/manage-room",
+      icon: <MdOutlineBedroomParent />,
+      label: "Manage Room",
+    },
   ];
   const handleLogout = async () => {
     try {
@@ -115,7 +115,11 @@ const Sidebar = ({ onToggle }) => {
       <StyledNav>
         {menuItems.map((item, index) => (
           <NavItem key={index}>
-            <StyledLink as={Link} to={item.to}>
+            <StyledLink
+              as={Link}
+              to={item.to}
+              isActive={location.pathname === item.to}
+            >
               <Icon>{item.icon}</Icon>
               <Label isOpen={isOpen}>{item.label}</Label>
             </StyledLink>
@@ -126,7 +130,7 @@ const Sidebar = ({ onToggle }) => {
             <Icon>
               <BsBoxArrowRight />
             </Icon>
-            <Label isOpen={isOpen}>Logout</Label>
+            <Label isOpen={isOpen}>Back to Home</Label>
           </StyledLink>
         </NavItem>
       </StyledNav>
@@ -134,4 +138,4 @@ const Sidebar = ({ onToggle }) => {
   );
 };
 
-export default Sidebar;
+export default StaffSidebar;
