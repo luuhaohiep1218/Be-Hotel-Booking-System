@@ -68,6 +68,14 @@ const StyledTable = styled(Table)`
   }
 `;
 
+
+const navbarStyle = {
+  position: "fixed",
+  zIndex: "100",
+  width: "100%",
+};
+
+
 const AdminManageAccount = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -219,28 +227,20 @@ const AdminManageAccount = () => {
     }
   };
 
-  const navbarStyle = {
-    position: "fixed",
-    zIndex: "100",
-    width: "100%",
+
+  const styles = {
+    adminTitle: {
+      display: "inline-block",
+      transition: "transform 0.3s ease-in-out",
+      transform: isSidebarOpen ? "translateX(200px)" : "translateX(0)",
+    },
+    animatedContainer: {
+      transition: "transform 0.3s ease-in-out",
+      transform: isSidebarOpen ? "translateX(200px)" : "translateX(0)",
+      width: isSidebarOpen ? "calc(100% - 300px)" : "100%",
+      marginLeft: "80px",
+    },
   };
-
-  const adminTitleStyle = {
-    display: "inline-block",
-    transition: "transform 0.3s ease-in-out", // Hiệu ứng mượt mà
-    transform: isSidebarOpen ? "translateX(200px)" : "translateX(0)", // Dịch sang phải khi mở sidebar
-  };
-
-  const AnimatedContainer = styled(Container)`
-    transition: transform 0.3s ease-in-out;
-    transform: ${({ isSidebarOpen }) =>
-      isSidebarOpen ? "translateX(200px)" : "translateX(0)"};
-    width: ${({ isSidebarOpen }) =>
-      isSidebarOpen ? "calc(100% - 300px)" : "100%"};
-    margin-left: ${({ isSidebarOpen }) =>
-      isSidebarOpen ? "80px" : "80px"};
-  `;
-
   return (
     <div maxwidth="1920px">
       <Sidebar onToggle={setIsSidebarOpen} />
@@ -249,7 +249,7 @@ const AdminManageAccount = () => {
           <Navbar.Brand
             href="#home"
             className="fs-3 fw-bold"
-            style={adminTitleStyle}
+            style={styles.adminTitle}
           >
             ADMIN PAGE
           </Navbar.Brand>
@@ -260,8 +260,8 @@ const AdminManageAccount = () => {
         </Container>
       </Navbar>
       <div style={{ height: "80px" }} />
-      <AnimatedContainer isSidebarOpen={isSidebarOpen}>
-        <StyledNavbar>
+      <Container style={styles.animatedContainer}>
+        <Navbar style={styles.styled}>
           <Nav variant="tabs" defaultActiveKey="ALL">
             {["ALL", "USER", "STAFF", "MARKETING"].map((role) => (
               <Nav.Item key={role}>
@@ -313,7 +313,7 @@ const AdminManageAccount = () => {
               </InputGroup>
             </Row>
           </SearchContainer>
-        </StyledNavbar>
+        </Navbar>
 
         <StyledTable striped bordered hover>
           <thead>
@@ -457,7 +457,7 @@ const AdminManageAccount = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </AnimatedContainer>
+      </Container>
     </div>
   );
 };
