@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import styled from "styled-components";
 import { BsGrid, BsBoxArrowRight } from "react-icons/bs";
-import { MdOutlineBedroomParent } from "react-icons/md";
+import { MdManageAccounts } from "react-icons/md";
 import { GrServices } from "react-icons/gr";
 import { useHotelBooking } from "../context/HotelBookingContext";
 
@@ -87,12 +87,12 @@ const AdminSlidebar = ({ onToggle }) => {
   };
 
   const menuItems = [
-    { to: "/staff-dashboard", icon: <BsGrid />, label: "Dashboard" },
-    { to: "/manage-service", icon: <GrServices />, label: "Manage Service" },
+    { to: "/admin-dashboard", icon: <BsGrid />, label: "Dashboard" },
+    { to: "/admin", icon: <MdManageAccounts />, label: "Manage Account" },
     {
-      to: "/manage-room",
-      icon: <MdOutlineBedroomParent />,
-      label: "Manage Room",
+      to: "/admin-service",
+      icon: <GrServices />,
+      label: "Manage Service",
     },
   ];
   const handleLogout = async () => {

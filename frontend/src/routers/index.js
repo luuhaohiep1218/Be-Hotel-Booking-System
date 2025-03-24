@@ -18,6 +18,8 @@ import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
 import VNPayReturn from "../pages/VnpayReturn";
 import AdminManageAccount from "../pages/AdminAccountPage";
+import AdminDashboard from "../pages/Admindashboard";
+import AdminServicePage from "../pages/AdminService";
 import FeedbackListPage from "../pages/MktFeedbackList";
 import ManageService from "../pages/ManageService";
 import StaffDashboard from "../pages/StaffDashboard";
@@ -148,6 +150,20 @@ export const routes = [
   {
     path: "/admin",
     page: AdminManageAccount,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-dashboard",
+    page: AdminDashboard,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-service",
+    page: AdminServicePage,
     isShowHeader: false,
     isPrivate: true,
     allowedRoles: ["ADMIN"],
