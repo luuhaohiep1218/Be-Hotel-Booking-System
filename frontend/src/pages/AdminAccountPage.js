@@ -339,6 +339,7 @@ const AdminManageAccount = () => {
                   <Button
                     variant="danger"
                     onClick={() => handleDelete(user._id)}
+                    style={{ marginLeft: "10px" }}
                   >
                     Delete
                   </Button>
