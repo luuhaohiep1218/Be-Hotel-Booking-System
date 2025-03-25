@@ -3,8 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import { useContext, useEffect, useRef, useState } from "react"
 import { Badge, Button, Card, Carousel, Col, Container, ProgressBar, Row } from "react-bootstrap"
 import { Link } from "react-router-dom"
+import RoomListForm from "../components/RoomListForm"
 import { RoomContext } from "../context/RoomContext"; // Using RoomContext to fetch data
-
 const RoomDetail = () => {
   const roomId = localStorage.getItem("roomId") // Get roomId from localStorage
   console.log("Received roomId:", roomId) // Log roomId immediately
@@ -164,14 +164,20 @@ const RoomDetail = () => {
           ))}
         </Col>
       </Row>
-
+      {/* nội dung chi tiết */}
       <Row className="mt-4">
         <Col md={8}>
           <h3 className="fw-bold">Giới thiệu</h3>
           <p>{roomDetails?.description || "Không có thông tin mô tả"}</p>
         </Col>
       </Row>
-
+      {/* Form đặt phòng */}
+      <h3 className="fw-bold mt-4">Danh sách phòng</h3>
+      <Row className = "d-flex justify-content-center"> 
+        <Col md={8}>
+          <RoomListForm />
+          </Col>
+      </Row>
       {/* Đánh giá */}
       <Row className="mt-4" style={styles.feedback}>
         <Col>

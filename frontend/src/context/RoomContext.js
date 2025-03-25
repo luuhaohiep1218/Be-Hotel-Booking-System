@@ -35,14 +35,14 @@ export const RoomProvider = ({ children }) => {
   useEffect(() => {
     fetchRooms();
   }, []);
- const roomId = localStorage.getItem("roomId"); // Get roomId from localStorage
 
-useEffect(() => {
-  if (roomId && !roomDetails) {
-    getRoomDetails(roomId); // Only fetch if roomDetails are not already available
-  }
-}, [roomId, roomDetails]); // Add roomDetails as a dependency to avoid re-fetching if already loaded
+  const roomId = localStorage.getItem("roomId"); // Get roomId from localStorage
 
+  useEffect(() => {
+    if (roomId && !roomDetails) {
+      getRoomDetails(roomId); // Only fetch if roomDetails are not already available
+    }
+  }, [roomId, roomDetails]); // Add roomDetails as a dependency to avoid re-fetching if already loaded
 
   const handleFilterRooms = useCallback(
     (filters) => {
@@ -63,9 +63,9 @@ useEffect(() => {
           (filters.status === "" || room.status === filters.status) &&
           (filters.beds === "" || room.beds >= parseInt(filters.beds)) &&
           (filters.price === "" ||
-            (filters.price === "<500000000" && room.price < 5000000) ||
-            (filters.price === "500000000-3000000000" && room.price >= 5000000 && room.price <= 3000000) ||
-            (filters.price === ">3000000000" && room.price > 30000000))
+            (filters.price === "<500" && room.price < 500) ||
+            (filters.price === "500-3000" && room.price >= 500 && room.price <= 3000) ||
+            (filters.price === ">3000" && room.price > 3000))
         );
       });
 
@@ -74,21 +74,66 @@ useEffect(() => {
     },
     [rooms]
   );
-   
-  const getRoomDetails = async (roomId) => {
-  try {
-    const response = await API.get(`/room/${roomId}`);
-    console.log(response.data);  // Log the response to inspect its structure
-    setRoomDetails(response.data.room); // Update this line based on the actual response structure
-  } catch (error) {
-    console.error("Error fetching room details:", error);
-    setError("Không thể lấy thông tin phòng");
-  }
-};
 
+  const getRoomDetails = async (roomId) => {
+    try {
+      const response = await API.get(`/room/${roomId}`);
+      console.log(response.data); // Log the response to inspect its structure
+      setRoomDetails(response.data.room); // Update this line based on the actual response structure
+    } catch (error) {
+      console.error("Error fetching room details:", error);
+      setError("Không thể lấy thông tin phòng");
+    }
+  };
+
+  // Increment room count by 1
+  const incrementRoom = (roomId) => {
+    setRooms((prevRooms) =>
+      prevRooms.map((room) =>
+        room.id === roomId ? { ...room, count: room.count + 1 } : room
+      )
+    );
+  };
+
+  // Decrement room count by 1 (prevent going below 0)
+  const decrementRoom = (roomId) => {
+    setRooms((prevRooms) =>
+      prevRooms.map((room) =>
+        room.id === roomId && room.count > 0
+          ? { ...room, count: room.count - 1 }
+          : room
+      )
+    );
+  };
+
+  // Reset all room counts to 0
+  const resetSelections = () => {
+    setRooms((prevRooms) =>
+      prevRooms.map((room) => ({ ...room, count: 0 }))
+    );
+  };
+
+  // Calculate total price of selected rooms
+  const totalPrice = rooms.reduce((total, room) => {
+    return total + room.price * room.count;
+  }, 0);
 
   return (
-    <RoomContext.Provider value={{ rooms, filteredRooms, loading, error,roomDetails, handleFilterRooms,  getRoomDetails }}>
+    <RoomContext.Provider
+      value={{
+        rooms,
+        filteredRooms,
+        loading,
+        error,
+        roomDetails,
+        handleFilterRooms,
+        getRoomDetails,
+        incrementRoom,
+        decrementRoom,
+        resetSelections,
+        totalPrice,
+      }}
+    >
       {children}
     </RoomContext.Provider>
   );

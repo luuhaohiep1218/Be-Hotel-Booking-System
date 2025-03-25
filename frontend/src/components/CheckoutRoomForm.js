@@ -138,6 +138,7 @@ const CheckoutRoomForm = () => {
       const bookingData = {
         userId: user._id,
         rooms: formattedRooms,
+        roomNumber: "",
         checkIn: formData.checkIn.format("YYYY-MM-DD"),
         checkOut: formData.checkOut.format("YYYY-MM-DD"),
         price: totalPrice,
