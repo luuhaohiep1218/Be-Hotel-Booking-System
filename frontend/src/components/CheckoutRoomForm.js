@@ -22,6 +22,7 @@ const CheckoutRoomForm = () => {
     fullName: user?.full_name || "",
     email: user?.email || "",
     phone: user?.phone || "",
+    roomNumber: "",
     paymentMethod: "counter",
     notes: "",
     checkIn: location.state?.checkIn ? dayjs(location.state.checkIn) : null,
@@ -152,7 +153,6 @@ const handleBookingSuccess = async () => {
     const bookingData = {
       userId: user._id,
       rooms: formattedRooms,
-      roomNumber: "",
       checkIn: formData.checkIn.format("YYYY-MM-DD"),
       checkOut: formData.checkOut.format("YYYY-MM-DD"),
       price: totalPrice,

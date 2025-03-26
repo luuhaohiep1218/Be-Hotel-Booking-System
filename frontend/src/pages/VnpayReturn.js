@@ -51,7 +51,6 @@ const VnpayReturn = () => {
           userId: user._id,
           type: "room",
           rooms: formattedRooms,
-          roomNumber: "",
           checkIn: formData.checkIn || "",
           checkOut: formData.checkOut || "",
           price: amount / 100,

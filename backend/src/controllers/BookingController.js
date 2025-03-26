@@ -139,7 +139,6 @@ const bookRoom = asyncHandler(async (req, res) => {
     if (paymentMethod === "vnpay") {
       paymentStatus = "paid"; // ✅ Chỉ cập nhật nếu VNPay xác nhận
     }
-
     // 🛑 Chặn đặt phòng trùng nếu user đã đặt cùng thời gian
     const duplicateBooking = await Booking.findOne({ userId, checkIn, checkOut, rooms: roomDetails });
     if (duplicateBooking) {
@@ -172,9 +171,6 @@ const bookRoom = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Lỗi hệ thống", error: error.message });
   }
 });
-
-
-
 
     // Xử lý trạng thái ban đầu dựa trên phương thức thanh toán
 const handleVnPayReturn = asyncHandler(async (req, res) => {

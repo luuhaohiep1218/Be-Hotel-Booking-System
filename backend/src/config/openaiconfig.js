@@ -2,7 +2,7 @@ require("dotenv").config();
 const axios = require("axios");
 
 const customPrompt = {
-  "cô Thùy có xinh đẹp k": "Cô Thùy xinh đẹp như một đóa hoa, cô còn tuyệt vời hơn nữa nếu dự án GoLodge của bọn e 10 điểm",
+  "chào": "Chào bạn! Mình có thể giúp gì cho bạn?",
   "đặt phòng": `Bạn hãy làm theo các bước sau 
   B1: ấn vô nút đặt phòng trên trang web. 
   B2: Chọn phòng và số lượng phòng bạn mong muốn và ấn đặt ngay. 
@@ -10,7 +10,9 @@ const customPrompt = {
   B4: Bạn hãy kiểm tra lại hóa đơn xem trước sau đó chọn phương thức thanh toán.
   B5: Ấn đặt phòng và trải nghiệm những dịch vụ tuyệt vời chúng tôi mang lại cho bạn.`,
   "Gợi ý phòng": "Bạn hãy đọc mô tả các phòng của chúng tôi để lựa chọn phòng theo giá tiền và nhu cầu cá nhân của bạn nha! Chúc bạn có kỳ nghỉ dưỡng tuyệt vời!",
-  "Phòng rẻ nhất": "Hiện tại phòng rẻ nhất của chúng tôi đang là Standard Room"
+  "Phòng rẻ nhất": "Hiện tại phòng rẻ nhất của chúng tôi đang là Standard Room",
+  "Phòng đắt nhất": "Hiện tại phòng đắt nhất của chúng tôi đang là Luxury Room",
+  "Phòng nào đẹp nhất": "Tất cả các phòng đều được thiết kế và trang trí rất đẹp, bạn có thể xem mô tả của từng phòng để chọn phòng phù hợp với nhu cầu của mình nhé!",
 };
 
 const API_URL = "https://api.openai.com/v1/chat/completions";
