@@ -356,9 +356,9 @@ const ServicePage = () => {
           <Row>
             {services.map((service) => (
               <Col key={service._id} xs={12} sm={6} lg={4} className="mb-4">
-                <Link to={`/service/${service._id}`} style={{ textDecoration: "none" }}>
-                  <Card style={styles.card}>
-                    <div style={styles.imageContainer}>
+                <Card style={styles.card}>
+                  <div style={styles.imageContainer}>
+                    <Link to={`/service/${service._id}`} style={{ textDecoration: "none" }}>
                       <Card.Img
                         style={styles.image}
                         variant="top"
@@ -366,28 +366,30 @@ const ServicePage = () => {
                         alt={service.title}
                       />
                       <div style={styles.ratingBadge}>{service.rating}</div>
-                    </div>
-                    <Card.Body>
+                    </Link>
+                  </div>
+                  <Card.Body>
+                    <Link to={`/service/${service._id}`} style={{ textDecoration: "none", color: 'inherit' }}>
                       <Card.Title style={styles.title}>
                         {service.title}
                       </Card.Title>
                       <Card.Text style={styles.details}>
                         {service.summary}
                       </Card.Text>
-                      <div style={styles.footer}>
-                        <span style={styles.price}>
-                          {parsePrice(service.price)}đ
-                        </span>
-                        <Button
-                          style={styles.button}
-                          onClick={() => handleSelectedService(service)}
-                        >
-                          Đặt ngay
-                        </Button>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Link>
+                    </Link>
+                    <div style={styles.footer}>
+                      <span style={styles.price}>
+                        {parsePrice(service.price)}đ
+                      </span>
+                      <Button
+                        style={styles.button}
+                        onClick={() => handleSelectedService(service)}
+                      >
+                        Đặt ngay
+                      </Button>
+                    </div>
+                  </Card.Body>
+                </Card>
               </Col>
             ))}
           </Row>

@@ -162,18 +162,6 @@ const ManageRoom = () => {
       key: "quantityLeft",
     },
     {
-      title: "Dịch vụ của phòng",
-      dataIndex: "services",
-      key: "services",
-      render: (services) => (
-        <ul style={{ listStyleType: "disc", paddingLeft: "20px", margin: 0 }}>
-          {services.map((service, index) => (
-            <li key={index}>{service}</li>
-          ))}
-        </ul>
-      ),
-    },
-    {
       title: "Hành động",
       key: "actions",
       render: (_, record) => (
