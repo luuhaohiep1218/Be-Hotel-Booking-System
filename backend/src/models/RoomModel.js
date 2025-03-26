@@ -25,7 +25,7 @@ const RoomSchema = new mongoose.Schema(
     images: { type: [String], required: true },
     price: { type: Number, required: true },
 
-    status: { type: String, required: true, enum: ["trống", "hết phòng"] },// thay đổi thành hết phòng để hiển thị trên giao diện
+    status: { type: String, required: true, enum: ["Trống", "Hết phòng"] },// thay đổi thành hết phòng để hiển thị trên giao diện
     isActive: { type: Boolean, default: true },
     quantity: { type: Number, required: true, default: 1 }, // Số
     // Số lượng phòng còn lại
