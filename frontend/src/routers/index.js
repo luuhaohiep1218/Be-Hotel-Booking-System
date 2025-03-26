@@ -1,4 +1,7 @@
 import AboutUs from "../pages/AboutUsPage";
+import AdminManageAccount from "../pages/AdminAccountPage";
+import AdminDashboard from "../pages/Admindashboard";
+import AdminServicePage from "../pages/AdminService";
 import AllNewsPage from "../pages/AllNewsPage";
 import CheckoutPage from "../pages/CheckOutPage";
 import FeedbackDetail from "../pages/FeedBackDetail";
@@ -6,22 +9,21 @@ import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
-import ServiceDetail from "../pages/ServiceDetail";
+import ManageRoom from "../pages/ManageRoom";
+import ManageService from "../pages/ManageService";
 import Mktdashboard from "../pages/MktDashboard";
+import FeedbackListPage from "../pages/MktFeedbackList";
 import MktCustomerList from "../pages/MktListCustomer";
 import MktPostList from "../pages/MktPostList";
 import NewsDetail from "../pages/NewsDetail";
 import ProfilePage from "../pages/ProfilePage";
 import RoomDetail from "../pages/RoomDetail";
 import RoomListPage from "../pages/RoomListPage";
+import ServiceDetail from "../pages/ServiceDetail";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
-import VNPayReturn from "../pages/VnpayReturn";
-import AdminManageAccount from "../pages/AdminAccountPage";
-import FeedbackListPage from "../pages/MktFeedbackList";
-import ManageService from "../pages/ManageService";
 import StaffDashboard from "../pages/StaffDashboard";
-import ManageRoom from "../pages/ManageRoom";
+import VNPayReturn from "../pages/VnpayReturn";
 
 export const routes = [
   {
@@ -128,7 +130,7 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path: "room-detail/:roomId",
+    path: "room/:roomName",
     page: RoomDetail,
     isShowHeader: true,
     isPrivate: false,
@@ -148,6 +150,20 @@ export const routes = [
   {
     path: "/admin",
     page: AdminManageAccount,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-dashboard",
+    page: AdminDashboard,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-service",
+    page: AdminServicePage,
     isShowHeader: false,
     isPrivate: true,
     allowedRoles: ["ADMIN"],

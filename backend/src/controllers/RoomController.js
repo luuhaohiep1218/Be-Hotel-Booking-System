@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Room = require("../models/RoomModel");
 const aqp = require("api-query-params");
+const { default: mongoose } = require("mongoose");
 
 const getListRooms = asyncHandler(async (req, res) => {
   try {
@@ -100,11 +101,13 @@ const createRoom = asyncHandler(async (req, res) => {
 
 const updateInfoRoom = asyncHandler(async (req, res) => {
   try {
-    const { id } = req.params;
-    const updateData = req.body;
+
+    const { _id } = req.params; // Lấy ID phòng từ URL
+    const updateData = req.body; // Dữ liệu cập nhật từ client
+
 
     // Kiểm tra phòng có tồn tại không
-    const room = await Room.findById(id);
+    const room = await Room.findById(_id);
     if (!room) {
       return res.status(404).json({ message: "Không tìm thấy phòng!" });
     }
@@ -157,5 +160,83 @@ const deleteRooms = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Lỗi hệ thống, vui lòng thử lại!" });
   }
 });
+// lấy thông tin chi tiết của các phòng 
+const getRoomDetailsById = asyncHandler(async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    console.log("Received roomId:", roomId);  // Log the roomId
 
-module.exports = { createRoom, updateInfoRoom, deleteRooms, getListRooms };
+    if (!mongoose.Types.ObjectId.isValid(roomId)) {
+      return res.status(400).json({ message: "Invalid room ID format!" });
+    }
+
+    const room = await Room.findById(roomId);
+    console.log("Room found:", room);  // Log the result from the database
+
+    if (!room) {
+      return res.status(404).json({ message: "Phòng không tồn tại!" });
+    }
+
+    res.status(200).json({
+      message: "Lấy thông tin phòng thành công!",
+      room,
+    });
+  } catch (error) {
+    console.error("🔥 Lỗi khi lấy thông tin phòng:", error);
+    res.status(500).json({ message: "Lỗi hệ thống, vui lòng thử lại!" });
+  }
+});
+
+const addReviewAndUpdateRating = asyncHandler(async (req, res) => {
+  try {
+    const { roomId } = req.params; // Lấy roomId từ URL
+    const { comment, rating, userId } = req.body; // Lấy comment, rating và userId từ request body
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!comment || !rating || !userId) {
+      return res.status(400).json({ message: "Vui lòng nhập bình luận, đánh giá và userId!" });
+    }
+
+    // Tìm phòng theo roomId
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: "Phòng không tồn tại!" });
+    }
+
+    // Thêm review vào mảng reviews của phòng
+    room.comments.reviews.push({ content: comment, rating, userId });
+
+    // Tính lại tổng số bình luận và tổng điểm rating
+    const totalComments = room.comments.reviews.length;
+    const totalRatings = room.comments.reviews.reduce((sum, review) => sum + review.rating, 0);
+
+    // Tính lại điểm trung bình (averageRating)
+    const averageRating = totalRatings / totalComments;
+
+    // Cập nhật lại rating và tổng bình luận
+    room.comments.rating = averageRating.toFixed(2); // Làm tròn đến 2 chữ số thập phân
+    room.comments.total = totalComments;
+
+    // Cập nhật starRatings array cho mỗi rating
+    room.starRatings[rating - 1] += 1; // Tăng số lượng đánh giá cho rating tương ứng (1 sao, 2 sao, ..., 5 sao)
+
+    // Lưu lại phòng với review mới và các giá trị đã cập nhật
+    await room.save();
+
+    // Trả về thông tin phòng đã cập nhật
+    res.status(200).json({
+      message: "Cập nhật bình luận và đánh giá thành công!",
+      averageRating: room.comments.rating, // Điểm trung bình
+      starRatings: room.starRatings,       // Số lượng đánh giá cho từng sao
+      totalComments: room.comments.total,  // Tổng số bình luận
+    });
+  } catch (error) {
+    console.error("Error when adding review and updating rating:", error);
+    res.status(500).json({ message: "Lỗi hệ thống, vui lòng thử lại!" });
+  }
+});
+
+
+
+
+module.exports = { createRoom, updateInfoRoom, deleteRooms, getListRooms, getRoomDetailsById, addReviewAndUpdateRating};

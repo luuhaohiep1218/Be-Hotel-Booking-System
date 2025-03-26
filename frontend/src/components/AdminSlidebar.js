@@ -1,14 +1,10 @@
 import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
-import {
-  BsBoxArrowRight,
-  BsGrid,
-  BsHeart,
-  BsNewspaper,
-  BsPieChart
-} from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { BsGrid, BsBoxArrowRight } from "react-icons/bs";
+import { MdManageAccounts } from "react-icons/md";
+import { GrServices } from "react-icons/gr";
 import { useHotelBooking } from "../context/HotelBookingContext";
 
 const SidebarWrapper = styled.div`
@@ -22,7 +18,7 @@ const SidebarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-top: 20px;
+  padding-top: 12px;
   color: white;
   overflow: hidden;
   z-index: 1000;
@@ -63,6 +59,7 @@ const StyledLink = styled(Nav.Link)`
   text-decoration: none;
   font-size: 15px;
   transition: background 0.3s;
+  background-color: ${(props) => (props.isActive ? "#444" : "transparent")};
   &:hover {
     background-color: #444;
   }
@@ -77,21 +74,26 @@ const Label = styled.span`
   display: ${(props) => (props.isOpen ? "block" : "none")};
 `;
 
-const Sidebar = ({ onToggle }) => {
+const AdminSlidebar = ({ onToggle }) => {
+  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
+
   const navigate = useNavigate();
 
-  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
-    onToggle(!isOpen); // Gửi trạng thái ra ngoài
+    onToggle(!isOpen);
   };
 
   const menuItems = [
-    { to: "/mktdashboard", icon: <BsGrid />, label: "Dashboard" },
-    { to: "/mktCustomerList", icon: <BsPieChart />, label: "Customer List" },
-    { to: "/mktpostlist", icon: <BsNewspaper />, label: "Post List" },
-    { to: "/mktfeedbacklist", icon: <BsHeart />, label: "Feedback" },
+    { to: "/admin-dashboard", icon: <BsGrid />, label: "Dashboard" },
+    { to: "/admin", icon: <MdManageAccounts />, label: "Manage Account" },
+    {
+      to: "/admin-service",
+      icon: <GrServices />,
+      label: "Manage Service",
+    },
   ];
   const handleLogout = async () => {
     try {
@@ -113,7 +115,11 @@ const Sidebar = ({ onToggle }) => {
       <StyledNav>
         {menuItems.map((item, index) => (
           <NavItem key={index}>
-            <StyledLink as={Link} to={item.to}>
+            <StyledLink
+              as={Link}
+              to={item.to}
+              isActive={location.pathname === item.to}
+            >
               <Icon>{item.icon}</Icon>
               <Label isOpen={isOpen}>{item.label}</Label>
             </StyledLink>
@@ -124,7 +130,7 @@ const Sidebar = ({ onToggle }) => {
             <Icon>
               <BsBoxArrowRight />
             </Icon>
-            <Label isOpen={isOpen}>Logout</Label>
+            <Label isOpen={isOpen}>Back to Home</Label>
           </StyledLink>
         </NavItem>
       </StyledNav>
@@ -132,4 +138,4 @@ const Sidebar = ({ onToggle }) => {
   );
 };
 
-export default Sidebar;
+export default AdminSlidebar;

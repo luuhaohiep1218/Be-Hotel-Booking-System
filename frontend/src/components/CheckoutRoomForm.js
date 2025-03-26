@@ -1,4 +1,4 @@
-import { Button, Card, DatePicker, Input, message, Radio } from "antd";
+import { Button, Card, DatePicker, Input, message, Modal, Radio } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import InvoiceCard from "../components/InvoiceCard";
 import { useHotelBooking } from "../context/HotelBookingContext";
+import FailedModal from "./ModalComponent/FailedModal";
 import SuccessModal from "./ModalComponent/SuccessModal";
 
 const CheckoutRoomForm = () => {
@@ -16,6 +17,7 @@ const CheckoutRoomForm = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bookingType, setBookingType] = useState("room");
+  const [isModalFailedVisible, setIsModalFailedVisible] = useState(false);
   const [formData, setFormData] = useState({
     fullName: user?.full_name || "",
     email: user?.email || "",
@@ -127,44 +129,62 @@ const CheckoutRoomForm = () => {
     }
   };
 
-  const handleBookingSuccess = async () => {
-    console.log("🟢 Gọi handleBookingSuccess");
-    try {
-      const formattedRooms = selectedRooms.map((room) => ({
-        roomId: room.roomId ? room.roomId.toString() : "",
-        quantity: room.count,
-      }));
-
-      const bookingData = {
-        userId: user._id,
-        rooms: formattedRooms,
-        checkIn: formData.checkIn.format("YYYY-MM-DD"),
-        checkOut: formData.checkOut.format("YYYY-MM-DD"),
-        price: totalPrice,
-        paymentMethod: formData.paymentMethod,
-        paymentStatus: formData.paymentMethod === "counter" ? "pending" : "paid",
-        notes: formData.notes,
-        status: "pending",
-      };
-
-      await axios.post("http://localhost:8000/api/booking/rooms", bookingData);
-      message.success("Đặt phòng thành công!");
-      navigate("/");
-    } catch (error) {
-      message.error("Lỗi khi lưu thông tin đặt phòng.");
+const handleBookingSuccess = async () => {
+  try {
+    // Filter out rooms with count <= 0
+    const validRooms = selectedRooms.filter((room) => room.count > 0);
+    // If no valid rooms, remove from localStorage and show an error
+    if (validRooms.length === 0) {
+      localStorage.removeItem("selectedRooms");
+      Modal.error({
+        title: "Lỗi",
+        content: "Không tìm thấy phòng nào để đặt.",
+      });
+      return;
     }
-  };
+    // Format the valid rooms for saving
+    const formattedRooms = validRooms.map((room) => ({
+      roomId: room.roomId ? room.roomId.toString() : "",
+      quantity: room.count,
+    }));
+    // Save valid rooms to localStorage
+    localStorage.setItem("selectedRooms", JSON.stringify(formattedRooms));
+    const bookingData = {
+      userId: user._id,
+      rooms: formattedRooms,
+      roomNumber: "",
+      checkIn: formData.checkIn.format("YYYY-MM-DD"),
+      checkOut: formData.checkOut.format("YYYY-MM-DD"),
+      price: totalPrice,
+      paymentMethod: formData.paymentMethod,
+      paymentStatus: formData.paymentMethod === "counter" ? "pending" : "paid",
+      notes: formData.notes,
+      status: "pending",
+      type: bookingType,
+    };
+    // Send the booking data to the server
+    await axios.post("http://localhost:8000/api/booking/rooms", bookingData);
+    
+    navigate("/");
+
+  } catch (error) {
+    message.error("Lỗi khi lưu thông tin đặt phòng.");
+  }
+};
 
   return (
     <Container>
       <Row>
         <Col md={6}>
           <Card title="Danh sách phòng đã đặt">
-            {selectedRooms.map((room, index) => (
+            {selectedRooms
+            .filter((room) => room.count > 0)
+            .map((room, index) => (
               <Card key={index} className="mb-4">
                 <div>
                   <h3>{room.name}</h3>
                   <p>Số lượng: {room.count}</p>
+                  
                   <p>Giá: {room.price.toLocaleString()} đ</p>
                   <p>Tổng: {(room.count * room.price).toLocaleString()} đ</p>
                 </div>
@@ -202,7 +222,7 @@ const CheckoutRoomForm = () => {
                 }
               }}
             />
-
+            <FailedModal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)} />
           </Card>
         </Col>
         <Col md={6}>

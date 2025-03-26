@@ -1,5 +1,5 @@
+import { Button, Form, Input, message, Modal } from "antd";
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, message } from "antd";
 import API, { refreshAccessToken } from "../../utils/axiosInstance";
 
 const ModalUpdateProfile = ({
