@@ -1,3 +1,4 @@
+import { message } from "antd";
 import React, { createContext, useCallback, useEffect, useState } from "react";
 import API from "../utils/axiosInstance";
 
@@ -78,7 +79,6 @@ export const RoomProvider = ({ children }) => {
   const getRoomDetails = async (roomId) => {
     try {
       const response = await API.get(`/room/${roomId}`);
-      console.log(response.data); // Log the response to inspect its structure
       setRoomDetails(response.data.room); // Update this line based on the actual response structure
     } catch (error) {
       console.error("Error fetching room details:", error);
@@ -117,6 +117,38 @@ export const RoomProvider = ({ children }) => {
   const totalPrice = rooms.reduce((total, room) => {
     return total + room.price * room.count;
   }, 0);
+ // updateCommentAndRating
+const updateCommentAndRating = async (roomId, reviewData) => {
+  try {
+    // Assuming you have a way to get the current logged-in user's ID (e.g., from session or token)
+    const userId = localStorage.getItem("userId"); // Example: Get userId from local storage (if logged in)
+
+    if (!userId) {
+    return message.error("Vui lòng đăng nhập để đánh giá!");
+    }
+
+    // Add userId to the review data
+    const dataWithUserId = { ...reviewData, userId };
+
+    // Sending the rating and comment along with userId to the backend
+    const response = await  API.post(`/room/${roomId}/comment`, dataWithUserId);
+    console.log("Response data:", response.data);
+
+    // Update the room details with the new star rating and total comments
+    setRoomDetails((prevDetails) => ({
+      ...prevDetails,
+      starRatings: response.data.starRating,
+      total: response.data.totalComments,
+    }));
+
+    // Optionally, show a success message
+    message.success("Cập nhật bình luận và đánh giá thành công!");
+  } catch (error) {
+    console.error("Error updating comment and rating:", error);
+    setError("Không thể cập nhật bình luận và đánh giá");
+  }
+};
+
 
   return (
     <RoomContext.Provider
@@ -131,6 +163,7 @@ export const RoomProvider = ({ children }) => {
         incrementRoom,
         decrementRoom,
         resetSelections,
+        updateCommentAndRating,
         totalPrice,
       }}
     >

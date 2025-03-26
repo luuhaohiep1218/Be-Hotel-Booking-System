@@ -255,9 +255,7 @@ const PlusIcon = () => (
   </svg>
 );
 
-// Main component
-
-// Styled components remain the same
+// Styled components (same as the previous ones)
 
 export default function RoomBookingForm() {
   const { rooms, loading, resetSelections } = useContext(RoomContext);
@@ -295,30 +293,31 @@ export default function RoomBookingForm() {
   }
 
   // Handle room quantity change (only update the clicked room's count)
-  const handleRoomChange = (roomId, price, maxQty, change) => {
+   const handleRoomChange = (roomId, price, maxQty, change) => {
     setSelectedRooms((prev) => {
-      const selectedRoom = prev[roomId]; // Get the selected room by roomId
-      console.log("room selected", selectedRoom);
-      if (!selectedRoom) return prev;
-    
-      const newCount = selectedRoom.count + change;
-      if (newCount < 0) return prev; // Prevent negative room count
+      const selectedRoom = rooms.find((r) => r._id === roomId); // Tìm đúng phòng
+      if (!selectedRoom) return prev; // Tránh lỗi nếu không tìm thấy phòng
+
+      const newCount = (prev[roomId]?.count || 0) + change;
+      if (newCount < 0) return prev;
       if (newCount > maxQty) {
         setError(`Số lượng phòng "${selectedRoom.name}" không đủ!`);
         return prev;
       }
 
-      setError(""); // Reset error message when count is valid
+      setError(""); // Xóa lỗi nếu số lượng hợp lệ
       return {
         ...prev,
         [roomId]: {
-          ...selectedRoom,
-          count: newCount, // Only update the clicked room's count
+          roomId: selectedRoom._id,
+          name: selectedRoom.name,
+          descriptions: selectedRoom.descriptions,
+          count: newCount,
+          price: price,
         },
       };
     });
   };
-
   const totalPrice = Object.values(selectedRooms).reduce(
     (sum, room) => sum + room.count * room.price,
     0
@@ -384,15 +383,15 @@ export default function RoomBookingForm() {
 
             <QuantityControl>
               <QuantityButton
-                onClick={() => handleRoomChange(room.id, room.price, room.quantityLeft, -1)}
-                disabled={(selectedRooms[room.id]?.count || 0) <= 0}
+                onClick={() => handleRoomChange(room._id, room.price, room.quantityLeft, -1)}
+                disabled={(selectedRooms[room._id]?.count || 0) <= 0}
               >
                 <MinusIcon />
               </QuantityButton>
-              <QuantityValue>{selectedRooms[room.id]?.count || 0}</QuantityValue>
+              <QuantityValue>{selectedRooms[room._id]?.count || 0}</QuantityValue>
               <QuantityButton
-                onClick={() => handleRoomChange(room.id, room.price, room.quantityLeft, 1)}
-                disabled={(selectedRooms[room.id]?.count || 0) >= room.quantityLeft}
+                onClick={() => handleRoomChange(room._id, room.price, room.quantityLeft, 1)}
+                disabled={(selectedRooms[room._id]?.count || 0) >= room.quantityLeft}
               >
                 <PlusIcon />
               </QuantityButton>
@@ -412,19 +411,17 @@ export default function RoomBookingForm() {
             variant="success"
             disabled={totalPrice === 0}
             onClick={() =>
-              navigate("/checkout", {
-                state: {
-                  selectedRooms: rooms
-                    .filter((room) => selectedRooms[room.id]?.count > 0)
-                    .map((room) => ({
-                      roomId: room.id,
-                      count: selectedRooms[room.id]?.count || 0,
-                      price: room.price,
-                      name: room.name,
-                    })),
-                  type: "room",
-                },
-              })
+             navigate('/checkout', {
+            state: {
+              selectedRooms: Object.values(selectedRooms).map((room) => ({
+                roomId: room.roomId,
+                count: room.count,
+                price: room.price,
+                name: room.name
+              })),
+              type: "room"
+            }
+          })
             }
           >
             Đặt ngay ({formatPrice(totalPrice)} đ)
@@ -435,3 +432,4 @@ export default function RoomBookingForm() {
     </Container>
   );
 }
+

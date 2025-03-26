@@ -9,7 +9,7 @@ const RoomDetail = () => {
   const roomId = localStorage.getItem("roomId") // Get roomId from localStorage
   console.log("Received roomId:", roomId) // Log roomId immediately
 
-  const { roomDetails, loading, error, getRoomDetails } = useContext(RoomContext) // Fetch roomDetails from RoomContext
+  const { roomDetails, loading, error, getRoomDetails, updateCommentAndRating } = useContext(RoomContext) // Fetch roomDetails from RoomContext
 
   const [review, setReview] = useState({ name: "", email: "", phone: "", rating: 0, comment: "" })
   const [form] = Form.useForm()
@@ -17,23 +17,38 @@ const RoomDetail = () => {
   const hasLogged = useRef(false)
   useEffect(() => {
     if (!hasLogged.current) {
-      console.log("Log roomId once:", roomId) // Log roomId only once during the first render
       hasLogged.current = true // Set to true after the first log
     }
 
     if (roomId) {
       getRoomDetails(roomId) // Fetch room details when roomId changes
+        console.log("Comments:", roomDetails?.comments);
     }
   }, [roomId])
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setReview({ ...review, [name]: value })
-  }
+ const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setReview({ ...review, [name]: value });
+  };
 
   const onFinish = (values) => {
-    console.log("Form Values:", values)
-  }
+    // Extract form values
+    const { name, phone, email, rating, comment } = values;
+    
+    // Prepare the data for updating
+    const reviewData = {
+      name,
+      phone,
+      email,
+      rating,
+      comment,
+    };
+
+    // Update the comment and recalculate the ratings and total comments
+    updateCommentAndRating(roomId, reviewData);
+  };
+
+
 
   if (loading) {
     return <div>Đang tải dữ liệu...</div>
@@ -106,7 +121,7 @@ const RoomDetail = () => {
     style: "currency",
     currency: "VND",
   }).format(roomDetails?.price || 0)
-  const comments = roomDetails?.comments?.[0] // Get the first comment object
+  const comments = roomDetails?.comments?.[0] || {} // Get the first comment object
   const reviews = comments?.reviews || [] // Get reviews from the first comment or set to an empty array if not available
   const starRatings = comments?.starRatings || [] // Get starRatings
   const totalReviews = comments?.total || 0

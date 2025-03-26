@@ -1,10 +1,10 @@
-import { React, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Card, Button, Carousel } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import API from "../utils/axiosInstance";
 import { Image } from "antd";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { React, useEffect, useState } from "react";
+import { Button, Card, Carousel, Col, Container, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import ModalBookingService from "../components/ModalComponent/ModalBookingService";
+import API from "../utils/axiosInstance";
 
 const styles = {
   card: {
@@ -330,14 +330,17 @@ const HomePage = () => {
                   <Card.Title
                     style={styles.tiroomName}
                   >{`${room.name.toUpperCase()}`}</Card.Title>
-                  <Card.Img
-                    src={room.image}
+                  {room.images.map((room) => (
+                    <Card.Img
+                    src={room.images?.[0]}
                     alt={room.name}
                     style={{
                       ...styles.roomImage,
                       ...(hoverIndex === room._id ? styles.roomImageHover : {}),
                     }}
                   ></Card.Img>
+                  ))}
+                  
                   <Card.ImgOverlay
                     style={{
                       ...styles.roomOverlay,

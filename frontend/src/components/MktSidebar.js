@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { Nav } from "react-bootstrap";
-import styled from "styled-components";
 import {
-  BsGrid,
-  BsPerson,
-  BsPieChart,
-  BsNewspaper,
-  BsHeart,
   BsBoxArrowRight,
+  BsGrid,
+  BsHeart,
+  BsNewspaper,
+  BsPieChart
 } from "react-icons/bs";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { useHotelBooking } from "../context/HotelBookingContext";
 
 const SidebarWrapper = styled.div`
@@ -90,7 +89,6 @@ const Sidebar = ({ onToggle }) => {
 
   const menuItems = [
     { to: "/mktdashboard", icon: <BsGrid />, label: "Dashboard" },
-    { to: "/profile", icon: <BsPerson />, label: "User" },
     { to: "/mktCustomerList", icon: <BsPieChart />, label: "Customer List" },
     { to: "/mktpostlist", icon: <BsNewspaper />, label: "Post List" },
     { to: "/mktfeedbacklist", icon: <BsHeart />, label: "Feedback" },

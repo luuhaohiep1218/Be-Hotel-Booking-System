@@ -1,5 +1,7 @@
 import AboutUs from "../pages/AboutUsPage";
 import AdminManageAccount from "../pages/AdminAccountPage";
+import AdminDashboard from "../pages/Admindashboard";
+import AdminServicePage from "../pages/AdminService";
 import AllNewsPage from "../pages/AllNewsPage";
 import CheckoutPage from "../pages/CheckOutPage";
 import FeedbackDetail from "../pages/FeedBackDetail";
@@ -148,6 +150,20 @@ export const routes = [
   {
     path: "/admin",
     page: AdminManageAccount,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-dashboard",
+    page: AdminDashboard,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-service",
+    page: AdminServicePage,
     isShowHeader: false,
     isPrivate: true,
     allowedRoles: ["ADMIN"],
