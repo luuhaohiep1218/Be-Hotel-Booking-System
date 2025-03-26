@@ -45,7 +45,7 @@ const RoomSchema = new mongoose.Schema(
 
     starRatings: {
       type: [Number],
-      default: [0, 0, 0, 0, 0], // Mảng chứa số lượng đánh giá cho mỗi sao
+      default: [0, 0, 0, 0, 0],
     },
   },
   { timestamps: true }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Button, Modal, Form, Pagination, message } from "antd";
+import { Table, Input, Button, Modal, Form, Pagination, message, Switch } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import StaffSidebar from "../components/StaffSidebar"; // Import StaffSidebar
@@ -104,6 +104,18 @@ const ManageRoom = () => {
     }
   };
 
+  const handleStatusChange = async (checked, room) => {
+    try {
+      const newStatus = checked ? "Trống" : "Hết phòng";
+      await API.put(`/room/${room._id}`, { status: newStatus });
+      message.success("Cập nhật trạng thái phòng thành công!");
+      fetchData(); // Load lại danh sách phòng sau khi cập nhật
+    } catch (error) {
+      console.error("🔥 Lỗi khi cập nhật trạng thái phòng:", error);
+      message.error("Cập nhật trạng thái phòng thất bại!");
+    }
+  };
+
   // Cột của bảng
   const columns = [
     {
@@ -130,6 +142,14 @@ const ManageRoom = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      render: (status, record) => (
+        <Switch
+          checked={status === "Trống"}
+          onChange={(checked) => handleStatusChange(checked, record)}
+          checkedChildren="Trống"
+          unCheckedChildren="Hết phòng"
+        />
+      ),
     },
     {
       title: "Tổng số phòng",

@@ -80,7 +80,7 @@ const bookingSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["failed", "pending", "confirmed"],
-      default: "pending",
+      default: "pending", 
     }
   },
   { timestamps: true }
