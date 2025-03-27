@@ -33,6 +33,7 @@ const Header = styled.header`
   letter-spacing: 1px;
 `;
 
+
 const ManageRoom = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
