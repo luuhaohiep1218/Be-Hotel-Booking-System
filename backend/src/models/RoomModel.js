@@ -32,7 +32,7 @@ const RoomSchema = new mongoose.Schema(
     description: { type: String, required: true },
     images: { type: [String], required: true },
     price: { type: Number, required: true },
-    status: { type: String, required: true, enum: ["trống", "hết phòng"] },
+    status: { type: String, enum: ["trống", "hết phòng"], default: "trống" },
     active: { type: Boolean, default: true },
     quantity: { type: Number, required: true },
     quantityLeft: { type: Number, required: true },

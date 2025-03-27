@@ -88,7 +88,7 @@ const StaffSidebar = ({ onToggle }) => {
   };
 
   const menuItems = [
-    { to: "/staff-dashboard", icon: <BsGrid />, label: "Dashboard" },
+    // { to: "/staff-dashboard", icon: <BsGrid />, label: "Dashboard" },
     { to: "/manage-service", icon: <GrServices />, label: "Manage Service" },
     {
       to: "/manage-room",

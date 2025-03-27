@@ -173,10 +173,7 @@ const bookRoom = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-    // Xử lý trạng thái ban đầu dựa trên phương thức thanh toán
+// Xử lý trạng thái ban đầu dựa trên phương thức thanh toán
 const handleVnPayReturn = asyncHandler(async (req, res) => {
   try {
     const vnpParams = req.query;
@@ -211,6 +208,7 @@ const handleVnPayReturn = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Lỗi hệ thống", error: error.message });
   }
 });
+
 
 
 module.exports = {
