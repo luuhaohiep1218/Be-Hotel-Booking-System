@@ -242,7 +242,7 @@ const getRoomDetailsById = asyncHandler(async (req, res) => {
 
 const addReviewAndUpdateRating = asyncHandler(async (req, res) => {
   try {
-    const { roomId } = req.params; // Lấy roomId từ URL
+    const { roomId } = req.params;
     const { comment, rating, userId } = req.body; // Lấy comment, rating và userId từ request body
 
     // Kiểm tra dữ liệu đầu vào
