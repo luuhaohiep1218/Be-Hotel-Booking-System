@@ -42,6 +42,8 @@ const ManageRoom = () => {
   const [fileList, setFileList] = useState([]);
   const [roomNumbers, setRoomNumbers] = useState([]);
   const [form] = Form.useForm();
+  const [searchText, setSearchText] = useState('');
+  const [searchParams, setSearchParams] = useState('name');
 
   const fetchData = async () => {
     try {
@@ -217,9 +219,74 @@ const ManageRoom = () => {
     setRoomNumbers(newRoomNumbers);
   };
 
+  const handleDeleteRoom = async (roomId) => {
+    try {
+      // Hiển thị confirm dialog trước khi xóa
+      Modal.confirm({
+        title: 'Xác nhận xóa phòng',
+        content: 'Bạn có chắc chắn muốn xóa phòng này?',
+        okText: 'Xóa',
+        okType: 'danger',
+        cancelText: 'Hủy',
+        async onOk() {
+          try {
+            await API.delete(`/room`, {
+              data: { roomIds: [roomId] } // Gửi dưới dạng body
+            });
+            message.success('Xóa phòng thành công!');
+            fetchData(); // Cập nhật lại danh sách phòng
+          } catch (error) {
+            console.error('Lỗi khi xóa phòng:', error);
+            message.error(error.response?.data?.message || 'Xóa phòng thất bại!');
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Lỗi khi hiển thị confirm:', error);
+    }
+  };
 
   const handleUploadChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+  };
+
+  const handleSearch = async () => {
+    try {
+      let query = {};
+      
+      if (searchText) {
+        // Xây dựng query tìm kiếm đơn giản hơn
+        query[searchParams] = searchText;
+        
+        // Nếu tìm theo trạng thái, xử lý riêng
+        if (searchParams === 'status') {
+          query.status = searchText === 'trống' ? 'trống' : 'hết phòng';
+        }
+      }
+  
+      const roomResponse = await API.get("/room", {
+        params: {
+          filter: JSON.stringify(query), // Gửi filter dưới dạng JSON string
+          sort: '+quantityLeft'
+        }
+      });
+      
+      setRooms(roomResponse.data.rooms);
+      
+      if (roomResponse.data.rooms.length === 0) {
+        message.info("Không tìm thấy phòng nào phù hợp");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm phòng:", error);
+      message.error("Lỗi khi tìm kiếm phòng");
+    }
+  };
+  
+  // Thêm nút reset tìm kiếm
+  const handleResetSearch = () => {
+    setSearchText('');
+    setSearchParams('name');
+    fetchData(); // Load lại toàn bộ dữ liệu
   };
 
   const columns = [
@@ -283,7 +350,7 @@ const ManageRoom = () => {
           <Button
             type="link"
             danger
-            onClick={() => console.log("Xóa phòng:", record._id)}
+            onClick={() => handleDeleteRoom(record._id)}
           >
             Xóa
           </Button>
@@ -300,18 +367,44 @@ const ManageRoom = () => {
         <Header>Quản lý phòng</Header>
 
         <div style={{ marginBottom: "16px", display: "flex", gap: "10px" }}>
+
+          <Select
+            defaultValue="name"
+            style={{ width: 120 }}
+            onChange={(value) => setSearchParams(value)}
+          >
+            <Option value="name">Tên phòng</Option>
+            <Option value="type">Loại phòng</Option>
+            <Option value="location">Vị trí</Option>
+            <Option value="status">Trạng thái</Option>
+          </Select>
+
           <Input
-            placeholder="Tìm kiếm phòng..."
+            placeholder="Nhập từ khóa tìm kiếm..."
             prefix={<SearchOutlined />}
             style={{ width: 300 }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onPressEnter={handleSearch} // Tìm kiếm khi nhấn Enter
           />
+
+          <Button type="primary" onClick={handleSearch}>
+            Tìm kiếm
+          </Button>
+
+          <Button onClick={handleResetSearch}>
+            Reset
+          </Button>
+
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => showModal()}
+            style={{ marginLeft: 'auto' }}
           >
             Thêm phòng
           </Button>
+
         </div>
 
         <Table
