@@ -30,149 +30,6 @@ const Header = styled.header`
   letter-spacing: 1px;
 `;
 
-// Dữ liệu ảo cho bookings
-const mockBookings = [
-    {
-        _id: "507f1f77bcf86cd799439011",
-        userId: {
-            _id: "507f1f77bcf86cd799439001",
-            full_name: "Nguyễn Văn A",
-            email: "nguyenvana@gmail.com",
-            phone: "0912345678"
-        },
-        type: "room",
-        rooms: [
-            {
-                roomId: {
-                    _id: "507f1f77bcf86cd799439021",
-                    name: "Phòng Deluxe",
-                    roomNumber: "101"
-                },
-                quantity: 2
-            }
-        ],
-        checkIn: new Date("2023-12-15"),
-        checkOut: new Date("2023-12-18"),
-        price: 4500000,
-        paymentMethod: "vnpay",
-        paymentStatus: "paid",
-        transactionId: "VNPAY123456",
-        status: "confirmed",
-        createdAt: new Date("2023-12-10T10:30:00Z"),
-        updatedAt: new Date("2023-12-10T10:30:00Z")
-    },
-    {
-        _id: "507f1f77bcf86cd799439012",
-        userId: {
-            _id: "507f1f77bcf86cd799439002",
-            full_name: "Trần Thị B",
-            email: "tranthib@gmail.com",
-            phone: "0987654321"
-        },
-        type: "service",
-        serviceId: {
-            _id: "507f1f77bcf86cd799439031",
-            name: "Massage thư giãn"
-        },
-        serviceQuantity: 1,
-        price: 500000,
-        paymentMethod: "counter",
-        paymentStatus: "pending",
-        status: "pending",
-        createdAt: new Date("2023-12-12T14:15:00Z"),
-        updatedAt: new Date("2023-12-12T14:15:00Z")
-    },
-    {
-        _id: "507f1f77bcf86cd799439013",
-        userId: {
-            _id: "507f1f77bcf86cd799439003",
-            full_name: "Lê Văn C",
-            email: "levanc@gmail.com",
-            phone: "0909123456"
-        },
-        type: "room",
-        rooms: [
-            {
-                roomId: {
-                    _id: "507f1f77bcf86cd799439022",
-                    name: "Phòng Suite",
-                    roomNumber: "201"
-                },
-                quantity: 1
-            },
-            {
-                roomId: {
-                    _id: "507f1f77bcf86cd799439023",
-                    name: "Phòng Standard",
-                    roomNumber: "102"
-                },
-                quantity: 1
-            }
-        ],
-        checkIn: new Date("2023-12-20"),
-        checkOut: new Date("2023-12-25"),
-        price: 8000000,
-        paymentMethod: "vnpay",
-        paymentStatus: "failed",
-        transactionId: "VNPAY654321",
-        discountCode: "WINTER2023",
-        status: "pending",
-        notes: "Yêu cầu phòng không hút thuốc",
-        createdAt: new Date("2023-12-11T09:45:00Z"),
-        updatedAt: new Date("2023-12-11T09:45:00Z")
-    },
-    {
-        _id: "507f1f77bcf86cd799439014",
-        userId: {
-            _id: "507f1f77bcf86cd799439004",
-            full_name: "Phạm Thị D",
-            email: "phamthid@gmail.com",
-            phone: "0978123456"
-        },
-        type: "service",
-        serviceId: {
-            _id: "507f1f77bcf86cd799439032",
-            name: "Đặt bàn ăn tối"
-        },
-        serviceQuantity: 4,
-        price: 1200000,
-        paymentMethod: "counter",
-        paymentStatus: "paid",
-        status: "confirmed",
-        createdAt: new Date("2023-12-13T18:30:00Z"),
-        updatedAt: new Date("2023-12-13T18:30:00Z")
-    },
-    {
-        _id: "507f1f77bcf86cd799439015",
-        userId: {
-            _id: "507f1f77bcf86cd799439005",
-            full_name: "Hoàng Văn E",
-            email: "hoangve@gmail.com",
-            phone: "0967123456"
-        },
-        type: "room",
-        rooms: [
-            {
-                roomId: {
-                    _id: "507f1f77bcf86cd799439024",
-                    name: "Phòng Family",
-                    roomNumber: "301"
-                },
-                quantity: 1
-            }
-        ],
-        checkIn: new Date("2024-01-05"),
-        checkOut: new Date("2024-01-10"),
-        price: 6000000,
-        paymentMethod: "vnpay",
-        paymentStatus: "pending",
-        status: "pending",
-        notes: "Yêu cầu giường phụ cho trẻ em",
-        createdAt: new Date("2023-12-14T11:20:00Z"),
-        updatedAt: new Date("2023-12-14T11:20:00Z")
-    }
-];
-
 const ManageBooking = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -194,33 +51,26 @@ const ManageBooking = () => {
     const fetchBookings = async () => {
         setLoading(true);
         try {
-            // Sử dụng dữ liệu ảo thay vì gọi API
-            setBookings(mockBookings);
-            setPagination({
-                ...pagination,
-                total: mockBookings.length,
-            });
-
-            // Comment phần gọi API thật
-            // const { current, pageSize } = pagination;
-            // const params = {
-            //   page: current,
-            //   limit: pageSize,
-            //   ...searchParams,
-            // };
-            // const response = await API.get("/bookings", { params });
-            // setBookings(response.data.bookings);
-            // setPagination({
-            //   ...pagination,
-            //   total: response.data.totalBookings,
-            // });
+          const { current, pageSize } = pagination;
+          const params = {
+            page: current,
+            limit: pageSize,
+            ...searchParams,
+          };
+      
+          const response = await API.get("/booking", { params });
+          setBookings(response.data.bookings);
+          setPagination({
+            ...pagination,
+            total: response.data.totalBookings,
+          });
         } catch (error) {
-            console.error("Lỗi khi lấy dữ liệu bookings:", error);
-            message.error("Đã xảy ra lỗi khi tải dữ liệu!");
+          console.error("Lỗi khi lấy dữ liệu bookings:", error);
+          message.error("Đã xảy ra lỗi khi tải dữ liệu!");
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
     useEffect(() => {
         fetchBookings();
@@ -257,16 +107,30 @@ const ManageBooking = () => {
 
     const handleUpdateBooking = async () => {
         try {
-            const values = await form.validateFields();
-            await API.patch(`/bookings/${currentBooking._id}`, values);
-            message.success("Cập nhật booking thành công!");
-            fetchBookings();
-            setIsModalVisible(false);
+          const values = await form.validateFields();
+          
+          // Gọi API cập nhật
+          const response = await API.patch(`/booking/${currentBooking._id}`, values);
+          
+          // Hiển thị thông báo thành công
+          message.success("Cập nhật booking thành công!");
+          
+          // Làm mới danh sách
+          fetchBookings();
+          
+          // Đóng modal
+          setIsModalVisible(false);
+          
         } catch (error) {
-            console.error("Lỗi khi cập nhật booking:", error);
-            message.error("Đã xảy ra lỗi khi cập nhật!");
+          console.error("Lỗi khi cập nhật booking:", error);
+          
+          // Hiển thị thông báo lỗi từ server nếu có
+          const errorMessage = error.response?.data?.message 
+            || "Đã xảy ra lỗi khi cập nhật!";
+          
+          message.error(errorMessage);
         }
-    };
+      };
 
     const statusTag = (status) => {
         let color = "";
@@ -460,7 +324,7 @@ const ManageBooking = () => {
 
                 <Modal
                     title={`Chi tiết Booking #${currentBooking?._id?.slice(-6).toUpperCase() || ""}`}
-                    visible={isModalVisible}
+                    open={isModalVisible}
                     onCancel={handleCancel}
                     footer={[
                         <Button key="cancel" onClick={handleCancel}>
