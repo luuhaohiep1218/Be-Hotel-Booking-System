@@ -130,13 +130,13 @@ const ManageService = () => {
             prefix={<SearchOutlined />}
             style={{ width: 300 }}
           />
-          {/* <Button
+          <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => showModal()}
           >
             Thêm dịch vụ
-          </Button> */}
+          </Button>
         </div>
 
         <Table

@@ -78,7 +78,7 @@ const LoginPage = () => {
             navigate("/mktdashboard");
             break;
           case "STAFF":
-            navigate("/staff-dashboard");
+            navigate("/manage-service");
             break;
           default:
             navigate("/");

@@ -101,10 +101,10 @@ const createRoom = asyncHandler(async (req, res) => {
 
 const updateInfoRoom = asyncHandler(async (req, res) => {
   try {
+    const { _id } = req.params;
+    const updateData = req.body;
 
-    const { _id } = req.params; // Lấy ID phòng từ URL
-    const updateData = req.body; // Dữ liệu cập nhật từ client
-
+    console.log("Dữ liệu nhận được:", JSON.stringify(updateData, null, 2));
 
     // Kiểm tra phòng có tồn tại không
     const room = await Room.findById(_id);
@@ -112,23 +112,76 @@ const updateInfoRoom = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy phòng!" });
     }
 
-    // Cập nhật thông tin phòng, giữ nguyên dữ liệu cũ nếu không truyền lên
-    const updatedRoom = await Room.findByIdAndUpdate(id, updateData, {
-      new: true, // Trả về dữ liệu sau khi cập nhật
-      runValidators: true, // Kiểm tra validate của schema
-      omitUndefined: true, // Bỏ qua các giá trị undefined
-    });
+    // Nếu có cập nhật roomNumber
+    if (updateData.roomNumber && Array.isArray(updateData.roomNumber)) {
+      // Tạo một bản đồ để dễ dàng truy cập các roomNumber hiện tại
+      const currentRoomMap = new Map();
+      room.roomNumber.forEach(rn => {
+        currentRoomMap.set(rn.roomNumber.toString(), rn);
+      });
+
+      // Tạo mảng roomNumber mới
+      const newRoomNumbers = updateData.roomNumber.map(roomNumUpdate => {
+        const existingRoom = currentRoomMap.get(roomNumUpdate.roomNumber.toString());
+        
+        if (existingRoom) {
+          // Cập nhật roomNumber đã tồn tại
+          return {
+            roomNumber: roomNumUpdate.roomNumber,
+            status: roomNumUpdate.status || existingRoom.status,
+            isActivated: roomNumUpdate.isActivated !== undefined 
+              ? roomNumUpdate.isActivated 
+              : existingRoom.isActivated
+          };
+        } else {
+          // Thêm roomNumber mới
+          return {
+            roomNumber: roomNumUpdate.roomNumber,
+            status: roomNumUpdate.status || "trống",
+            isActivated: roomNumUpdate.isActivated !== false
+          };
+        }
+      });
+
+      // Cập nhật lại trường roomNumber
+      updateData.roomNumber = newRoomNumbers;
+      
+      // Tính toán lại quantity và quantityLeft
+      updateData.quantity = newRoomNumbers.length;
+      updateData.quantityLeft = newRoomNumbers.filter(
+        rn => rn.status === "trống" && rn.isActivated
+      ).length;
+    }
+
+    // Sử dụng findOneAndUpdate thay vì findByIdAndUpdate để đảm bảo cập nhật chính xác
+    const updatedRoom = await Room.findOneAndUpdate(
+      { _id: _id },
+      { $set: updateData },
+      {
+        new: true,
+        runValidators: true,
+        omitUndefined: true
+      }
+    );
+
+    console.log("Dữ liệu sau khi cập nhật:", updatedRoom);
 
     res.status(200).json({
       message: "Cập nhật thông tin phòng thành công!",
       room: updatedRoom,
     });
   } catch (error) {
-    console.error("🔥 Lỗi khi cập nhật phòng:", error);
-    res.status(500).json({ message: "Lỗi hệ thống, vui lòng thử lại!" });
+    console.error("🔥 Lỗi khi cập nhật phòng:", {
+      message: error.message,
+      stack: error.stack,
+      details: error
+    });
+    res.status(500).json({ 
+      message: "Lỗi hệ thống, vui lòng thử lại!",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
-
 const deleteRooms = asyncHandler(async (req, res) => {
   try {
     const { roomIds } = req.body; // Nhận danh sách ID phòng cần xóa
@@ -189,7 +242,7 @@ const getRoomDetailsById = asyncHandler(async (req, res) => {
 
 const addReviewAndUpdateRating = asyncHandler(async (req, res) => {
   try {
-    const { roomId } = req.params; // Lấy roomId từ URL
+    const { roomId } = req.params;
     const { comment, rating, userId } = req.body; // Lấy comment, rating và userId từ request body
 
     // Kiểm tra dữ liệu đầu vào
