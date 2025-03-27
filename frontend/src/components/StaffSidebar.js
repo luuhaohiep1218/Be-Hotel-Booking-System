@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { BsGrid, BsBoxArrowRight } from "react-icons/bs";
 import { MdOutlineBedroomParent } from "react-icons/md";
 import { GrServices } from "react-icons/gr";
+import { TbBrandBooking } from "react-icons/tb";
 import { useHotelBooking } from "../context/HotelBookingContext";
 
 const SidebarWrapper = styled.div`
@@ -94,6 +95,11 @@ const StaffSidebar = ({ onToggle }) => {
       icon: <MdOutlineBedroomParent />,
       label: "Manage Room",
     },
+    {
+      to: "/manage-booking",
+      icon: <TbBrandBooking />,
+      label: "Manage Booking",
+    }
   ];
   const handleLogout = async () => {
     try {

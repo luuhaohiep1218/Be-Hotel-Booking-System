@@ -95,25 +95,63 @@ const ManageRoom = () => {
 
   const handleSaveRoom = async (values) => {
     try {
+      // Chuẩn bị dữ liệu roomNumber đúng định dạng
+      const roomNumberData = roomNumbers.map(rn => ({
+        roomNumber: rn.roomNumber,
+        status: rn.status,
+        isActivated: rn.isActivated
+      }));
+
+      // Chuẩn bị payload
       const payload = {
         ...values,
-        roomNumber: roomNumbers,
-        images: fileList.map(file => file.url || file.name)
+        roomNumber: roomNumberData,
+        images: fileList.map(file => file.url || file.name),
+        // Tính toán lại quantity và quantityLeft
+        quantity: roomNumberData.length,
+        quantityLeft: roomNumberData.filter(rn => rn.status === "trống" && rn.isActivated).length
       };
 
+      console.log(payload);
+
+
+      // Kiểm tra dữ liệu
+      if (roomNumberData.length === 0) {
+        message.error("Vui lòng thêm ít nhất một số phòng");
+        return;
+      }
+
+      if (roomNumberData.some(rn => rn.roomNumber === null || rn.roomNumber === undefined)) {
+        message.error("Vui lòng nhập đầy đủ số phòng");
+        return;
+      }
+
+      let response;
       if (editingRoom) {
-        await API.put(`/room/${editingRoom._id}`, payload);
+        // Gọi API cập nhật và LẤY LẠI DỮ LIỆU ĐÃ CẬP NHẬT
+        response = await API.put(`/room/${editingRoom._id}`, payload);
         message.success("Cập nhật phòng thành công!");
       } else {
-        await API.post("/room", payload);
+        response = await API.post("/room", payload);
         message.success("Thêm phòng thành công!");
       }
 
-      fetchData();
+      // Cập nhật lại state với dữ liệu mới từ server
+      setRooms(prevRooms => {
+        if (editingRoom) {
+          return prevRooms.map(room =>
+            room._id === editingRoom._id ? response.data.room : room
+          );
+        } else {
+          return [...prevRooms, response.data.room];
+        }
+      });
+
       setIsModalVisible(false);
     } catch (error) {
       console.error("Lỗi khi lưu phòng:", error);
-      message.error(editingRoom ? "Cập nhật phòng thất bại!" : "Thêm phòng thất bại!");
+      message.error(error.response?.data?.message ||
+        (editingRoom ? "Cập nhật phòng thất bại!" : "Thêm phòng thất bại!"));
     }
   };
 
@@ -129,21 +167,56 @@ const ManageRoom = () => {
     }
   };
 
-  const addRoomNumber = () => {
-    setRoomNumbers([...roomNumbers, { roomNumber: null, status: "trống", isActivated: true }]);
+
+  const updateRoomNumber = (index, field, value) => {
+    const newRoomNumbers = [...roomNumbers];
+
+    // Nếu cập nhật số phòng, kiểm tra trùng lặp
+    if (field === 'roomNumber') {
+      const isDuplicate = newRoomNumbers.some((rn, i) =>
+        i !== index && rn.roomNumber === value
+      );
+
+      if (isDuplicate) {
+        message.error("Số phòng đã tồn tại");
+        return;
+      }
+    }
+
+    newRoomNumbers[index][field] = value;
+    setRoomNumbers(newRoomNumbers);
+
+    // Nếu cập nhật status hoặc isActivated, tính lại quantityLeft
+    if (field === 'status' || field === 'isActivated') {
+      form.setFieldsValue({
+        quantityLeft: newRoomNumbers.filter(rn =>
+          rn.status === "trống" && rn.isActivated
+        ).length
+      });
+    }
   };
 
+  // Sửa hàm addRoomNumber để thêm số phòng mới không trùng
+  const addRoomNumber = () => {
+    // Tìm số phòng lớn nhất hiện có + 1
+    const maxRoomNumber = roomNumbers.reduce((max, rn) =>
+      Math.max(max, rn.roomNumber || 0), 0);
+
+    setRoomNumbers([
+      ...roomNumbers,
+      {
+        roomNumber: maxRoomNumber + 1,
+        status: "trống",
+        isActivated: true
+      }
+    ]);
+  };
   const removeRoomNumber = (index) => {
     const newRoomNumbers = [...roomNumbers];
     newRoomNumbers.splice(index, 1);
     setRoomNumbers(newRoomNumbers);
   };
 
-  const updateRoomNumber = (index, field, value) => {
-    const newRoomNumbers = [...roomNumbers];
-    newRoomNumbers[index][field] = value;
-    setRoomNumbers(newRoomNumbers);
-  };
 
   const handleUploadChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -360,12 +433,6 @@ const ManageRoom = () => {
                     <Option value="trống">Trống</Option>
                     <Option value="hết phòng">Hết phòng</Option>
                   </Select>
-                  <Switch
-                    checked={rn.isActivated}
-                    onChange={(checked) => updateRoomNumber(index, 'isActivated', checked)}
-                    checkedChildren="Hoạt động"
-                    unCheckedChildren="Khóa"
-                  />
                   <Button danger onClick={() => removeRoomNumber(index)}>
                     Xóa
                   </Button>
