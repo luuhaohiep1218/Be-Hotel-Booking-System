@@ -132,6 +132,8 @@ const HeaderComponent = () => {
 
   const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
 
+  const token = sessionStorage.getItem("accessToken");
+
   const handleLogout = async () => {
     try {
       console.warn("🚪 Đang logout...");
@@ -195,7 +197,7 @@ const HeaderComponent = () => {
             )}
             <StyledNavLink to="/Blog">BÀI VIẾT</StyledNavLink>
           </StyledNav>
-          {accessToken ? (
+          {token ? (
             <>
               <Dropdown
                 menu={{

@@ -66,8 +66,6 @@ const LoginPage = () => {
 
       sessionStorage.setItem("accessToken", data.accessToken);
       setAccessToken(data.accessToken);
-      console.log(data);
-      message.success("Đăng nhập thành công!");
 
       if (data?.role) {
         switch (data.role.toUpperCase()) {
@@ -86,6 +84,8 @@ const LoginPage = () => {
       } else {
         navigate("/");
       }
+
+      message.success("Đăng nhập thành công!");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Lỗi không xác định!";
