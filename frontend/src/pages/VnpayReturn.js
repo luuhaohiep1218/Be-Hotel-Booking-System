@@ -14,7 +14,6 @@ const VnpayReturn = () => {
   useEffect(() => {
     if (isProcessingRef.current) return;
     isProcessingRef.current = true;
-
     const query = new URLSearchParams(location.search);
     const vnp_ResponseCode = query.get("vnp_ResponseCode");
     const orderId = query.get("vnp_TxnRef");

@@ -8,7 +8,6 @@ import InvoiceCard from "../components/InvoiceCard";
 import { useHotelBooking } from "../context/HotelBookingContext";
 import FailedModal from "./ModalComponent/FailedModal";
 import SuccessModal from "./ModalComponent/SuccessModal";
-
 const CheckoutRoomForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,7 +21,6 @@ const CheckoutRoomForm = () => {
     fullName: user?.full_name || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    roomNumber: "",
     paymentMethod: "counter",
     notes: "",
     checkIn: location.state?.checkIn ? dayjs(location.state.checkIn) : null,
@@ -31,6 +29,7 @@ const CheckoutRoomForm = () => {
 
   useEffect(() => {
     if (location.state?.selectedRooms) {
+      console.log("Selected Rooms from location state: ", location.state.selectedRooms);
       setSelectedRooms(location.state.selectedRooms);
     }
   }, [location.state]);
@@ -44,37 +43,39 @@ const CheckoutRoomForm = () => {
   const handlePaymentChange = (e) => {
     setFormData({ ...formData, paymentMethod: e.target.value });
   };
-    const handleDateChange = (field, value) => {
-  if (!value) return;
 
-  const selectedDate = dayjs(value); // Chuyển đổi `value` thành `dayjs`
-  const today = dayjs().startOf("day");
+  const handleDateChange = (field, value) => {
+    if (!value) return;
 
-  if (field === "checkIn") {
-    if (selectedDate.isBefore(today)) {
-      message.error("Ngày nhận phòng không thể là quá khứ.");
-      return;
-    }
-    setFormData({ ...formData, checkIn: selectedDate });
-  }
+    const selectedDate = dayjs(value);
+    const today = dayjs().startOf("day");
 
-  if (field === "checkOut") {
-    if (!formData.checkIn) {
-      message.error("Vui lòng chọn ngày nhận phòng trước.");
-      return;
+    if (field === "checkIn") {
+      if (selectedDate.isBefore(today)) {
+        message.error("Ngày nhận phòng không thể là quá khứ.");
+        return;
+      }
+      setFormData({ ...formData, checkIn: selectedDate });
     }
 
-    const checkInDate = dayjs(formData.checkIn); // Chuyển đổi `checkIn` thành `dayjs`
-    if (selectedDate.isSame(checkInDate) || selectedDate.isBefore(checkInDate)) {
-      message.error("Ngày trả phòng phải sau ngày nhận phòng.");
-      return;
+    if (field === "checkOut") {
+      if (!formData.checkIn) {
+        message.error("Vui lòng chọn ngày nhận phòng trước.");
+        return;
+      }
+
+      const checkInDate = dayjs(formData.checkIn);
+      if (selectedDate.isSame(checkInDate) || selectedDate.isBefore(checkInDate)) {
+        message.error("Ngày trả phòng phải sau ngày nhận phòng.");
+        return;
+      }
+
+      setFormData({ ...formData, checkOut: selectedDate });
     }
-    
-    setFormData({ ...formData, checkOut: selectedDate });
-  }
-};
+  };
 
   const handlePayment = async () => {
+    console.log("Handling payment with form data: ", formData);
     if (!formData.fullName || !formData.email || !formData.phone) {
       message.error("Vui lòng nhập đầy đủ thông tin!");
       return;
@@ -100,7 +101,7 @@ const CheckoutRoomForm = () => {
     try {
       if (formData.paymentMethod === "counter") {
         setIsModalVisible(true);
-        setLoading(false); // Giữ trạng thái để không gọi 2 lần
+        setLoading(false);
       } else {
         const orderId = Date.now().toString();
         localStorage.setItem("orderId", JSON.stringify(orderId));
@@ -124,53 +125,55 @@ const CheckoutRoomForm = () => {
         }
       }
     } catch (error) {
+      console.error("Error during payment process: ", error);
       message.error("Đã xảy ra lỗi khi đặt phòng.");
     } finally {
       setLoading(false);
     }
   };
 
-const handleBookingSuccess = async () => {
-  try {
-    // Filter out rooms with count <= 0
-    const validRooms = selectedRooms.filter((room) => room.count > 0);
-    // If no valid rooms, remove from localStorage and show an error
-    if (validRooms.length === 0) {
-      localStorage.removeItem("selectedRooms");
-      Modal.error({
-        title: "Lỗi",
-        content: "Không tìm thấy phòng nào để đặt.",
-      });
-      return;
-    }
-    // Format the valid rooms for saving
-    const formattedRooms = validRooms.map((room) => ({
-      roomId: room.roomId ? room.roomId.toString() : "",
-      quantity: room.count,
-    }));
-    // Save valid rooms to localStorage
-    localStorage.setItem("selectedRooms", JSON.stringify(formattedRooms));
-    const bookingData = {
-      userId: user._id,
-      rooms: formattedRooms,
-      checkIn: formData.checkIn.format("YYYY-MM-DD"),
-      checkOut: formData.checkOut.format("YYYY-MM-DD"),
-      price: totalPrice,
-      paymentMethod: formData.paymentMethod,
-      paymentStatus: formData.paymentMethod === "counter" ? "pending" : "paid",
-      notes: formData.notes,
-      status: "pending",
-      type: bookingType,
-    };
-    // Send the booking data to the server
-    await axios.post("http://localhost:8000/api/booking/rooms", bookingData);
-    
-    navigate("/");
+  const handleBookingSuccess = async () => {
+    console.log("Handling booking success");
+    try {
+      const validRooms = selectedRooms.filter((room) => room.count > 0);
+      if (validRooms.length === 0) {
+        localStorage.removeItem("selectedRooms");
+        Modal.error({
+          title: "Lỗi",
+          content: "Không tìm thấy phòng nào để đặt.",
+        });
+        return;
+      }
 
-  } catch (error) {
-    message.error("Lỗi khi lưu thông tin đặt phòng.");
-  }
-};
+      const formattedRooms = validRooms.map((room) => ({
+        roomId: room.roomId ? room.roomId.toString() : "",
+        quantity: room.count,
+      }));
+
+      localStorage.setItem("selectedRooms", JSON.stringify(formattedRooms));
+
+      const bookingData = {
+        userId: user._id,
+        rooms: formattedRooms,
+        checkIn: formData.checkIn.toISOString(),
+        checkOut: formData.checkOut.toISOString(),
+        price: totalPrice,
+        paymentMethod: formData.paymentMethod,
+        paymentStatus: formData.paymentMethod === "counter" ? "pending" : "paid",
+        notes: formData.notes,
+        status: "pending",
+        type: bookingType,
+      };
+
+      await axios.post("http://localhost:8000/api/booking/rooms", bookingData);
+
+      navigate("/");
+
+    } catch (error) {
+      console.error("Error during booking success: ", error);
+      message.error("Lỗi khi lưu thông tin đặt phòng.");
+    }
+  };
 
   return (
     <Container>
@@ -178,18 +181,17 @@ const handleBookingSuccess = async () => {
         <Col md={6}>
           <Card title="Danh sách phòng đã đặt">
             {selectedRooms
-            .filter((room) => room.count > 0)
-            .map((room, index) => (
-              <Card key={index} className="mb-4">
-                <div>
-                  <h3>{room.name}</h3>
-                  <p>Số lượng: {room.count}</p>
-                  
-                  <p>Giá: {room.price.toLocaleString()} đ</p>
-                  <p>Tổng: {(room.count * room.price).toLocaleString()} đ</p>
-                </div>
-              </Card>
-            ))}
+              .filter((room) => room.count > 0)
+              .map((room, index) => (
+                <Card key={index} className="mb-4">
+                  <div>
+                    <h3>{room.name}</h3>
+                    <p>Số lượng: {room.count}</p>
+                    <p>Giá: {room.price.toLocaleString()} đ</p>
+                    <p>Tổng: {(room.count * room.price).toLocaleString()} đ</p>
+                  </div>
+                </Card>
+              ))}
           </Card>
           <Card>
             <h2>Thông tin đặt phòng</h2>
@@ -201,13 +203,11 @@ const handleBookingSuccess = async () => {
               value={formData.checkIn}
               onChange={(value) => handleDateChange("checkIn", value)}
             />
-
             <DatePicker
               placeholder="Chọn ngày trả phòng"
               value={formData.checkOut}
               onChange={(value) => handleDateChange("checkOut", value)}
             />
-
             <Radio.Group onChange={handlePaymentChange} value={formData.paymentMethod}>
               <Radio value="counter">Thanh toán tại quầy</Radio>
               <Radio value="vnpay">VNPay</Radio>
@@ -218,11 +218,11 @@ const handleBookingSuccess = async () => {
               onClose={() => {
                 setIsModalVisible(false);
                 if (!loading) {
-                  handleBookingSuccess();  // Đảm bảo chỉ chạy một lần
+                  handleBookingSuccess();
                 }
               }}
             />
-            <FailedModal isVisible={isModalVisible} onClose={() => setIsModalVisible(false)} />
+            <FailedModal isVisible={isModalFailedVisible} onClose={() => setIsModalVisible(false)} />
           </Card>
         </Col>
         <Col md={6}>
