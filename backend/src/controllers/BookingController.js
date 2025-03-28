@@ -1,8 +1,10 @@
 const asyncHandler = require("express-async-handler");
+const aqp = require('api-query-params');
 const Booking = require("../models/BookingModel");
 const Service = require("../models/ServiceModel");
-
 const Room = require("../models/RoomModel");
+
+
 const bookService = asyncHandler(async (req, res) => {
   try {
     const { userId, serviceId, serviceQuantity, paymentMethod } = req.body;
@@ -172,7 +174,6 @@ const bookRoom = asyncHandler(async (req, res) => {
   }
 });
 
-    // Xử lý trạng thái ban đầu dựa trên phương thức thanh toán
 const handleVnPayReturn = asyncHandler(async (req, res) => {
   try {
     const vnpParams = req.query;
@@ -208,10 +209,103 @@ const handleVnPayReturn = asyncHandler(async (req, res) => {
   }
 });
 
+const getListBooking = asyncHandler(async (req, res) => {
+  try {
+    // Parse query parameters
+    const { filter, skip, limit, sort, projection, population } = aqp(req.query, {
+      whitelist: [
+        "userId",
+        "type",
+        "status",
+        "paymentStatus",
+        "paymentMethod",
+        "checkIn",
+        "checkOut",
+        "createdAt"
+      ],
+      blacklist: ["page", "limit"]
+    });
+
+    // Lấy page và limit từ query params
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * pageSize;
+
+    // Build query
+    const query = Booking.find(filter)
+      .skip(offset)
+      .limit(pageSize)
+      .sort(sort)
+      .populate('userId', 'full_name email phone')
+      .populate('rooms.roomId', 'name roomNumber price')
+      .populate('serviceId', 'name price');
+
+    // Thực hiện query
+    const bookings = await query.exec();
+    const total = await Booking.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      totalBookings: total,
+      totalPages: Math.ceil(total / pageSize),
+      currentPage: page,
+      pageSize,
+      bookings
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi hệ thống",
+      error: error.message
+    });
+  }
+});
+
+const updateBooking = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, paymentStatus, notes } = req.body;
+
+    // Tìm và cập nhật booking
+    const booking = await Booking.findByIdAndUpdate(
+      id,
+      { 
+        status,
+        paymentStatus, 
+        notes,
+        updatedAt: Date.now() 
+      },
+      { new: true }
+    );
+
+    if (!booking) {
+      return res.status(404).json({ 
+        success: false,
+        message: "Không tìm thấy booking" 
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Cập nhật booking thành công",
+      booking
+    });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật booking:", error);
+    res.status(500).json({ 
+      success: false,
+      message: "Lỗi hệ thống", 
+      error: error.message 
+    });
+  }
+});
 
 module.exports = {
   bookService,
   bookRoom,
   handleVnPayReturn,
   getServiceBookings,
+  getListBooking,
+  updateBooking
 };

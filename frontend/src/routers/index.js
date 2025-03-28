@@ -9,6 +9,7 @@ import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
+import ManageBooking from "../pages/ManageBooking";
 import ManageRoom from "../pages/ManageRoom";
 import ManageService from "../pages/ManageService";
 import Mktdashboard from "../pages/MktDashboard";
@@ -185,6 +186,13 @@ export const routes = [
   {
     path: "/manage-room",
     page: ManageRoom,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["STAFF", "ADMIN"],
+  },
+  {
+    path: "/manage-booking",
+    page: ManageBooking,
     isShowHeader: false,
     isPrivate: true,
     allowedRoles: ["STAFF", "ADMIN"],

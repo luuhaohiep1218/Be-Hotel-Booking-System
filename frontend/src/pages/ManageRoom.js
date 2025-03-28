@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Button, Modal, Form, Pagination, message, Switch } from "antd";
-import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import { Table, Input, Button, Modal, Form, Pagination, message, Switch, Select, InputNumber, Upload } from "antd";
+import { SearchOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import StaffSidebar from "../components/StaffSidebar"; // Import StaffSidebar
+import StaffSidebar from "../components/StaffSidebar";
 import API from "../utils/axiosInstance";
+
+const { Option } = Select;
+const { TextArea } = Input;
 
 // Styled components
 const ManageRoomContainer = styled.div`
@@ -30,13 +33,17 @@ const Header = styled.header`
   letter-spacing: 1px;
 `;
 
-const ManageRoom = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Trạng thái mở/đóng sidebar
-  const [isModalVisible, setIsModalVisible] = useState(false); // Hiển thị modal thêm/sửa phòng
-  const [editingRoom, setEditingRoom] = useState(null); // Phòng đang chỉnh sửa
-  const [rooms, setRooms] = useState([]); // Danh sách phòng
 
-  const [form] = Form.useForm(); // Form quản lý dữ liệu
+const ManageRoom = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingRoom, setEditingRoom] = useState(null);
+  const [rooms, setRooms] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const [roomNumbers, setRoomNumbers] = useState([]);
+  const [form] = Form.useForm();
+  const [searchText, setSearchText] = useState('');
+  const [searchParams, setSearchParams] = useState('name');
 
   const fetchData = async () => {
     try {
@@ -51,72 +58,237 @@ const ManageRoom = () => {
     fetchData();
   }, []);
 
-  // Dữ liệu mẫu (mock data)
-  const mockRooms = [
-    {
-      id: 1,
-      name: "Phòng 101",
-      description: "Phòng đơn, view đẹp",
-      capacity: 2,
-    },
-    {
-      id: 2,
-      name: "Phòng 102",
-      description: "Phòng đôi, tiện nghi",
-      capacity: 4,
-    },
-    {
-      id: 3,
-      name: "Phòng 103",
-      description: "Phòng gia đình",
-      capacity: 6,
-    },
-  ];
-
-  // Mở modal thêm/sửa phòng
   const showModal = (room = null) => {
     setEditingRoom(room);
-    form.setFieldsValue(room || { name: "", description: "", capacity: "" });
+    if (room) {
+      form.setFieldsValue({
+        ...room,
+        roomNumbers: room.roomNumber.map(rn => ({
+          roomNumber: rn.roomNumber,
+          status: rn.status,
+          isActivated: rn.isActivated
+        }))
+      });
+      setRoomNumbers(room.roomNumber.map(rn => ({
+        roomNumber: rn.roomNumber,
+        status: rn.status,
+        isActivated: rn.isActivated
+      })));
+      setFileList(room.images.map(image => ({
+        uid: image,
+        name: image,
+        status: 'done',
+        url: image
+      })));
+    } else {
+      form.resetFields();
+      setRoomNumbers([]);
+      setFileList([]);
+    }
     setIsModalVisible(true);
   };
 
-  // Đóng modal
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
+    setRoomNumbers([]);
+    setFileList([]);
   };
 
-  // Xử lý lưu phòng (chỉ là giao diện, không có logic API)
   const handleSaveRoom = async (values) => {
     try {
-      if (editingRoom) {
-        // Gọi API cập nhật thông tin phòng
-        console.log(editingRoom._id);
-        const { data } = await API.put(`/room/${editingRoom._id}`, values);
-        message.success("Cập nhật phòng thành công!");
+      // Chuẩn bị dữ liệu roomNumber đúng định dạng
+      const roomNumberData = roomNumbers.map(rn => ({
+        roomNumber: rn.roomNumber,
+        status: rn.status,
+        isActivated: rn.isActivated
+      }));
+
+      // Chuẩn bị payload
+      const payload = {
+        ...values,
+        roomNumber: roomNumberData,
+        images: fileList.map(file => file.url || file.name),
+        // Tính toán lại quantity và quantityLeft
+        quantity: roomNumberData.length,
+        quantityLeft: roomNumberData.filter(rn => rn.status === "trống" && rn.isActivated).length
+      };
+
+      console.log(payload);
+
+
+      // Kiểm tra dữ liệu
+      if (roomNumberData.length === 0) {
+        message.error("Vui lòng thêm ít nhất một số phòng");
+        return;
       }
 
-      fetchData(); // Load lại danh sách phòng
+      if (roomNumberData.some(rn => rn.roomNumber === null || rn.roomNumber === undefined)) {
+        message.error("Vui lòng nhập đầy đủ số phòng");
+        return;
+      }
+
+      let response;
+      if (editingRoom) {
+        // Gọi API cập nhật và LẤY LẠI DỮ LIỆU ĐÃ CẬP NHẬT
+        response = await API.put(`/room/${editingRoom._id}`, payload);
+        message.success("Cập nhật phòng thành công!");
+      } else {
+        response = await API.post("/room", payload);
+        message.success("Thêm phòng thành công!");
+      }
+
+      // Cập nhật lại state với dữ liệu mới từ server
+      setRooms(prevRooms => {
+        if (editingRoom) {
+          return prevRooms.map(room =>
+            room._id === editingRoom._id ? response.data.room : room
+          );
+        } else {
+          return [...prevRooms, response.data.room];
+        }
+      });
+
       setIsModalVisible(false);
     } catch (error) {
-      console.error("🔥 Lỗi khi cập nhật phòng:", error);
-      message.error("Cập nhật phòng thất bại!");
+      console.error("Lỗi khi lưu phòng:", error);
+      message.error(error.response?.data?.message ||
+        (editingRoom ? "Cập nhật phòng thất bại!" : "Thêm phòng thất bại!"));
     }
   };
 
   const handleStatusChange = async (checked, room) => {
     try {
-      const newStatus = checked ? "Trống" : "Hết phòng";
+      const newStatus = checked ? "trống" : "hết phòng";
       await API.put(`/room/${room._id}`, { status: newStatus });
       message.success("Cập nhật trạng thái phòng thành công!");
-      fetchData(); // Load lại danh sách phòng sau khi cập nhật
+      fetchData();
     } catch (error) {
-      console.error("🔥 Lỗi khi cập nhật trạng thái phòng:", error);
+      console.error("Lỗi khi cập nhật trạng thái phòng:", error);
       message.error("Cập nhật trạng thái phòng thất bại!");
     }
   };
 
-  // Cột của bảng
+
+  const updateRoomNumber = (index, field, value) => {
+    const newRoomNumbers = [...roomNumbers];
+
+    // Nếu cập nhật số phòng, kiểm tra trùng lặp
+    if (field === 'roomNumber') {
+      const isDuplicate = newRoomNumbers.some((rn, i) =>
+        i !== index && rn.roomNumber === value
+      );
+
+      if (isDuplicate) {
+        message.error("Số phòng đã tồn tại");
+        return;
+      }
+    }
+
+    newRoomNumbers[index][field] = value;
+    setRoomNumbers(newRoomNumbers);
+
+    // Nếu cập nhật status hoặc isActivated, tính lại quantityLeft
+    if (field === 'status' || field === 'isActivated') {
+      form.setFieldsValue({
+        quantityLeft: newRoomNumbers.filter(rn =>
+          rn.status === "trống" && rn.isActivated
+        ).length
+      });
+    }
+  };
+
+  // Sửa hàm addRoomNumber để thêm số phòng mới không trùng
+  const addRoomNumber = () => {
+    // Tìm số phòng lớn nhất hiện có + 1
+    const maxRoomNumber = roomNumbers.reduce((max, rn) =>
+      Math.max(max, rn.roomNumber || 0), 0);
+
+    setRoomNumbers([
+      ...roomNumbers,
+      {
+        roomNumber: maxRoomNumber + 1,
+        status: "trống",
+        isActivated: true
+      }
+    ]);
+  };
+  const removeRoomNumber = (index) => {
+    const newRoomNumbers = [...roomNumbers];
+    newRoomNumbers.splice(index, 1);
+    setRoomNumbers(newRoomNumbers);
+  };
+
+  const handleDeleteRoom = async (roomId) => {
+    try {
+      // Hiển thị confirm dialog trước khi xóa
+      Modal.confirm({
+        title: 'Xác nhận xóa phòng',
+        content: 'Bạn có chắc chắn muốn xóa phòng này?',
+        okText: 'Xóa',
+        okType: 'danger',
+        cancelText: 'Hủy',
+        async onOk() {
+          try {
+            await API.delete(`/room`, {
+              data: { roomIds: [roomId] } // Gửi dưới dạng body
+            });
+            message.success('Xóa phòng thành công!');
+            fetchData(); // Cập nhật lại danh sách phòng
+          } catch (error) {
+            console.error('Lỗi khi xóa phòng:', error);
+            message.error(error.response?.data?.message || 'Xóa phòng thất bại!');
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Lỗi khi hiển thị confirm:', error);
+    }
+  };
+
+  const handleUploadChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+  const handleSearch = async () => {
+    try {
+      let query = {};
+      
+      if (searchText) {
+        // Xây dựng query tìm kiếm đơn giản hơn
+        query[searchParams] = searchText;
+        
+        // Nếu tìm theo trạng thái, xử lý riêng
+        if (searchParams === 'status') {
+          query.status = searchText === 'trống' ? 'trống' : 'hết phòng';
+        }
+      }
+  
+      const roomResponse = await API.get("/room", {
+        params: {
+          filter: JSON.stringify(query), // Gửi filter dưới dạng JSON string
+          sort: '+quantityLeft'
+        }
+      });
+      
+      setRooms(roomResponse.data.rooms);
+      
+      if (roomResponse.data.rooms.length === 0) {
+        message.info("Không tìm thấy phòng nào phù hợp");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm phòng:", error);
+      message.error("Lỗi khi tìm kiếm phòng");
+    }
+  };
+  
+  // Thêm nút reset tìm kiếm
+  const handleResetSearch = () => {
+    setSearchText('');
+    setSearchParams('name');
+    fetchData(); // Load lại toàn bộ dữ liệu
+  };
+
   const columns = [
     {
       title: "Tên phòng",
@@ -124,12 +296,12 @@ const ManageRoom = () => {
       key: "name",
     },
     {
-      title: "Mô tả",
-      dataIndex: "description",
-      key: "description",
+      title: "Loại phòng",
+      dataIndex: "type",
+      key: "type",
     },
     {
-      title: "Phòng",
+      title: "Số giường",
       dataIndex: "beds",
       key: "beds",
     },
@@ -139,15 +311,21 @@ const ManageRoom = () => {
       key: "location",
     },
     {
+      title: "Giá",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => `${price.toLocaleString()} VND`,
+    },
+    {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       render: (status, record) => (
         <Switch
-          checked={status === "Trống"}
+          checked={status === "trống"}
           onChange={(checked) => handleStatusChange(checked, record)}
           checkedChildren="Trống"
-          unCheckedChildren="Hết phòng"
+          unCheckedChildren="Hết"
         />
       ),
     },
@@ -162,18 +340,6 @@ const ManageRoom = () => {
       key: "quantityLeft",
     },
     {
-      title: "Dịch vụ của phòng",
-      dataIndex: "services",
-      key: "services",
-      render: (services) => (
-        <ul style={{ listStyleType: "disc", paddingLeft: "20px", margin: 0 }}>
-          {services.map((service, index) => (
-            <li key={index}>{service}</li>
-          ))}
-        </ul>
-      ),
-    },
-    {
       title: "Hành động",
       key: "actions",
       render: (_, record) => (
@@ -184,7 +350,7 @@ const ManageRoom = () => {
           <Button
             type="link"
             danger
-            onClick={() => console.log("Xóa phòng:", record.id)}
+            onClick={() => handleDeleteRoom(record._id)}
           >
             Xóa
           </Button>
@@ -195,52 +361,73 @@ const ManageRoom = () => {
 
   return (
     <ManageRoomContainer>
-      {/* Sidebar */}
       <StaffSidebar onToggle={setIsSidebarOpen} />
 
-      {/* Nội dung chính */}
       <ContentWrapper isSidebarOpen={isSidebarOpen}>
         <Header>Quản lý phòng</Header>
 
-        {/* Thanh tìm kiếm và nút thêm phòng */}
         <div style={{ marginBottom: "16px", display: "flex", gap: "10px" }}>
+
+          <Select
+            defaultValue="name"
+            style={{ width: 120 }}
+            onChange={(value) => setSearchParams(value)}
+          >
+            <Option value="name">Tên phòng</Option>
+            <Option value="type">Loại phòng</Option>
+            <Option value="location">Vị trí</Option>
+            <Option value="status">Trạng thái</Option>
+          </Select>
+
           <Input
-            placeholder="Tìm kiếm phòng..."
+            placeholder="Nhập từ khóa tìm kiếm..."
             prefix={<SearchOutlined />}
             style={{ width: 300 }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onPressEnter={handleSearch} // Tìm kiếm khi nhấn Enter
           />
-          {/* <Button
+
+          <Button type="primary" onClick={handleSearch}>
+            Tìm kiếm
+          </Button>
+
+          <Button onClick={handleResetSearch}>
+            Reset
+          </Button>
+
+          <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => showModal()}
+            style={{ marginLeft: 'auto' }}
           >
             Thêm phòng
-          </Button> */}
+          </Button>
+
         </div>
 
-        {/* Bảng hiển thị danh sách phòng */}
         <Table
           columns={columns}
           dataSource={rooms}
-          rowKey="id"
+          rowKey="_id"
           pagination={false}
         />
 
-        {/* Phân trang */}
         <Pagination
           current={1}
-          pageSize={5}
+          pageSize={10}
           total={rooms.length}
           onChange={(page, size) => console.log("Chuyển trang:", page, size)}
           style={{ marginTop: "16px", textAlign: "right" }}
         />
 
-        {/* Modal thêm/sửa phòng */}
         <Modal
           title={editingRoom ? "Sửa phòng" : "Thêm phòng"}
           visible={isModalVisible}
           onCancel={handleCancel}
           footer={null}
+          width={800}
         >
           <Form form={form} onFinish={handleSaveRoom} layout="vertical">
             <Form.Item
@@ -250,6 +437,7 @@ const ManageRoom = () => {
             >
               <Input />
             </Form.Item>
+
             <Form.Item
               label="Loại phòng"
               name="type"
@@ -257,16 +445,105 @@ const ManageRoom = () => {
             >
               <Input />
             </Form.Item>
-            <Form.Item label="Mô tả" name="description">
-              <Input.TextArea />
-            </Form.Item>
+
             <Form.Item
-              label="Trạng thái"
-              name="status"
-              rules={[{ required: true, message: "Vui lòng nhập trạng thái" }]}
+              label="Dịch vụ"
+              name="services"
+              rules={[{ required: true, message: "Vui lòng nhập dịch vụ" }]}
+            >
+              <Select mode="tags" tokenSeparators={[',']} placeholder="Nhập dịch vụ">
+                {['Wifi', 'Điều hòa', 'TV', 'Mini bar', 'Bể bơi', 'Bữa sáng'].map(service => (
+                  <Option key={service}>{service}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Vị trí"
+              name="location"
+              rules={[{ required: true, message: "Vui lòng nhập vị trí" }]}
             >
               <Input />
             </Form.Item>
+
+            <Form.Item
+              label="Số giường"
+              name="beds"
+              rules={[{ required: true, message: "Vui lòng nhập số giường" }]}
+            >
+              <InputNumber min={1} style={{ width: '100%' }} />
+            </Form.Item>
+
+            <Form.Item
+              label="Mô tả"
+              name="description"
+              rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+            >
+              <TextArea rows={4} />
+            </Form.Item>
+
+            <Form.Item
+              label="Giá"
+              name="price"
+              rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+            >
+              <InputNumber min={0} style={{ width: '100%' }} formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+            </Form.Item>
+
+            <Form.Item
+              label="Tổng số phòng"
+              name="quantity"
+              rules={[{ required: true, message: "Vui lòng nhập tổng số phòng" }]}
+            >
+              <InputNumber min={1} style={{ width: '100%' }} />
+            </Form.Item>
+
+            <Form.Item
+              label="Số phòng còn lại"
+              name="quantityLeft"
+              rules={[{ required: true, message: "Vui lòng nhập số phòng còn lại" }]}
+            >
+              <InputNumber min={0} style={{ width: '100%' }} />
+            </Form.Item>
+
+            <Form.Item label="Số phòng chi tiết">
+              <Button type="dashed" onClick={addRoomNumber} style={{ marginBottom: 10 }}>
+                Thêm số phòng
+              </Button>
+              {roomNumbers.map((rn, index) => (
+                <div key={index} style={{ display: 'flex', marginBottom: 8, gap: 8 }}>
+                  <InputNumber
+                    placeholder="Số phòng"
+                    value={rn.roomNumber}
+                    onChange={(value) => updateRoomNumber(index, 'roomNumber', value)}
+                    style={{ width: '30%' }}
+                  />
+                  <Select
+                    value={rn.status}
+                    onChange={(value) => updateRoomNumber(index, 'status', value)}
+                    style={{ width: '30%' }}
+                  >
+                    <Option value="trống">Trống</Option>
+                    <Option value="hết phòng">Hết phòng</Option>
+                  </Select>
+                  <Button danger onClick={() => removeRoomNumber(index)}>
+                    Xóa
+                  </Button>
+                </div>
+              ))}
+            </Form.Item>
+
+            <Form.Item label="Hình ảnh">
+              <Upload
+                listType="picture"
+                fileList={fileList}
+                onChange={handleUploadChange}
+                beforeUpload={() => false}
+              >
+                <Button icon={<UploadOutlined />}>Tải lên</Button>
+              </Upload>
+            </Form.Item>
+
             <Form.Item>
               <Button type="primary" htmlType="submit">
                 Lưu

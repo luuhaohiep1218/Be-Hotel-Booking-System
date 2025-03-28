@@ -20,6 +20,7 @@ const CheckoutRoomForm = () => {
   const [formData, setFormData] = useState({
     fullName: user?.full_name || "",
     email: user?.email || "",
+    roomNumber: "",
     phone: user?.phone || "",
     paymentMethod: "counter",
     notes: "",
