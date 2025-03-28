@@ -8,16 +8,17 @@ const ModalUpdateProfile = ({
   profile,
   setUser,
   accessToken,
-  setAccessToken, // ✅ Nhận hàm cập nhật token từ context
+  setAccessToken,
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
+  // Khi mở modal, cập nhật dữ liệu form
   useEffect(() => {
-    if (profile) {
-      form.setFieldsValue(profile);
+    if (profile && isModalUpdateProfile) {
+      form.setFieldsValue(profile); // ✅ Đảm bảo form luôn cập nhật
     }
-  }, [profile, form, isModalUpdateProfile]);
+  }, [profile, isModalUpdateProfile, form]);
 
   const onFinish = async (values) => {
     if (!accessToken) {
@@ -37,16 +38,15 @@ const ModalUpdateProfile = ({
         ...prevUser,
         ...response.data,
       }));
-      setIsModalUpdateProfile(false); // ✅ Đóng modal
+      setIsModalUpdateProfile(false);
     } catch (error) {
       if (error.response?.status === 401) {
-        console.log("🔄 Token hết hạn, thử refresh...");
         const newToken = await refreshAccessToken();
 
         if (newToken) {
           setAccessToken(newToken); // ✅ Cập nhật token mới
           try {
-            // ✅ Thử gửi lại request với token mới ngay lập tức
+            // ✅ Thử gửi lại request với token mới
             const retryResponse = await API.patch(
               "/user/update-profile",
               values,
@@ -55,28 +55,23 @@ const ModalUpdateProfile = ({
               }
             );
 
-            console.log(
-              "✅ Cập nhật thành công (sau refresh):",
-              retryResponse.data
-            );
             message.success("Hồ sơ cập nhật thành công! 🎉");
 
             setUser(retryResponse.data);
             setIsModalUpdateProfile(false);
-            return;
           } catch (retryError) {
             console.error("❌ Lỗi sau khi refresh token:", retryError);
             message.error("Cập nhật thất bại! Vui lòng thử lại.");
           }
         } else {
           message.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
-          return;
         }
+      } else {
+        const errorMsg =
+          error.response?.data?.message ||
+          "Cập nhật thất bại! Vui lòng thử lại.";
+        message.error(errorMsg);
       }
-
-      const errorMsg =
-        error.response?.data?.message || "Cập nhật thất bại! Vui lòng thử lại.";
-      message.error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -88,6 +83,7 @@ const ModalUpdateProfile = ({
       open={isModalUpdateProfile}
       footer={null}
       onCancel={() => setIsModalUpdateProfile(false)}
+      destroyOnClose // ✅ Giải phóng bộ nhớ khi đóng modal
     >
       <Form
         form={form}
@@ -95,7 +91,6 @@ const ModalUpdateProfile = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
-        initialValues={profile}
         onFinish={onFinish}
         autoComplete="off"
       >

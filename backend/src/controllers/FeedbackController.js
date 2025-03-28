@@ -2,17 +2,12 @@ const asyncHandler = require("express-async-handler");
 const Feedback = require("../models/FeedbackModel");
 const aqp = require("api-query-params");
 
-
 /**
  * ✅ Người dùng gửi feedback
  */
 const requestFeedback = asyncHandler(async (req, res) => {
   try {
-    console.log("Body:", req.body);
-    const { rating, comment, userId ,images} = req.body;
-    console.log("img:", images);
-
-
+    const { rating, comment, userId, images } = req.body;
 
     if (!rating || !comment) {
       return res.status(400).json({ message: "Thiếu rating hoặc comment" });

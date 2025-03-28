@@ -84,7 +84,6 @@ const NewsItem = ({ item }) => {
       .replace(/\s+/g, "-"); // Thay khoảng trắng bằng dấu "-"
   };
 
-  console.log(item.sections?.[0]?.image);
   return (
     <Col md={6} lg={4} className="mb-4">
       <Link style={{ textDecoration: "none", color: "inherit" }} to={item._id}>

@@ -3,7 +3,6 @@ import { Container } from "react-bootstrap";
 import API from "../utils/axiosInstance";
 import images from "../assets/images/pages.jpg";
 
-
 const FeaturedNews = () => {
   const [blog, setBlog] = useState();
 
@@ -12,7 +11,6 @@ const FeaturedNews = () => {
       try {
         const response = await API.get("/blog/prominent");
         setBlog(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy internalNews:", error);
       }

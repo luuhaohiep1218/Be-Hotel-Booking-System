@@ -14,7 +14,6 @@ export const RoomProvider = ({ children }) => {
   const fetchRooms = async () => {
     try {
       const response = await API.get(`/room`);
-      console.log("API Response:", response.data); // Kiểm tra dữ liệu trả về
 
       const roomsArray = Array.isArray(response.data)
         ? response.data
@@ -47,9 +46,6 @@ export const RoomProvider = ({ children }) => {
 
   const handleFilterRooms = useCallback(
     (filters) => {
-      console.log("Filtering rooms with filters:", filters);
-      console.log("Current rooms:", rooms);
-
       if (!Array.isArray(rooms)) {
         console.error("rooms is not an array!", rooms);
         return;
@@ -57,20 +53,25 @@ export const RoomProvider = ({ children }) => {
 
       let filtered = rooms.filter((room) => {
         return (
-          (filters.name === "" || room?.name?.toLowerCase().includes(filters?.name?.toLowerCase())) &&
+          (filters.name === "" ||
+            room?.name?.toLowerCase().includes(filters?.name?.toLowerCase())) &&
           (filters.type === "" || room.type === filters.type) &&
-          (filters.services === "" || room.services?.toLowerCase().includes(filters.services?.toLowerCase())) &&
+          (filters.services === "" ||
+            room.services
+              ?.toLowerCase()
+              .includes(filters.services?.toLowerCase())) &&
           (filters.location === "" || room.location === filters.location) &&
           (filters.status === "" || room.status === filters.status) &&
           (filters.beds === "" || room.beds >= parseInt(filters.beds)) &&
           (filters.price === "" ||
             (filters.price === "<500" && room.price < 500) ||
-            (filters.price === "500-3000" && room.price >= 500 && room.price <= 3000) ||
+            (filters.price === "500-3000" &&
+              room.price >= 500 &&
+              room.price <= 3000) ||
             (filters.price === ">3000" && room.price > 3000))
         );
       });
 
-      console.log("Filtered rooms:", filtered);
       setFilteredRooms(filtered);
     },
     [rooms]
@@ -108,47 +109,46 @@ export const RoomProvider = ({ children }) => {
 
   // Reset all room counts to 0
   const resetSelections = () => {
-    setRooms((prevRooms) =>
-      prevRooms.map((room) => ({ ...room, count: 0 }))
-    );
+    setRooms((prevRooms) => prevRooms.map((room) => ({ ...room, count: 0 })));
   };
 
   // Calculate total price of selected rooms
   const totalPrice = rooms.reduce((total, room) => {
     return total + room.price * room.count;
   }, 0);
- // updateCommentAndRating
-const updateCommentAndRating = async (roomId, reviewData) => {
-  try {
-    // Assuming you have a way to get the current logged-in user's ID (e.g., from session or token)
-    const userId = localStorage.getItem("userId"); // Example: Get userId from local storage (if logged in)
+  // updateCommentAndRating
+  const updateCommentAndRating = async (roomId, reviewData) => {
+    try {
+      // Assuming you have a way to get the current logged-in user's ID (e.g., from session or token)
+      const userId = localStorage.getItem("userId"); // Example: Get userId from local storage (if logged in)
 
-    if (!userId) {
-    return message.error("Vui lòng đăng nhập để đánh giá!");
+      if (!userId) {
+        return message.error("Vui lòng đăng nhập để đánh giá!");
+      }
+
+      // Add userId to the review data
+      const dataWithUserId = { ...reviewData, userId };
+
+      // Sending the rating and comment along with userId to the backend
+      const response = await API.post(
+        `/room/${roomId}/comment`,
+        dataWithUserId
+      );
+
+      // Update the room details with the new star rating and total comments
+      setRoomDetails((prevDetails) => ({
+        ...prevDetails,
+        starRatings: response.data.starRating,
+        total: response.data.totalComments,
+      }));
+
+      // Optionally, show a success message
+      message.success("Cập nhật bình luận và đánh giá thành công!");
+    } catch (error) {
+      console.error("Error updating comment and rating:", error);
+      setError("Không thể cập nhật bình luận và đánh giá");
     }
-
-    // Add userId to the review data
-    const dataWithUserId = { ...reviewData, userId };
-
-    // Sending the rating and comment along with userId to the backend
-    const response = await  API.post(`/room/${roomId}/comment`, dataWithUserId);
-    console.log("Response data:", response.data);
-
-    // Update the room details with the new star rating and total comments
-    setRoomDetails((prevDetails) => ({
-      ...prevDetails,
-      starRatings: response.data.starRating,
-      total: response.data.totalComments,
-    }));
-
-    // Optionally, show a success message
-    message.success("Cập nhật bình luận và đánh giá thành công!");
-  } catch (error) {
-    console.error("Error updating comment and rating:", error);
-    setError("Không thể cập nhật bình luận và đánh giá");
-  }
-};
-
+  };
 
   return (
     <RoomContext.Provider

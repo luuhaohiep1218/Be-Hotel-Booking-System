@@ -68,13 +68,11 @@ const StyledTable = styled(Table)`
   }
 `;
 
-
 const navbarStyle = {
   position: "fixed",
   zIndex: "100",
   width: "100%",
 };
-
 
 const AdminManageAccount = () => {
   const [users, setUsers] = useState([]);
@@ -227,7 +225,6 @@ const AdminManageAccount = () => {
     }
   };
 
-
   const styles = {
     adminTitle: {
       display: "inline-block",
@@ -253,10 +250,7 @@ const AdminManageAccount = () => {
           >
             ADMIN PAGE
           </Navbar.Brand>
-          <LogoutOutlined
-            style={{ color: "white", fontSize: "24px" }}
-            onClick={() => console.log("Logging out...")}
-          />
+          <LogoutOutlined style={{ color: "white", fontSize: "24px" }} />
         </Container>
       </Navbar>
       <div style={{ height: "80px" }} />

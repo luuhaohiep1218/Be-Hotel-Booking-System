@@ -64,7 +64,6 @@ const ProfilePage = () => {
   const showModalChangePassword = () => {
     setIsModalChangePassword(true);
   };
-  console.log(user);
 
   return (
     <ProfileSection>
@@ -81,7 +80,11 @@ const ProfilePage = () => {
             {user?.full_name}
           </h5>
           <IconContainer>
-            <Tooltip placement="top" title="Cập nhật thông tin">
+            <Tooltip
+              placement="top"
+              title="Cập nhật thông tin"
+              getPopupContainer={(trigger) => trigger.parentElement}
+            >
               <span>
                 <LuUserPen
                   style={{ fontSize: "1.25rem", cursor: "pointer" }}
@@ -91,7 +94,11 @@ const ProfilePage = () => {
             </Tooltip>
 
             {user?.authProvider === "local" && (
-              <Tooltip placement="top" title="Đổi mật khẩu">
+              <Tooltip
+                placement="top"
+                title="Thay đổi mật khẩu"
+                getPopupContainer={(trigger) => trigger.parentElement}
+              >
                 <span>
                   <AiOutlineUserSwitch
                     style={{ fontSize: "1.25rem", cursor: "pointer" }}

@@ -16,7 +16,6 @@ import { useHotelBooking } from "../context/HotelBookingContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdminSlidebar from "../components/AdminSlidebar";
-import axios from "axios";
 import {
   PeopleFill,
   PersonCheckFill,
@@ -160,7 +159,6 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (accessToken) {
-      console.log("Access token available, fetching real data");
       fetchDashboardData();
     } else {
       console.log("No access token available");
@@ -215,8 +213,6 @@ const AdminDashboard = () => {
       toast.error("Failed to load dashboard data. Using sample data instead.");
     }
   };
-
-  
 
   const navbarStyle = {
     position: "fixed",
