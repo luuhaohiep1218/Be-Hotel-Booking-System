@@ -1,9 +1,8 @@
 const asyncHandler = require("express-async-handler");
-const aqp = require('api-query-params');
+const aqp = require("api-query-params");
 const Booking = require("../models/BookingModel");
 const Service = require("../models/ServiceModel");
 const Room = require("../models/RoomModel");
-
 
 const bookService = asyncHandler(async (req, res) => {
   try {
@@ -95,8 +94,8 @@ const getServiceBookings = asyncHandler(async (req, res) => {
 
 const bookRoom = asyncHandler(async (req, res) => {
   try {
-    console.log("🟢 Gọi API bookRoom");
-    const { userId, rooms, checkIn, checkOut, paymentMethod, transactionId } = req.body;
+    const { userId, rooms, checkIn, checkOut, paymentMethod, transactionId } =
+      req.body;
 
     if (
       !userId ||
@@ -142,9 +141,16 @@ const bookRoom = asyncHandler(async (req, res) => {
       paymentStatus = "paid"; // ✅ Chỉ cập nhật nếu VNPay xác nhận
     }
     // 🛑 Chặn đặt phòng trùng nếu user đã đặt cùng thời gian
-    const duplicateBooking = await Booking.findOne({ userId, checkIn, checkOut, rooms: roomDetails });
+    const duplicateBooking = await Booking.findOne({
+      userId,
+      checkIn,
+      checkOut,
+      rooms: roomDetails,
+    });
     if (duplicateBooking) {
-      return res.status(400).json({ message: "Bạn đã đặt phòng này trước đó!" });
+      return res
+        .status(400)
+        .json({ message: "Bạn đã đặt phòng này trước đó!" });
     }
 
     // ✅ Lưu đơn đặt phòng
@@ -162,7 +168,6 @@ const bookRoom = asyncHandler(async (req, res) => {
     });
 
     await booking.save();
-    console.log("✅ Booking đã lưu:", booking);
 
     res.status(201).json({
       message: "Đặt phòng thành công",
@@ -177,7 +182,6 @@ const bookRoom = asyncHandler(async (req, res) => {
 const handleVnPayReturn = asyncHandler(async (req, res) => {
   try {
     const vnpParams = req.query;
-    console.log("VNPay Response:", vnpParams);
 
     const orderId = vnpParams.vnp_TxnRef;
     const transactionStatus = vnpParams.vnp_ResponseCode;
@@ -212,19 +216,22 @@ const handleVnPayReturn = asyncHandler(async (req, res) => {
 const getListBooking = asyncHandler(async (req, res) => {
   try {
     // Parse query parameters
-    const { filter, skip, limit, sort, projection, population } = aqp(req.query, {
-      whitelist: [
-        "userId",
-        "type",
-        "status",
-        "paymentStatus",
-        "paymentMethod",
-        "checkIn",
-        "checkOut",
-        "createdAt"
-      ],
-      blacklist: ["page", "limit"]
-    });
+    const { filter, skip, limit, sort, projection, population } = aqp(
+      req.query,
+      {
+        whitelist: [
+          "userId",
+          "type",
+          "status",
+          "paymentStatus",
+          "paymentMethod",
+          "checkIn",
+          "checkOut",
+          "createdAt",
+        ],
+        blacklist: ["page", "limit"],
+      }
+    );
 
     // Lấy page và limit từ query params
     const page = parseInt(req.query.page) || 1;
@@ -236,9 +243,9 @@ const getListBooking = asyncHandler(async (req, res) => {
       .skip(offset)
       .limit(pageSize)
       .sort(sort)
-      .populate('userId', 'full_name email phone')
-      .populate('rooms.roomId', 'name roomNumber price')
-      .populate('serviceId', 'name price');
+      .populate("userId", "full_name email phone")
+      .populate("rooms.roomId", "name roomNumber price")
+      .populate("serviceId", "name price");
 
     // Thực hiện query
     const bookings = await query.exec();
@@ -250,14 +257,14 @@ const getListBooking = asyncHandler(async (req, res) => {
       totalPages: Math.ceil(total / pageSize),
       currentPage: page,
       pageSize,
-      bookings
+      bookings,
     });
   } catch (error) {
     console.error("Lỗi khi lấy danh sách booking:", error);
     res.status(500).json({
       success: false,
       message: "Lỗi hệ thống",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -270,33 +277,33 @@ const updateBooking = asyncHandler(async (req, res) => {
     // Tìm và cập nhật booking
     const booking = await Booking.findByIdAndUpdate(
       id,
-      { 
+      {
         status,
-        paymentStatus, 
+        paymentStatus,
         notes,
-        updatedAt: Date.now() 
+        updatedAt: Date.now(),
       },
       { new: true }
     );
 
     if (!booking) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         success: false,
-        message: "Không tìm thấy booking" 
+        message: "Không tìm thấy booking",
       });
     }
 
     res.status(200).json({
       success: true,
       message: "Cập nhật booking thành công",
-      booking
+      booking,
     });
   } catch (error) {
     console.error("Lỗi khi cập nhật booking:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
-      message: "Lỗi hệ thống", 
-      error: error.message 
+      message: "Lỗi hệ thống",
+      error: error.message,
     });
   }
 });
@@ -307,5 +314,5 @@ module.exports = {
   handleVnPayReturn,
   getServiceBookings,
   getListBooking,
-  updateBooking
+  updateBooking,
 };

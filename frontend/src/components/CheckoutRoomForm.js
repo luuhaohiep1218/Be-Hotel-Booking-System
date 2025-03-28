@@ -30,12 +30,14 @@ const CheckoutRoomForm = () => {
 
   useEffect(() => {
     if (location.state?.selectedRooms) {
-      console.log("Selected Rooms from location state: ", location.state.selectedRooms);
       setSelectedRooms(location.state.selectedRooms);
     }
   }, [location.state]);
 
-  const totalPrice = selectedRooms.reduce((sum, room) => sum + room.count * room.price, 0);
+  const totalPrice = selectedRooms.reduce(
+    (sum, room) => sum + room.count * room.price,
+    0
+  );
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -66,7 +68,10 @@ const CheckoutRoomForm = () => {
       }
 
       const checkInDate = dayjs(formData.checkIn);
-      if (selectedDate.isSame(checkInDate) || selectedDate.isBefore(checkInDate)) {
+      if (
+        selectedDate.isSame(checkInDate) ||
+        selectedDate.isBefore(checkInDate)
+      ) {
         message.error("Ngày trả phòng phải sau ngày nhận phòng.");
         return;
       }
@@ -76,7 +81,6 @@ const CheckoutRoomForm = () => {
   };
 
   const handlePayment = async () => {
-    console.log("Handling payment with form data: ", formData);
     if (!formData.fullName || !formData.email || !formData.phone) {
       message.error("Vui lòng nhập đầy đủ thông tin!");
       return;
@@ -134,7 +138,6 @@ const CheckoutRoomForm = () => {
   };
 
   const handleBookingSuccess = async () => {
-    console.log("Handling booking success");
     try {
       const validRooms = selectedRooms.filter((room) => room.count > 0);
       if (validRooms.length === 0) {
@@ -160,7 +163,8 @@ const CheckoutRoomForm = () => {
         checkOut: formData.checkOut.toISOString(),
         price: totalPrice,
         paymentMethod: formData.paymentMethod,
-        paymentStatus: formData.paymentMethod === "counter" ? "pending" : "paid",
+        paymentStatus:
+          formData.paymentMethod === "counter" ? "pending" : "paid",
         notes: formData.notes,
         status: "pending",
         type: bookingType,
@@ -169,7 +173,6 @@ const CheckoutRoomForm = () => {
       await axios.post("http://localhost:8000/api/booking/rooms", bookingData);
 
       navigate("/");
-
     } catch (error) {
       console.error("Error during booking success: ", error);
       message.error("Lỗi khi lưu thông tin đặt phòng.");
@@ -196,9 +199,24 @@ const CheckoutRoomForm = () => {
           </Card>
           <Card>
             <h2>Thông tin đặt phòng</h2>
-            <Input name="fullName" placeholder="Họ và tên" value={formData.fullName} onChange={handleInputChange} />
-            <Input name="email" placeholder="Email" value={formData.email} onChange={handleInputChange} />
-            <Input name="phone" placeholder="Số điện thoại" value={formData.phone} onChange={handleInputChange} />
+            <Input
+              name="fullName"
+              placeholder="Họ và tên"
+              value={formData.fullName}
+              onChange={handleInputChange}
+            />
+            <Input
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+            <Input
+              name="phone"
+              placeholder="Số điện thoại"
+              value={formData.phone}
+              onChange={handleInputChange}
+            />
             <DatePicker
               placeholder="Chọn ngày nhận phòng"
               value={formData.checkIn}
@@ -209,11 +227,16 @@ const CheckoutRoomForm = () => {
               value={formData.checkOut}
               onChange={(value) => handleDateChange("checkOut", value)}
             />
-            <Radio.Group onChange={handlePaymentChange} value={formData.paymentMethod}>
+            <Radio.Group
+              onChange={handlePaymentChange}
+              value={formData.paymentMethod}
+            >
               <Radio value="counter">Thanh toán tại quầy</Radio>
               <Radio value="vnpay">VNPay</Radio>
             </Radio.Group>
-            <Button type="primary" loading={loading} onClick={handlePayment}>Xác nhận thanh toán</Button>
+            <Button type="primary" loading={loading} onClick={handlePayment}>
+              Xác nhận thanh toán
+            </Button>
             <SuccessModal
               isVisible={isModalVisible}
               onClose={() => {
@@ -223,11 +246,19 @@ const CheckoutRoomForm = () => {
                 }
               }}
             />
-            <FailedModal isVisible={isModalFailedVisible} onClose={() => setIsModalVisible(false)} />
+            <FailedModal
+              isVisible={isModalFailedVisible}
+              onClose={() => setIsModalVisible(false)}
+            />
           </Card>
         </Col>
         <Col md={6}>
-          <InvoiceCard user={user} formData={formData} selectedRooms={selectedRooms} totalPrice={totalPrice} />
+          <InvoiceCard
+            user={user}
+            formData={formData}
+            selectedRooms={selectedRooms}
+            totalPrice={totalPrice}
+          />
         </Col>
       </Row>
     </Container>
