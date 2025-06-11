@@ -66,10 +66,26 @@ const LoginPage = () => {
 
       sessionStorage.setItem("accessToken", data.accessToken);
       setAccessToken(data.accessToken);
-      setUser(data.user); // 🔥 Lưu thông tin user vào context
+
+      if (data?.role) {
+        switch (data.role.toUpperCase()) {
+          case "ADMIN":
+            navigate("/admin");
+            break;
+          case "MARKETING":
+            navigate("/mktdashboard");
+            break;
+          case "STAFF":
+            navigate("/manage-service");
+            break;
+          default:
+            navigate("/");
+        }
+      } else {
+        navigate("/");
+      }
 
       message.success("Đăng nhập thành công!");
-      navigate("/");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Lỗi không xác định!";

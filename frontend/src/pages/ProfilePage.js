@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, Avatar } from "antd";
+import { Card, Avatar, Tooltip } from "antd";
 import { AiOutlineUserSwitch } from "react-icons/ai";
 import { LuUserPen } from "react-icons/lu";
 import styled from "styled-components";
@@ -80,15 +80,32 @@ const ProfilePage = () => {
             {user?.full_name}
           </h5>
           <IconContainer>
-            <LuUserPen
-              style={{ fontSize: "1.25rem" }}
-              onClick={showModalUpdateProfile}
-            />
+            <Tooltip
+              placement="top"
+              title="Cập nhật thông tin"
+              getPopupContainer={(trigger) => trigger.parentElement}
+            >
+              <span>
+                <LuUserPen
+                  style={{ fontSize: "1.25rem", cursor: "pointer" }}
+                  onClick={showModalUpdateProfile}
+                />
+              </span>
+            </Tooltip>
+
             {user?.authProvider === "local" && (
-              <AiOutlineUserSwitch
-                style={{ fontSize: "1.25rem" }}
-                onClick={showModalChangePassword}
-              />
+              <Tooltip
+                placement="top"
+                title="Thay đổi mật khẩu"
+                getPopupContainer={(trigger) => trigger.parentElement}
+              >
+                <span>
+                  <AiOutlineUserSwitch
+                    style={{ fontSize: "1.25rem", cursor: "pointer" }}
+                    onClick={showModalChangePassword}
+                  />
+                </span>
+              </Tooltip>
             )}
           </IconContainer>
         </GradientBox>

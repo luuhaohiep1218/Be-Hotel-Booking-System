@@ -11,7 +11,7 @@ const register = asyncHandler(async (req, res) => {
 
   try {
     const userExists = await User.findOne({ email });
-    if (userExists) { 
+    if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
@@ -85,13 +85,11 @@ const login = asyncHandler(async (req, res) => {
 const refreshAccessToken = asyncHandler(async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    console.log("🔍 Refresh Token từ cookie:", refreshToken);
     if (!refreshToken) {
       return res.status(401).json({ message: "Không tìm thấy refresh token" });
     }
 
     const user = await User.findOne({ refreshToken });
-    console.log("🔍 User tìm thấy:", user);
     if (!user) {
       return res.status(403).json({ message: "Refresh token không hợp lệ" });
     }
@@ -102,13 +100,11 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         return res.status(403).json({ message: "Refresh token không hợp lệ" });
       }
 
-      console.log("✅ Token decoded:", decoded);
       if (user._id.toString() !== decoded.id) {
         return res.status(403).json({ message: "Refresh token không hợp lệ" });
       }
 
       const newAccessToken = generateToken(user._id);
-      console.log("✅ Access Token mới:", newAccessToken);
       res.json({ accessToken: newAccessToken });
     });
   } catch (error) {

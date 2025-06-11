@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+
 const Blog = require("../models/BlogModel");
 
 const getAllBlog = asyncHandler(async (req, res) => {
@@ -189,8 +190,6 @@ const deleteBlog = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Lỗi khi xóa blog", error: error.message });
   }
 });
-
-
 
 module.exports = {
   getAllBlog,

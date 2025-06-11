@@ -1,4 +1,7 @@
 import AboutUs from "../pages/AboutUsPage";
+import AdminManageAccount from "../pages/AdminAccountPage";
+import AdminDashboard from "../pages/Admindashboard";
+import AdminServicePage from "../pages/AdminService";
 import AllNewsPage from "../pages/AllNewsPage";
 import CheckoutPage from "../pages/CheckOutPage";
 import FeedbackDetail from "../pages/FeedBackDetail";
@@ -6,18 +9,22 @@ import FeedbackPage from "../pages/FeedbackPage";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 import LoginSuccess from "../pages/LoginSuccess";
+import ManageBooking from "../pages/ManageBooking";
+import ManageRoom from "../pages/ManageRoom";
+import ManageService from "../pages/ManageService";
 import Mktdashboard from "../pages/MktDashboard";
+import FeedbackListPage from "../pages/MktFeedbackList";
 import MktCustomerList from "../pages/MktListCustomer";
 import MktPostList from "../pages/MktPostList";
 import NewsDetail from "../pages/NewsDetail";
 import ProfilePage from "../pages/ProfilePage";
 import RoomDetail from "../pages/RoomDetail";
 import RoomListPage from "../pages/RoomListPage";
+import ServiceDetail from "../pages/ServiceDetail";
 import ServicePage from "../pages/ServicePage";
 import SignupPage from "../pages/SignupPage";
+import StaffDashboard from "../pages/StaffDashboard";
 import VNPayReturn from "../pages/VnpayReturn";
-import AdminManageAccount from "../pages/AdminAccountPage";
-import FeedbackListPage from "../pages/MktFeedbackList";
 
 export const routes = [
   {
@@ -30,23 +37,28 @@ export const routes = [
     page: Mktdashboard,
     isShowHeader: false,
     isPrivate: true,
+    allowedRoles: ["MARKETING"],
   },
   {
     path: "/mktPostList",
     page: MktPostList,
     isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["MARKETING"],
   },
   {
     path: "/mktCustomerList",
     page: MktCustomerList,
     isShowHeader: false,
     isPrivate: true,
+    allowedRoles: ["MARKETING"],
   },
   {
     path: "/mktfeedbacklist",
     page: FeedbackListPage,
     isShowHeader: false,
     isPrivate: true,
+    allowedRoles: ["MARKETING"],
   },
   {
     path: "/Blog/:blogId",
@@ -61,6 +73,12 @@ export const routes = [
   {
     path: "/service",
     page: ServicePage,
+    isShowHeader: true,
+    isPrivate: false,
+  },
+  {
+    path: "/service/:serviceId",
+    page: ServiceDetail,
     isShowHeader: true,
     isPrivate: false,
   },
@@ -113,7 +131,7 @@ export const routes = [
     isPrivate: true,
   },
   {
-    path: "room-detail/:roomId",
+    path: "room/:roomName",
     page: RoomDetail,
     isShowHeader: true,
     isPrivate: false,
@@ -125,8 +143,7 @@ export const routes = [
     isPrivate: true,
   },
   {
-
-    path:"/return-vnpay",
+    path: "/return-vnpay",
     page: VNPayReturn,
     isShowHeader: true,
     isPrivate: true,
@@ -136,5 +153,48 @@ export const routes = [
     page: AdminManageAccount,
     isShowHeader: false,
     isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-dashboard",
+    page: AdminDashboard,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/admin-service",
+    page: AdminServicePage,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["ADMIN"],
+  },
+  {
+    path: "/manage-service",
+    page: ManageService,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["STAFF", "ADMIN"],
+  },
+  {
+    path: "/staff-dashboard",
+    page: StaffDashboard,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["STAFF"],
+  },
+  {
+    path: "/manage-room",
+    page: ManageRoom,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["STAFF", "ADMIN"],
+  },
+  {
+    path: "/manage-booking",
+    page: ManageBooking,
+    isShowHeader: false,
+    isPrivate: true,
+    allowedRoles: ["STAFF", "ADMIN"],
   },
 ];

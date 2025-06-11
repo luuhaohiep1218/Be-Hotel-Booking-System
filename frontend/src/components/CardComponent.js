@@ -1,5 +1,6 @@
-import { Card, Col, Pagination, Row } from "antd";
+import { Card, Carousel, Col, Pagination, Row } from "antd";
 import React, { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import styled from "styled-components";
 
 const { Meta } = Card;
@@ -8,6 +9,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margintop: 50px;
 `;
 
 const Content = styled.div`
@@ -23,20 +25,53 @@ const PaginationWrapper = styled.div`
 
 // ✅ Dùng React.memo để tối ưu hiển thị Card
 const MemoizedCard = React.memo(({ item, children }) => {
-  console.log("Render Card:", item.name);
+  const navigate = useNavigate(); // Hook điều hướng
+
+  // Khi nhấn vào card, chuyển hướng đến trang chi tiết
+  const handleCardClick = () => {
+    const encodedName = encodeURIComponent(item.name); // Mã hóa tên item
+    navigate(`/room/${encodedName}`);
+    localStorage.setItem("roomId", item._id);
+    // Điều hướng đến trang chi tiết của item
+  };
+
   return (
     <Col key={item._id} xs={24} sm={12} md={8} lg={6}>
       <Card
         hoverable
-        cover={item.image ? (
-          <img
-            alt={item.name}
-            src={item.image}
-            style={{ height: "200px", objectFit: "cover" }}
-          />
-        ) : (
-          <div style={{ height: "200px", background: "#f0f0f0" }} />
-        )}
+        cover={
+          item.images ? (
+            item.images && item.images.length > 0 ? (
+              <Carousel autoplay>
+                {item.images.map((img, index) => (
+                  <div key={index}>
+                    <img
+                      alt={`${item.name}-${index}`}
+                      src={img}
+                      style={{
+                        maxHeight: "200px",
+                        objectFit: "cover",
+                        width: "100%",
+                        borderRadius: "10px",
+                      }}
+                    />
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <img
+                alt={item.name}
+                src={item.images[0]}
+                style={{ height: "200px", objectFit: "cover" }}
+              />
+            )
+          ) : (
+            <div style={{ height: "200px", background: "#f0f0f0" }}>
+              <img src="" alt="test" />
+            </div>
+          )
+        }
+        onClick={handleCardClick} // Gắn sự kiện onClick để chuyển hướng
       >
         <Meta title={item.name} description={item.description} />
         <div style={{ marginTop: "10px", fontWeight: "bold" }}>
@@ -45,7 +80,12 @@ const MemoizedCard = React.memo(({ item, children }) => {
         <div style={{ marginTop: "5px" }}>
           <strong>Vị trí:</strong> {item.location}
         </div>
-        <div style={{ marginTop: "5px", color: item.status === "trống" ? "green" : "red" }}>
+        <div
+          style={{
+            marginTop: "5px",
+            color: item.status === "trống" ? "green" : "red",
+          }}
+        >
           <strong>Trạng thái:</strong> {item.status}
         </div>
         <div style={{ marginTop: "5px" }}>
@@ -61,7 +101,7 @@ const CardComponent = ({ data, pageSize = 6, children }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // ✅ Đảm bảo data luôn là một mảng, tránh lỗi hooks bị gọi conditionally
-  const safeData = Array.isArray(data) ? data : [];
+  const safeData = useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
   // ✅ Dùng useMemo để tối ưu việc tính toán dữ liệu phân trang
   const currentData = useMemo(() => {
@@ -79,8 +119,10 @@ const CardComponent = ({ data, pageSize = 6, children }) => {
       <Content>
         <Row gutter={[24, 24]}>
           {currentData.map((item) => {
-            console.log(item);
-            const updatedItem = { ...item, status: item.quantityLeft === 0 ? "hết phòng" : item.status };
+            const updatedItem = {
+              ...item,
+              status: item.quantityLeft === 0 ? "hết phòng" : item.status,
+            };
             return (
               <MemoizedCard key={updatedItem._id} item={updatedItem}>
                 {children}

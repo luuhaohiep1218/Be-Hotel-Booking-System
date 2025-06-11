@@ -2,6 +2,7 @@ import { message, Spin } from "antd";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import FailedModal from "../components/ModalComponent/FailedModal";
 import SuccessModal from "../components/ModalComponent/SuccessModal"; // Import modal
 
 const VnpayReturn = () => {
@@ -9,11 +10,10 @@ const VnpayReturn = () => {
   const navigate = useNavigate();
   const isProcessingRef = useRef(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [isModalFailedVisible, setIsModalFailedVisible] = useState(false);
   useEffect(() => {
     if (isProcessingRef.current) return;
     isProcessingRef.current = true;
-
     const query = new URLSearchParams(location.search);
     const vnp_ResponseCode = query.get("vnp_ResponseCode");
     const orderId = query.get("vnp_TxnRef");
@@ -21,7 +21,8 @@ const VnpayReturn = () => {
     
     if (!orderId || !amount) {
       message.error("Lỗi: Không tìm thấy thông tin giao dịch.");
-      navigate("/");
+      setIsModalFailedVisible(true);
+      navigate("/us");
       return;
     }
 
@@ -30,10 +31,13 @@ const VnpayReturn = () => {
         const selectedRooms = JSON.parse(localStorage.getItem("selectedRooms")) || [];
         const formData = JSON.parse(localStorage.getItem("formData")) || {};
         const user = JSON.parse(localStorage.getItem("user")) || {};
-
+        if (selectedRooms._id.quantity <= 0) {
+          localStorage.removeItem(selectedRooms._id);
+        }
         if (!user._id || !selectedRooms.length) {
           message.error("Lỗi: Không tìm thấy thông tin đặt phòng.");
-          navigate("/checkout");
+                  setIsModalFailedVisible(true); // Hiển thị modal thành công
+          navigate("/us");
           return;
         }
 
@@ -64,7 +68,7 @@ const VnpayReturn = () => {
 
       } catch (error) {
         message.error("Lỗi khi lưu thông tin đặt phòng.");
-        navigate("/payment-failed");
+        setIsModalFailedVisible(true);
       }
     };
 
@@ -73,7 +77,7 @@ const VnpayReturn = () => {
       handleBookingSuccessVnPay();
     } else {
       message.error("Thanh toán thất bại. Vui lòng thử lại.");
-      navigate("/checkout");
+      setIsModalFailedVisible(true);
     }
   }, [location]);
 
@@ -81,6 +85,7 @@ const VnpayReturn = () => {
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <Spin size="large" />
       <SuccessModal isVisible={isModalVisible} onClose={() => navigate("/room-list")} />
+      <FailedModal isVisible={isModalFailedVisible} onClose={() => navigate("/us")} />
     </div>
   );
 };

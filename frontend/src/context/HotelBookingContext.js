@@ -40,7 +40,6 @@ export const HotelBookingProvider = ({ children }) => {
       console.error("❌ Lỗi lấy profile:", error);
 
       if (error.response?.status === 401) {
-        console.log("🔄 Token hết hạn, thử refresh...");
         const newToken = await refreshAccessToken();
 
         if (newToken) {

@@ -1,0 +1,25 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.chat-message {
+  margin: 5px;
+  padding: 8px;
+  border-radius: 8px;
+  max-width: 80%;
+}
+
+.chat-message.user {
+  background-color: #22acbf;
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-message.ai {
+  background-color: #f1f1f1;
+  align-self: flex-start;
+}

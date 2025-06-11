@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Pagination, Input, Tabs } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Form,
-  Modal,
-  Card,
-} from "react-bootstrap";
+import { Container, Row, Col, Button, Form, Modal, Card } from "react-bootstrap";
 import styled from "styled-components";
 import MktSidebar from "../components/MktSidebar";
 import API from "../utils/axiosInstance";
 
+// Styled Components
 const StyledTabs = styled(Tabs)`
   .ant-tabs-nav {
     background: #f8f9fa;
@@ -53,56 +46,18 @@ const ContentWrapper = styled.div`
   transition: margin-left 0.3s;
 `;
 
-const StyledCard = styled.div`
+const StyledCard = styled(Card)`
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
   overflow: hidden;
-  padding: 20px;
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
   }
 `;
 
-const CardBody = styled.div`
-  padding: 20px;
-`;
-
-const CardTitle = styled.h5`
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-`;
-
-const CardText = styled.p`
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const EditButton = styled(Button)`
-  background-color: #007bff;
-  border: none;
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-const DeleteButton = styled(Button)`
-  background-color: #dc3545;
-  border: none;
-  &:hover {
-    background-color: #a71d2a;
-  }
-`;
 const PaginationWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -110,6 +65,7 @@ const PaginationWrapper = styled.div`
   margin-top: auto;
   justify-content: flex-end;
 `;
+
 const SearchBar = styled.div`
   margin-bottom: 20px;
   display: flex;
@@ -141,8 +97,28 @@ const Header = styled.header`
   margin-bottom: 40px;
 `;
 
+const BlogCard = React.memo(({ blog, onEdit, onDelete }) => (
+  <Col key={blog._id} md={6} sm={12} className="mb-4">
+    <StyledCard>
+      <Card.Body>
+        <Card.Title>{blog.title}</Card.Title>
+        <Card.Text>{blog.summary}</Card.Text>
+        <Card.Text>📍 {blog.location}</Card.Text>
+        <Card.Text>📅 {blog.date}</Card.Text>
+        <div className="d-flex gap-2">
+          <Button variant="primary" onClick={() => onEdit(blog)}>
+            ✏️ Chỉnh sửa
+          </Button>
+          <Button variant="danger" onClick={() => onDelete(blog._id)}>
+            🗑️ Xóa
+          </Button>
+        </div>
+      </Card.Body>
+    </StyledCard>
+  </Col>
+));
+
 const MktPostList = () => {
-  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -162,9 +138,7 @@ const MktPostList = () => {
     sections: [],
   });
 
-  // Fetch danh sách blog
-  // Hàm fetchBlogs phải được khai báo ngoài useEffect để có thể sử dụng ở các nơi khác
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     try {
       const response = await API.get(
         `/blog?page=${currentPage}&category=${keyCategory}&limit=6`
@@ -174,30 +148,26 @@ const MktPostList = () => {
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu blog", error);
     }
-  };
+  }, [currentPage, keyCategory]);
 
   useEffect(() => {
     fetchBlogs();
-  }, [currentPage, keyCategory]);
+  }, [fetchBlogs]);
 
-  // Reset form về trạng thái mặc định
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setBlogData({
       title: "",
       summary: "",
       category: "discounts",
       location: "",
       date: "",
-      sections: [], // 🔥 Đảm bảo sections không bị null
+      sections: [],
     });
     setEditingBlogId(null);
     setIsEditMode(false);
-  };
+  }, []);
 
-  // Xử lý tạo hoặc cập nhật blog
-
-  // Xử lý tạo hoặc cập nhật blog
-  const handleCreateOrUpdateBlog = async () => {
+  const handleCreateOrUpdateBlog = useCallback(async () => {
     try {
       if (isEditMode) {
         await API.put(`/blog/${editingBlogId}`, blogData);
@@ -210,21 +180,22 @@ const MktPostList = () => {
     } catch (error) {
       console.error("Lỗi khi tạo/cập nhật blog:", error);
     }
-  };
+  }, [blogData, editingBlogId, fetchBlogs, isEditMode, resetForm]);
 
-  // Xử lý xóa blog
-  const handleDeleteBlog = async (blogId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) return;
-    try {
-      await API.delete(`/blog/${blogId}`);
-      fetchBlogs();
-    } catch (error) {
-      console.error("Lỗi khi xóa blog:", error);
-    }
-  };
+  const handleDeleteBlog = useCallback(
+    async (blogId) => {
+      if (!window.confirm("Bạn có chắc chắn muốn xóa blog này không?")) return;
+      try {
+        await API.delete(`/blog/${blogId}`);
+        fetchBlogs();
+      } catch (error) {
+        console.error("Lỗi khi xóa blog:", error);
+      }
+    },
+    [fetchBlogs]
+  );
 
-  // Xử lý chỉnh sửa blog
-  const handleEditBlog = (blog) => {
+  const handleEditBlog = useCallback((blog) => {
     setIsEditMode(true);
     setEditingBlogId(blog._id);
     setBlogData({
@@ -236,24 +207,17 @@ const MktPostList = () => {
       sections: blog.sections || [],
     });
     setShowModal(true);
-  };
-  useEffect(() => {
-    if (!searchQuery) {
-      setFilteredBlogs(blogs);
-    } else {
-      const lowerCaseQuery = searchQuery.toLowerCase();
-      const filtered = blogs.filter(
-        (blog) =>
-          blog.title.toLowerCase().includes(lowerCaseQuery) ||
-          blog.location.toLowerCase().includes(lowerCaseQuery)
-      );
-      setFilteredBlogs(filtered);
-    }
-  }, [searchQuery, blogs]);
+  }, []);
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  const filteredBlogs = useMemo(() => {
+    if (!searchQuery) return blogs;
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    return blogs.filter(
+      (blog) =>
+        blog.title.toLowerCase().includes(lowerCaseQuery) ||
+        blog.location.toLowerCase().includes(lowerCaseQuery)
+    );
+  }, [searchQuery, blogs]);
 
   return (
     <NewsPageContainer>
@@ -275,7 +239,7 @@ const MktPostList = () => {
                 prefix={<SearchOutlined style={{ color: "#888" }} />}
                 allowClear
                 value={searchQuery}
-                onChange={handleSearch}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </SearchBar>
           </Col>
@@ -305,24 +269,12 @@ const MktPostList = () => {
             </Col>
           ) : (
             filteredBlogs.map((blog) => (
-              <Col key={blog._id} md={6} sm={12} className="mb-4">
-                <StyledCard>
-                  <CardBody>
-                    <CardTitle>{blog.title}</CardTitle>
-                    <CardText>{blog.summary}</CardText>
-                    <CardText>📍 {blog.location}</CardText>
-                    <CardText>📅 {blog.date}</CardText>
-                    <ButtonGroup>
-                      <EditButton onClick={() => handleEditBlog(blog)}>
-                        ✏️ Chỉnh sửa
-                      </EditButton>
-                      <DeleteButton onClick={() => handleDeleteBlog(blog._id)}>
-                        🗑️ Xóa
-                      </DeleteButton>
-                    </ButtonGroup>
-                  </CardBody>
-                </StyledCard>
-              </Col>
+              <BlogCard
+                key={blog._id}
+                blog={blog}
+                onEdit={handleEditBlog}
+                onDelete={handleDeleteBlog}
+              />
             ))
           )}
         </Row>
@@ -402,7 +354,6 @@ const MktPostList = () => {
               />
             </Form.Group>
 
-            {/* ✨ THÊM SECTIONS */}
             <h5>Nội dung Blog</h5>
             {blogData.sections?.map((section, index) => (
               <div key={index} className="mb-3 p-3 border rounded">

@@ -15,7 +15,6 @@ const ModalChangePassword = ({
       message.error("⚠️ Vui lòng nhập đầy đủ thông tin!");
       return;
     }
-    console.log(accessToken);
 
     try {
       const response = await API.patch(
@@ -46,8 +45,6 @@ const ModalChangePassword = ({
         if (errorMessage.includes("Mật khẩu cũ không đúng")) {
           message.error("❌ Mật khẩu cũ không đúng!");
         } else {
-          console.log("🔄 Access Token hết hạn, thử refresh...");
-
           if (!localStorage.getItem("refreshAttempted")) {
             localStorage.setItem("refreshAttempted", "true");
 

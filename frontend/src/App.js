@@ -12,41 +12,38 @@ const App = () => {
   return (
     <HotelBookingProvider>
       <RoomProvider>
-      <div className="App">
-        <Router>
-          <Routes>
-            {routes.map((route) => {
-              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-
-              return route.isPrivate ? (
-                // Nếu là trang cần bảo vệ thì bọc trong ProtectedRoute
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={
-                    <ProtectedRoute>
+        <div className="App">
+          <Router>
+            <Routes>
+              {routes.map((route) => {
+                const Layout = route.isShowHeader ? DefaultComponent : Fragment;
+                return route.isPrivate ? (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={
+                      <ProtectedRoute allowedRoles={route.allowedRoles}>
+                        <Layout>
+                          <route.page />
+                        </Layout>
+                      </ProtectedRoute>
+                    }
+                  />
+                ) : (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={
                       <Layout>
                         <route.page />
                       </Layout>
-                    </ProtectedRoute>
-                  }
-                />
-              ) : (
-                // Nếu không cần bảo vệ, render bình thường
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={
-                    <Layout>
-                      <route.page />
-                    </Layout>
-                  }
-                />
-              );
-            })}
-          </Routes>
-        </Router>
-      </div>
+                    }
+                  />
+                );
+              })}
+            </Routes>
+          </Router>
+        </div>
       </RoomProvider>
     </HotelBookingProvider>
   );

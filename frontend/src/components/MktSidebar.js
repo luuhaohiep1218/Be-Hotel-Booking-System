@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Nav } from "react-bootstrap";
-import styled from "styled-components";
 import {
-  BsGrid,
-  BsPerson,
-  BsPieChart,
-  BsNewspaper,
-  BsHeart,
   BsBoxArrowRight,
+  BsGrid,
+  BsHeart,
+  BsNewspaper,
+  BsPieChart
 } from "react-icons/bs";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { useHotelBooking } from "../context/HotelBookingContext";
 
 const SidebarWrapper = styled.div`
   width: ${(props) => (props.isOpen ? "250px" : "58px")};
@@ -78,6 +78,9 @@ const Label = styled.span`
 `;
 
 const Sidebar = ({ onToggle }) => {
+  const navigate = useNavigate();
+
+  const { accessToken, setAccessToken, setUser, user } = useHotelBooking();
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -86,14 +89,26 @@ const Sidebar = ({ onToggle }) => {
 
   const menuItems = [
     { to: "/mktdashboard", icon: <BsGrid />, label: "Dashboard" },
-    { to: "/profile", icon: <BsPerson />, label: "User" },
     { to: "/mktCustomerList", icon: <BsPieChart />, label: "Customer List" },
     { to: "/mktpostlist", icon: <BsNewspaper />, label: "Post List" },
     { to: "/mktfeedbacklist", icon: <BsHeart />, label: "Feedback" },
   ];
+  const handleLogout = async () => {
+    try {
+      console.warn("🚪 Đang logout...");
+
+      // 🛑 Xóa accessToken & chuyển về trang login
+      setAccessToken(null);
+      sessionStorage.removeItem("accessToken"); // 🔄 Dùng sessionStorage thay vì localStorage
+      setUser(null);
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("🔥 Lỗi logout:", error.message);
+    }
+  };
 
   return (
-    <SidebarWrapper isOpen={isOpen}>      
+    <SidebarWrapper isOpen={isOpen}>
       <ToggleButton onClick={toggleSidebar}>☰</ToggleButton>
       <StyledNav>
         {menuItems.map((item, index) => (
@@ -105,7 +120,7 @@ const Sidebar = ({ onToggle }) => {
           </NavItem>
         ))}
         <NavItem>
-          <StyledLink as={Link} to="/logout">
+          <StyledLink as={Link} to="/" onClick={handleLogout}>
             <Icon>
               <BsBoxArrowRight />
             </Icon>
